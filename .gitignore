@@ -1,3 +1,4 @@
 # .gitignore for Spaghetti Western project
 
 .idea/*
+out/*
