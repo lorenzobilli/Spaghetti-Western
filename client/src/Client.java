@@ -14,6 +14,7 @@ public class Client {
     private static Socket socket;
     private static PrintWriter sender;
     private static BufferedReader receiver;
+    private static BufferedReader userInput;    // Only for testing purposes
 
     public static void main(String[] args) {
         System.out.println("[*] Launching client session...");
@@ -21,6 +22,8 @@ public class Client {
             socket = new Socket(HOSTNAME, PORT_NUM);
             sender = new PrintWriter(socket.getOutputStream(), true);
             receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            userInput = new BufferedReader(new InputStreamReader(System.in));
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
@@ -44,7 +47,19 @@ public class Client {
     }
 
     private static void test() {
-        String message = "Mufasa in casa";
-        sender.println(message);
+        boolean continueTesting = true;
+        while (continueTesting) {
+            try {
+                String message = userInput.readLine();
+                if (message.equals("exit") || message.equals("quit")) {
+                    continueTesting = false;
+                }
+                sender.println(message);
+            } catch (IOException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
+        }
     }
 }
