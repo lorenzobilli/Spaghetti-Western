@@ -26,8 +26,21 @@ public class Client {
             e.getCause();
             e.printStackTrace();
         }
-        System.out.println("[*] Connected successfully with the server");
+        System.out.println("[*] Successfully connected with the server");
         test();
+        shutdownClient();
+    }
+
+    private static void shutdownClient() {
+        System.out.println("[*] Terminating current client session...");
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
+        System.out.println("[*] Session terminated correctly");
     }
 
     private static void test() {

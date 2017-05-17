@@ -31,6 +31,20 @@ public class Server {
         }
         System.out.println("[*] A client has connected to the server");
         test();
+        shutdownServer();
+    }
+
+    private static void shutdownServer() {
+        System.out.println("[*] Server is shutting down...");
+        try {
+            clientSocket.close();
+            serverSocket.close();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
+        System.out.println("[*] Server has been shut down correctly");
     }
 
     private static void test() {
