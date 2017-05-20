@@ -5,15 +5,15 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
- * ConnectionManager class
+ * ClientHandler class
  */
-public class ConnectionManager implements Runnable {
+public class ClientHandler implements Runnable {
 
     private Socket connection;
     private PrintWriter sender;
     private BufferedReader receiver;
 
-    public ConnectionManager(Socket connection) {
+    public ClientHandler(Socket connection) {
         this.connection = connection;
     }
 
