@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidParameterException;
 
 /**
  * ClientConnectionManager
@@ -14,7 +15,7 @@ public class ClientConnectionManager implements Runnable {
     private Socket socket;
     private PrintWriter sender;
     private BufferedReader receiver;
-    private static BufferedReader userInput;    // Only for testing purposes
+    private BufferedReader userInput;    // Only for testing purposes
 
     @Override
     public void run() {
@@ -24,14 +25,33 @@ public class ClientConnectionManager implements Runnable {
             sender = new PrintWriter(socket.getOutputStream(), true);
             receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             userInput = new BufferedReader(new InputStreamReader(System.in));       // Only for testing purposes
+            System.out.println("[*] Successfully connected with the server");
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
             e.printStackTrace();
         }
-        System.out.println("[*] Successfully connected with the server");
         test();
         shutdownClient();
+    }
+
+    public void send(String message) {
+        if (message == null) {
+            throw new InvalidParameterException("Null message given");
+        }
+        sender.println(message);    //TODO: Check if other methods are more suited for sending message
+    }
+
+    public String receive() {
+        String message = "";
+        try {
+            message = receiver.readLine();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
+        return message;
     }
 
     private void shutdownClient() {
@@ -47,19 +67,24 @@ public class ClientConnectionManager implements Runnable {
     }
 
     private void test() {
-        boolean continueTesting = true;
-        while (continueTesting) {
+        while (true) {
+            String sendMessage = "";
+            // Getting user input
             try {
-                String message = userInput.readLine();
-                if (message.equals("exit") || message.equals("quit")) {
-                    continueTesting = false;
-                }
-                sender.println(message);
+                sendMessage = userInput.readLine();
             } catch (IOException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
             }
+            if (sendMessage.equals("exit")) {
+                break;
+            }
+            // Send message test
+            send(sendMessage);
+            // Receive message test
+            System.out.println(receive());
         }
+        shutdownClient();
     }
 }

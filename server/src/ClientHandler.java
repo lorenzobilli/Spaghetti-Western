@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidParameterException;
 
 /**
  * ClientHandler class
@@ -31,16 +32,35 @@ public class ClientHandler implements Runnable {
         test();
     }
 
-    private void test() {
-        String message;
+    public void send(String message) {
+        if (message == null) {
+            throw new InvalidParameterException("Null message given");
+        }
+        sender.println(message);    //TODO: Check if other methods are more suited for sending messages
+    }
+
+    public String receive() {
+        String message = "";
         try {
-            while ((message = receiver.readLine()) != null) {
-                System.out.println("Server has received: " + message);
-            }
+            message = receiver.readLine();
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
             e.printStackTrace();
+        }
+        return message;
+    }
+
+    private void test() {
+        while (true) {
+            // Receive message test
+            String receivedMessage = receive();
+            if (receivedMessage == null) {
+                break;
+            }
+            System.out.println("Received message: " + receivedMessage);
+            // Send message test
+            send("Server has received: " + receivedMessage);
         }
     }
 }
