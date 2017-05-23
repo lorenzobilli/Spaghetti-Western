@@ -35,23 +35,24 @@ public class ClientConnectionManager implements Runnable {
         shutdownClient();
     }
 
-    public void send(String message) {
-        if (message == null) {
+    public void send(Message message) {
+        String translatedMessage = MessageManager.prepareSend(message);
+        if (translatedMessage == null) {
             throw new InvalidParameterException("Null message given");
         }
-        sender.println(message);    //TODO: Check if other methods are more suited for sending message
+        sender.println(translatedMessage);
     }
 
-    public String receive() {
-        String message = "";
+    public Message receive() {
+        String receivedMessage = "";
         try {
-            message = receiver.readLine();
+            receivedMessage = receiver.readLine();
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
             e.printStackTrace();
         }
-        return message;
+        return MessageManager.prepareReceive(receivedMessage);
     }
 
     private void shutdownClient() {
@@ -68,22 +69,25 @@ public class ClientConnectionManager implements Runnable {
 
     private void test() {
         while (true) {
-            String sendMessage = "";
+            String input = "";
+
             // Getting user input
             try {
-                sendMessage = userInput.readLine();
+                input = userInput.readLine();
             } catch (IOException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
             }
-            if (sendMessage.equals("exit")) {
+            if (input.equals("exit")) {
                 break;
             }
+            Message sendMessage = new Message(input);
             // Send message test
             send(sendMessage);
             // Receive message test
-            System.out.println(receive());
+            Message receivedMessage = receive();
+            System.out.println(receivedMessage.getMessageContent());
         }
         shutdownClient();
     }

@@ -32,35 +32,36 @@ public class ClientHandler implements Runnable {
         test();
     }
 
-    public void send(String message) {
-        if (message == null) {
+    public void send(Message message) {
+        String translatedMessage = MessageManager.prepareSend(message);
+        if (translatedMessage == null) {
             throw new InvalidParameterException("Null message given");
         }
-        sender.println(message);    //TODO: Check if other methods are more suited for sending messages
+        sender.println(translatedMessage);
     }
 
-    public String receive() {
-        String message = "";
+    public Message receive() {
+        String receivedMessage = "";
         try {
-            message = receiver.readLine();
+            receivedMessage = receiver.readLine();
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
             e.printStackTrace();
         }
-        return message;
+        return MessageManager.prepareReceive(receivedMessage);
     }
 
     private void test() {
         while (true) {
             // Receive message test
-            String receivedMessage = receive();
+            Message receivedMessage = receive();
             if (receivedMessage == null) {
                 break;
             }
-            System.out.println("Received message: " + receivedMessage);
+            System.out.println("Received message: " + receivedMessage.getMessageContent());
             // Send message test
-            send("Server has received: " + receivedMessage);
+            send(new Message("Server has received: " + receivedMessage.getMessageContent()));
         }
     }
 }
