@@ -16,6 +16,7 @@ public class ClientConnectionManager implements Runnable {
     private PrintWriter sender;
     private BufferedReader receiver;
     private BufferedReader userInput;    // Only for testing purposes
+    private String currentUser;
 
     @Override
     public void run() {
@@ -31,8 +32,39 @@ public class ClientConnectionManager implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
+        initUserConnection();
         test();
         shutdownClient();
+    }
+
+    private String askUsername() {
+        String choosenUsername = "";
+        System.out.print("Please insert a username: ");
+        try {
+            choosenUsername = userInput.readLine();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
+        return choosenUsername;
+    }
+
+    private void initUserConnection() {
+        boolean isUsernameAccepted = false;
+        while (!isUsernameAccepted) {
+            String username = askUsername();
+            Message initCurrentSession = new Message(MessageType.SESSION, username, "Start session request");
+            send(initCurrentSession);
+            Message confirmCurrentSession = receive();
+            if (confirmCurrentSession.getMessageContent().equals("ACCEPTED")) {
+                currentUser = username;
+                System.out.println("Client successfully registered as: " + username);
+                isUsernameAccepted = true;
+            } else {
+                System.out.println("Username already exists.");
+            }
+        }
     }
 
     public void send(Message message) {
@@ -82,7 +114,7 @@ public class ClientConnectionManager implements Runnable {
             if (input.equals("exit")) {
                 break;
             }
-            Message sendMessage = new Message(input);
+            Message sendMessage = new Message(MessageType.CHAT, this.currentUser, input);
             // Send message test
             send(sendMessage);
             // Receive message test

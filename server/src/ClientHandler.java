@@ -13,6 +13,8 @@ public class ClientHandler implements Runnable {
     private Socket connection;
     private PrintWriter sender;
     private BufferedReader receiver;
+    private String connectedUser;
+    private final String serverID = "SERVER";
 
     public ClientHandler(Socket connection) {
         this.connection = connection;
@@ -29,7 +31,27 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         }
         System.out.println("[*] A client has connected to the server");
+        initUserConnection();
         test();
+    }
+
+    private void initUserConnection() {
+        boolean isUsernameAccepted = false;
+        while (!isUsernameAccepted) {
+            Message newUsername = receive();
+            Message confirmUsername;
+            String newUser = newUsername.getMessageSender();
+            assert newUser != null;
+            if (UserManager.addUser(newUser)) {
+                connectedUser = newUser;
+                confirmUsername = new Message(MessageType.SESSION, serverID, connectedUser, "ACCEPTED");
+                System.out.println("[*] New client registered as: " + newUser);
+                isUsernameAccepted = true;
+            } else {
+                confirmUsername = new Message(MessageType.SESSION, serverID, "REFUSED", "REFUSED");
+            }
+            send(confirmUsername);
+        }
     }
 
     public void send(Message message) {
@@ -59,9 +81,11 @@ public class ClientHandler implements Runnable {
             if (receivedMessage == null) {
                 break;
             }
-            System.out.println("Received message: " + receivedMessage.getMessageContent());
+            System.out.println("Received message from " + receivedMessage.getMessageSender() + " : " +
+                    receivedMessage.getMessageContent());
             // Send message test
-            send(new Message("Server has received: " + receivedMessage.getMessageContent()));
+            send(new Message(MessageType.CHAT, this.serverID, "Server has received: " +
+                    receivedMessage.getMessageContent()));
         }
     }
 }
