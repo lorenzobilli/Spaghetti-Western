@@ -14,7 +14,7 @@ public class ServerConnectionManager implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("[*] Server is waiting for a client to connect...");
+        Server.consolePrintLine("[*] Server is waiting for a client to connect...");
         try {
             socket = new ServerSocket(PORT_NUM);
         } catch (IOException e) {
@@ -40,7 +40,7 @@ public class ServerConnectionManager implements Runnable {
     }
 
     private void shutdownServer() {
-        System.out.println("[*] Server is shutting down...");
+        Server.consolePrintLine("[*] Server is shutting down...");
         try {
             socket.close();
         } catch (IOException e) {
@@ -48,6 +48,6 @@ public class ServerConnectionManager implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
-        System.out.println("[*] Server has been shut down correctly");
+        Server.consolePrintLine("[*] Server has been shut down correctly");
     }
 }

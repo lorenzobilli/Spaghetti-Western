@@ -13,7 +13,7 @@ public class MainWindow {
     private JPanel lowerPanel;
     private JButton startButton;
     private JButton stopButton;
-    private JTextArea consoleOutput;
+    private static JTextArea consoleOutput;
     private JScrollPane consoleScroll;
 
     public MainWindow(String title) {
@@ -39,16 +39,6 @@ public class MainWindow {
         consoleScroll = new JScrollPane(consoleOutput);
         upperPanel.add(consoleScroll);
 
-        // Testing output
-        for (int i = 0; i < 10; i++) {
-            consoleOutput.append("Mufasa in casa\n");
-            consoleOutput.append("Taka non si placa\n");
-            consoleOutput.append("Simba balla la samba\n");
-            consoleOutput.append("Zira se la tira\n");
-            consoleOutput.append("Vitani rincorre gli alani\n");
-            consoleOutput.append("Kovu non ti trovu\n");
-        }
-
         lowerPanel.setLayout(new FlowLayout());
         startButton = new JButton("START");
         stopButton = new JButton("STOP");
@@ -56,5 +46,12 @@ public class MainWindow {
         lowerPanel.add(stopButton);
 
         window.setVisible(true);
+    }
+
+    public void appendText(String message) {
+        if (message == null) {
+            throw new InvalidParameterException("Null message");
+        }
+        consoleOutput.append(message);
     }
 }

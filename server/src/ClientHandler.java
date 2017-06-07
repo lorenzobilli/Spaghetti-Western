@@ -30,7 +30,7 @@ public class ClientHandler implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
-        System.out.println("[*] A client has connected to the server");
+        Server.consolePrintLine("[*] A client has connected to the server");
         initUserConnection();
         test();
     }
@@ -45,7 +45,7 @@ public class ClientHandler implements Runnable {
             if (UserManager.addUser(newUser)) {
                 connectedUser = newUser;
                 confirmUsername = new Message(MessageType.SESSION, serverID, connectedUser, "ACCEPTED");
-                System.out.println("[*] New client registered as: " + newUser);
+                Server.consolePrintLine("[*] New client registered as: " + newUser);
                 isUsernameAccepted = true;
             } else {
                 confirmUsername = new Message(MessageType.SESSION, serverID, "REFUSED", "REFUSED");
@@ -81,7 +81,7 @@ public class ClientHandler implements Runnable {
             if (receivedMessage == null) {
                 break;
             }
-            System.out.println("Received message from " + receivedMessage.getMessageSender() + " : " +
+            Server.consolePrintLine("Received message from " + receivedMessage.getMessageSender() + " : " +
                     receivedMessage.getMessageContent());
             // Send message test
             send(new Message(MessageType.CHAT, this.serverID, "Server has received: " +
