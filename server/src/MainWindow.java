@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.security.InvalidParameterException;
 
 /**
@@ -20,31 +22,41 @@ public class MainWindow {
         if (title == null) {
             throw new InvalidParameterException("Window title unspecified");
         }
+
+        // Window settings
         window = new JFrame(title);
-        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setSize(800, 600);
 
+        // Setting JFrame main layout manager
         content = window.getContentPane();
         content.setLayout(new BorderLayout());
 
+        // Configuring upper part of the window
         upperPanel = new JPanel();
-        lowerPanel = new JPanel();
+        upperPanel.setLayout(new GridLayout());
         content.add(upperPanel, BorderLayout.CENTER);
+
+        // Configuring lower part of the window
+        lowerPanel = new JPanel();
+        lowerPanel.setLayout(new FlowLayout());
         content.add(lowerPanel, BorderLayout.PAGE_END);
 
-        upperPanel.setLayout(new GridLayout());
+        // Setting up the console
         consoleOutput = new JTextArea();
         consoleOutput.setBackground(Color.BLACK);
         consoleOutput.setForeground(Color.WHITE);
         consoleScroll = new JScrollPane(consoleOutput);
         upperPanel.add(consoleScroll);
 
-        lowerPanel.setLayout(new FlowLayout());
+        // Setting up buttons
         startButton = new JButton("START");
+        startButton.addActionListener(e -> Server.startServer());
         stopButton = new JButton("STOP");
+        stopButton.addActionListener(e -> Server.stopServer());
         lowerPanel.add(startButton);
         lowerPanel.add(stopButton);
 
+        window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setVisible(true);
     }
 

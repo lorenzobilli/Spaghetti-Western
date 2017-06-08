@@ -15,6 +15,7 @@ public class ClientHandler implements Runnable {
     private BufferedReader receiver;
     private String connectedUser;
     private final String serverID = "SERVER";
+    private volatile boolean keepAlive = true;
 
     public ClientHandler(Socket connection) {
         this.connection = connection;
@@ -32,7 +33,7 @@ public class ClientHandler implements Runnable {
         }
         Server.consolePrintLine("[*] A client has connected to the server");
         initUserConnection();
-        test();
+        serveUserConnection();
     }
 
     private void initUserConnection() {
@@ -44,13 +45,48 @@ public class ClientHandler implements Runnable {
             assert newUser != null;
             if (UserManager.addUser(newUser)) {
                 connectedUser = newUser;
-                confirmUsername = new Message(MessageType.SESSION, serverID, connectedUser, "ACCEPTED");
+                confirmUsername = new Message(
+                        MessageType.SESSION, serverID, connectedUser, "ACCEPTED"
+                );
                 Server.consolePrintLine("[*] New client registered as: " + newUser);
                 isUsernameAccepted = true;
             } else {
-                confirmUsername = new Message(MessageType.SESSION, serverID, "REFUSED", "REFUSED");
+                confirmUsername = new Message(
+                        MessageType.SESSION, serverID, "REFUSED", "REFUSED"
+                );
             }
             send(confirmUsername);
+        }
+    }
+
+    private void serveUserConnection() {
+        while (keepAlive) {
+            // Receive message test
+            Message receivedMessage = receive();
+            if (receivedMessage == null) {
+                break;
+            }
+            Server.consolePrintLine("Received message from " + receivedMessage.getMessageSender() + " : " +
+                    receivedMessage.getMessageContent());
+            // Send message test
+            send(new Message(MessageType.CHAT, this.serverID, "Server has received: " +
+                    receivedMessage.getMessageContent()));
+        }
+    }
+
+    public void terminateUserConnection() {
+        Message notifyConnectionTerm = new Message(
+                MessageType.SESSION, serverID, connectedUser, "DISCONNECTED"
+        );
+        Server.consolePrintLine("[*] Sending terminating message to: " + connectedUser);
+        send(notifyConnectionTerm);
+        keepAlive = false;
+        try {
+            connection.close();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
         }
     }
 
@@ -72,20 +108,5 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         }
         return MessageManager.prepareReceive(receivedMessage);
-    }
-
-    private void test() {
-        while (true) {
-            // Receive message test
-            Message receivedMessage = receive();
-            if (receivedMessage == null) {
-                break;
-            }
-            Server.consolePrintLine("Received message from " + receivedMessage.getMessageSender() + " : " +
-                    receivedMessage.getMessageContent());
-            // Send message test
-            send(new Message(MessageType.CHAT, this.serverID, "Server has received: " +
-                    receivedMessage.getMessageContent()));
-        }
     }
 }

@@ -4,12 +4,13 @@
 public class Server {
 
     private static MainWindow serverWindow;
-    private static Thread serverConnectionThread;
+    private static ServerConnectionManager connectionManager;
+    private static Thread connectionThread;
 
     public static void main(String[] args) {
         serverWindow = new MainWindow("Spaghetti Western server");
-        serverConnectionThread = new Thread(new ServerConnectionManager());
-        serverConnectionThread.start();
+        connectionManager = new ServerConnectionManager();
+        connectionThread = new Thread(connectionManager);
     }
 
     public static void consolePrint(String message) {
@@ -18,5 +19,20 @@ public class Server {
 
     public static void consolePrintLine(String message) {
         serverWindow.appendText(message + "\n");
+    }
+
+    public static void startServer() {
+        connectionThread.start();
+    }
+
+    public static void stopServer() {
+        connectionManager.shutdown();
+        try {
+            connectionThread.join();
+        } catch (InterruptedException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
     }
 }
