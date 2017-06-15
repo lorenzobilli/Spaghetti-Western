@@ -9,14 +9,7 @@ import java.security.InvalidParameterException;
  */
 public class MainWindow {
 
-    private JFrame window;
-    private Container content;
-    private JPanel upperPanel;
-    private JPanel lowerPanel;
-    private JButton startButton;
-    private JButton stopButton;
     private static JTextArea consoleOutput;
-    private JScrollPane consoleScroll;
 
     public MainWindow(String title) {
         if (title == null) {
@@ -24,20 +17,20 @@ public class MainWindow {
         }
 
         // Window settings
-        window = new JFrame(title);
+        JFrame window = new JFrame(title);
         window.setSize(800, 600);
 
         // Setting JFrame main layout manager
-        content = window.getContentPane();
+        Container content = window.getContentPane();
         content.setLayout(new BorderLayout());
 
         // Configuring upper part of the window
-        upperPanel = new JPanel();
+        JPanel upperPanel = new JPanel();
         upperPanel.setLayout(new GridLayout());
         content.add(upperPanel, BorderLayout.CENTER);
 
         // Configuring lower part of the window
-        lowerPanel = new JPanel();
+        JPanel lowerPanel = new JPanel();
         lowerPanel.setLayout(new FlowLayout());
         content.add(lowerPanel, BorderLayout.PAGE_END);
 
@@ -45,13 +38,13 @@ public class MainWindow {
         consoleOutput = new JTextArea();
         consoleOutput.setBackground(Color.BLACK);
         consoleOutput.setForeground(Color.WHITE);
-        consoleScroll = new JScrollPane(consoleOutput);
+        JScrollPane consoleScroll = new JScrollPane(consoleOutput);
         upperPanel.add(consoleScroll);
 
         // Setting up buttons
-        startButton = new JButton("START");
+        JButton startButton = new JButton("START");
         startButton.addActionListener(e -> Server.startServer());
-        stopButton = new JButton("STOP");
+        JButton stopButton = new JButton("STOP");
         stopButton.addActionListener(e -> Server.stopServer());
         lowerPanel.add(startButton);
         lowerPanel.add(stopButton);

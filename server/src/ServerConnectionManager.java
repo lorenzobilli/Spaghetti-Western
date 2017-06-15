@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class ServerConnectionManager implements Runnable {
 
-    private final int PORT_NUM = 10000;      //TODO: Handle this value with a proper user setting
+    private final int PORT_NUMBER = 10000;
     private ServerSocket socket;
     private ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
     private ArrayList<Thread> clientThreads = new ArrayList<>();
@@ -16,7 +16,7 @@ public class ServerConnectionManager implements Runnable {
     @Override
     public void run() {
         try {
-            socket = new ServerSocket(PORT_NUM);
+            socket = new ServerSocket(PORT_NUMBER);
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
