@@ -8,6 +8,9 @@ import java.security.InvalidParameterException;
  */
 public class MainWindow {
 
+    private JFrame window;
+    public LoginDialog loginDialog;
+
     public MainWindow(String title) {
         final String backgroundImagePath = "shared/assets/far_west.jpg";
 
@@ -16,7 +19,7 @@ public class MainWindow {
         }
 
         // Window settings
-        JFrame window = new JFrame(title);
+        window = new JFrame(title);
         window.setSize(1280, 800);
 
         // Setting JFrame main layout manager
@@ -33,9 +36,14 @@ public class MainWindow {
             e.printStackTrace();
         }
 
+        // Setting latest JFrame options
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+    }
+
+    public void createLoginDialog() {
+        loginDialog = new LoginDialog(window);
     }
 }
