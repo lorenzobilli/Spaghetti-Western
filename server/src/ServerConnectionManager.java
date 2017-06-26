@@ -7,40 +7,60 @@ import java.util.ArrayList;
  */
 public class ServerConnectionManager implements Runnable {
 
-    private final int PORT_NUM = 10000;      //TODO: Handle this value with a proper user setting
+    private final int PORT_NUMBER = 10000;
     private ServerSocket socket;
-    private volatile boolean keepAlive = true;
-    private ArrayList<Thread> clients = new ArrayList<>();
+    private ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
+    private ArrayList<Thread> clientThreads = new ArrayList<>();
+    private volatile boolean keepServerAlive = true;
 
     @Override
     public void run() {
-        System.out.println("[*] Server is waiting for a client to connect...");
         try {
-            socket = new ServerSocket(PORT_NUM);
+            socket = new ServerSocket(PORT_NUMBER);
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
             e.printStackTrace();
         }
-        while (keepAlive) {
+        acceptIncomingConnections();
+    }
+
+    private void acceptIncomingConnections() {
+        while (keepServerAlive) {
+            Server.consolePrintLine("[*] Server is waiting for a client to connect...");
             try {
-                clients.add(new Thread(new ClientHandler(socket.accept())));
-                for (Thread thread : clients) {     //TODO: Check if there is a better way to do this
-                    if (!thread.isAlive()) {
-                        thread.start();
-                    }
-                }
+                clientHandlers.add(new ClientHandler(socket.accept()));
+                clientThreads.add(new Thread(clientHandlers.get(clientHandlers.size() - 1)));
+                clientThreads.get(clientThreads.size() - 1).start();
             } catch (IOException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
             }
         }
-        shutdownServer();
     }
 
-    private void shutdownServer() {
-        System.out.println("[*] Server is shutting down...");
+    public void shutdown() {
+        keepServerAlive = false;
+        executeServerShutdown();
+    }
+
+    private void executeServerShutdown() {
+        Server.consolePrintLine("[!] Initiating server shutdown");
+        Server.consolePrintLine("[*] Sending terminating messages to all clients...");
+        for (ClientHandler handler : clientHandlers) {
+            handler.terminateUserConnection();
+        }
+        for (Thread thread : clientThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
+        }
+        Server.consolePrintLine("[*] Server is shutting down...");
         try {
             socket.close();
         } catch (IOException e) {
@@ -48,6 +68,6 @@ public class ServerConnectionManager implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
-        System.out.println("[*] Server has been shut down correctly");
+        Server.consolePrintLine("[*] Server has been shut down correctly");
     }
 }

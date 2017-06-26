@@ -1,7 +1,9 @@
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.security.InvalidParameterException;
 
@@ -11,18 +13,17 @@ import java.security.InvalidParameterException;
 public class ClientConnectionManager implements Runnable {
 
     private final String HOSTNAME = "localhost";        //TODO: Handle this value with a proper user setting
-    private final int PORT_NUM = 10000;     //TODO: Handle this value with a proper user setting
+    private final int PORT_NUMBER = 10000;     //TODO: Handle this value with a proper user setting
     private Socket socket;
     private PrintWriter sender;
     private BufferedReader receiver;
     private BufferedReader userInput;    // Only for testing purposes
-    private String currentUser;
 
     @Override
     public void run() {
         System.out.println("[*] Launching client session...");
         try {
-            socket = new Socket(HOSTNAME, PORT_NUM);
+            socket = new Socket(HOSTNAME, PORT_NUMBER);
             sender = new PrintWriter(socket.getOutputStream(), true);
             receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             userInput = new BufferedReader(new InputStreamReader(System.in));       // Only for testing purposes
@@ -37,32 +38,31 @@ public class ClientConnectionManager implements Runnable {
         shutdownClient();
     }
 
-    private String askUsername() {
-        String choosenUsername = "";
-        System.out.print("Please insert a username: ");
-        try {
-            choosenUsername = userInput.readLine();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        return choosenUsername;
-    }
-
     private void initUserConnection() {
-        boolean isUsernameAccepted = false;
-        while (!isUsernameAccepted) {
-            String username = askUsername();
-            Message initCurrentSession = new Message(MessageType.SESSION, username, "Start session request");
+        while (true) {
+            try {
+                SwingUtilities.invokeAndWait(() -> Client.clientWindow.createLoginDialog());
+            } catch (InterruptedException | InvocationTargetException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
+            Message initCurrentSession = new Message(
+                    MessageType.SESSION, Client.getUsername(), "Start session request"
+            );
             send(initCurrentSession);
             Message confirmCurrentSession = receive();
             if (confirmCurrentSession.getMessageContent().equals("ACCEPTED")) {
-                currentUser = username;
-                System.out.println("Client successfully registered as: " + username);
-                isUsernameAccepted = true;
+                JOptionPane.showMessageDialog(
+                        null, "Successfully registered as: " + Client.getUsername(),
+                        "Success!", JOptionPane.INFORMATION_MESSAGE
+                );
+                break;
             } else {
-                System.out.println("Username already exists.");
+                JOptionPane.showMessageDialog(
+                        null, "The choosen username already exist.",
+                        "Failed!", JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }
@@ -114,7 +114,7 @@ public class ClientConnectionManager implements Runnable {
             if (input.equals("exit")) {
                 break;
             }
-            Message sendMessage = new Message(MessageType.CHAT, this.currentUser, input);
+            Message sendMessage = new Message(MessageType.CHAT, Client.getUsername(), input);
             // Send message test
             send(sendMessage);
             // Receive message test
