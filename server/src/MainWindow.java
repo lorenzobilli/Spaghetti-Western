@@ -24,7 +24,7 @@ public class MainWindow {
         Container content = window.getContentPane();
         content.setLayout(new BorderLayout());
 
-        // Configuring upper part of the window
+        // Configuring central part of the window
         JPanel upperPanel = new JPanel();
         upperPanel.setLayout(new GridLayout());
         content.add(upperPanel, BorderLayout.CENTER);
@@ -49,7 +49,10 @@ public class MainWindow {
         lowerPanel.add(startButton);
         lowerPanel.add(stopButton);
 
+        // Setting latest JFrame options before launch
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        window.setResizable(true);
+        window.setLocation(10, 10);
         window.setVisible(true);
     }
 

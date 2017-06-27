@@ -6,30 +6,40 @@ import java.awt.*;
  */
 public class LoginDialog {
 
-    private JDialog dialog;
-    private JTextField usernameTextField;
-
     public LoginDialog(Frame parentWindow) {
-        dialog = new JDialog(parentWindow, "Start new gaming session", true);
 
+        // Dialog settings
+        JDialog dialog = new JDialog(parentWindow, "Start new gaming session", true);
+
+        // Setting JDialog main layout manager
+        Container content = dialog.getContentPane();
+        content.setLayout(new BorderLayout());
+
+        // Configuring upper part of the dialog
         JPanel upperPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints layout = new GridBagConstraints();
-        layout.fill = GridBagConstraints.HORIZONTAL;
+        GridBagConstraints upperPanelLayout = new GridBagConstraints();
+        upperPanelLayout.fill = GridBagConstraints.HORIZONTAL;
+        content.add(upperPanel, BorderLayout.CENTER);
 
-        JLabel usernameLabel = new JLabel(" Please choose a username: ");
-        layout.gridx = 0;
-        layout.gridy = 0;
-        layout.gridwidth = 1;
-        upperPanel.add(usernameLabel, layout);
-
-        usernameTextField = new JTextField(20);
-        layout.gridx = 1;
-        layout.gridy = 0;
-        layout.gridwidth = 2;
-        upperPanel.add(usernameTextField, layout);
-
+        // Configuring lower part of the dialog
         JPanel lowerPanel = new JPanel();
+        content.add(lowerPanel, BorderLayout.PAGE_END);
 
+        // Setting up username label
+        JLabel usernameLabel = new JLabel(" Please choose a username: ");
+        upperPanelLayout.gridx = 0;
+        upperPanelLayout.gridy = 0;
+        upperPanelLayout.gridwidth = 1;
+        upperPanel.add(usernameLabel, upperPanelLayout);
+
+        // Setting up username textfield
+        JTextField usernameTextField = new JTextField(20);
+        upperPanelLayout.gridx = 1;
+        upperPanelLayout.gridy = 0;
+        upperPanelLayout.gridwidth = 2;
+        upperPanel.add(usernameTextField, upperPanelLayout);
+
+        // Setting up login button
         JButton loginButton = new JButton("Login");
         loginButton.addActionListener(e -> {
             Client.setUsername(usernameTextField.getText().trim());
@@ -37,9 +47,7 @@ public class LoginDialog {
         });
         lowerPanel.add(loginButton);
 
-        dialog.getContentPane().add(upperPanel, BorderLayout.CENTER);
-        dialog.getContentPane().add(lowerPanel, BorderLayout.PAGE_END);
-
+        // Setting latest JDialog options before launch
         dialog.pack();
         dialog.setResizable(false);
         dialog.setLocationRelativeTo(parentWindow);
