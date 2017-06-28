@@ -6,6 +6,7 @@ import java.security.InvalidParameterException;
 public class Client {
 
     public static MainWindow clientWindow;
+    public static ChatWindow chatWindow;
     public static ClientConnectionManager connectionManager;
     public static Thread connectionThread;
     private static String username;

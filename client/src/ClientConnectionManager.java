@@ -99,7 +99,7 @@ public class ClientConnectionManager implements Runnable {
     }
 
     private void test() {
-
+        Client.chatWindow = new ChatWindow();
         while (true) {
             String input = "";
 
