@@ -3,7 +3,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.security.InvalidParameterException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * ClientHandler class
@@ -11,11 +14,13 @@ import java.security.InvalidParameterException;
 public class ClientHandler implements Runnable {
 
     private Socket connection;
-    private PrintWriter sender;
-    private BufferedReader receiver;
+    private PrintWriter sendStream;
+    private BufferedReader receiveStream;
     private String connectedUser;
     private final String serverID = "SERVER";
     private volatile boolean keepAlive = true;
+
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public ClientHandler(Socket connection) {
         this.connection = connection;
@@ -24,8 +29,8 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            sender = new PrintWriter(connection.getOutputStream(), true);
-            receiver = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            sendStream = new PrintWriter(connection.getOutputStream(), true);
+            receiveStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
@@ -39,38 +44,66 @@ public class ClientHandler implements Runnable {
     private void initUserConnection() {
         boolean isUsernameAccepted = false;
         while (!isUsernameAccepted) {
-            Message newUsername = receive();
-            Message confirmUsername;
-            String newUser = newUsername.getMessageSender();
-            assert newUser != null;
-            if (UserManager.addUser(newUser)) {
-                connectedUser = newUser;
-                confirmUsername = new Message(
-                        MessageType.SESSION, serverID, connectedUser, "ACCEPTED"
-                );
-                Server.consolePrintLine("[*] New client registered as: " + newUser);
-                isUsernameAccepted = true;
-            } else {
-                confirmUsername = new Message(
-                        MessageType.SESSION, serverID, "REFUSED", "REFUSED"
-                );
+            Future<Message> receive = executor.submit(new Receiver(receiveStream));
+            try {
+                Message newUsername = receive.get();
+                String newUser = newUsername.getMessageSender();
+                assert newUser != null;
+                Message confirmUsername;
+                if (UserManager.addUser(newUser)) {
+                    connectedUser = newUser;
+                    confirmUsername = new Message(
+                            MessageType.SESSION, serverID, connectedUser, "ACCEPTED"
+                    );
+                    Server.consolePrintLine("[*] New client registered as: " + newUser);
+                    isUsernameAccepted = true;
+                } else {
+                    confirmUsername = new Message(
+                            MessageType.SESSION, serverID, "", "REFUSED"
+                    );
+                }
+                Future send = executor.submit(new Sender(confirmUsername, sendStream));
+                try {
+                    send.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.getMessage();
+                    e.getCause();
+                    e.printStackTrace();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
             }
-            send(confirmUsername);
         }
     }
 
     private void serveUserConnection() {
         while (keepAlive) {
             // Receive message test
-            Message receivedMessage = receive();
-            if (receivedMessage == null) {
-                break;
+            Future<Message> receive = executor.submit(new Receiver(receiveStream));
+            try {
+                Message receivedMessage = receive.get();
+                if (receivedMessage == null) {
+                    break;
+                }
+                Server.consolePrintLine("Received message from " + receivedMessage.getMessageSender() + " : " +
+                        receivedMessage.getMessageContent());
+                // Send message test
+                Future send = executor.submit(new Sender(new Message(MessageType.CHAT, this.serverID,
+                        "Server has received: " + receivedMessage.getMessageContent()), sendStream));
+                try {
+                    send.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.getMessage();
+                    e.getCause();
+                    e.printStackTrace();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
             }
-            Server.consolePrintLine("Received message from " + receivedMessage.getMessageSender() + " : " +
-                    receivedMessage.getMessageContent());
-            // Send message test
-            send(new Message(MessageType.CHAT, this.serverID, "Server has received: " +
-                    receivedMessage.getMessageContent()));
         }
     }
 
@@ -79,7 +112,8 @@ public class ClientHandler implements Runnable {
                 MessageType.SESSION, serverID, connectedUser, "DISCONNECTED"
         );
         Server.consolePrintLine("[*] Sending terminating message to: " + connectedUser);
-        send(notifyConnectionTerm);
+            //TODO: Check if an async call is a better option...
+        Future send = executor.submit(new Sender(notifyConnectionTerm, sendStream));
         keepAlive = false;
         try {
             connection.close();
@@ -88,25 +122,5 @@ public class ClientHandler implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
-    }
-
-    public void send(Message message) {
-        String translatedMessage = MessageManager.prepareSend(message);
-        if (translatedMessage == null) {
-            throw new InvalidParameterException("Null message given");
-        }
-        sender.println(translatedMessage);
-    }
-
-    public Message receive() {
-        String receivedMessage = "";
-        try {
-            receivedMessage = receiver.readLine();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        return MessageManager.prepareReceive(receivedMessage);
     }
 }

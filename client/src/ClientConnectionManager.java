@@ -5,27 +5,32 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
-import java.security.InvalidParameterException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * ClientConnectionManager
  */
 public class ClientConnectionManager implements Runnable {
 
-    private final String HOSTNAME = "localhost";        //TODO: Handle this value with a proper user setting
-    private final int PORT_NUMBER = 10000;     //TODO: Handle this value with a proper user setting
+    private final String HOSTNAME = "localhost";
+    private final int PORT_NUMBER = 10000;
     private Socket socket;
-    private PrintWriter sender;
-    private BufferedReader receiver;
+    private PrintWriter sendStream;
+    private BufferedReader receiveStream;
     private BufferedReader userInput;    // Only for testing purposes
+
+    private ExecutorService executor = Executors.newSingleThreadExecutor();     //TODO: Use a better threadpool
 
     @Override
     public void run() {
         System.out.println("[*] Launching client session...");
         try {
             socket = new Socket(HOSTNAME, PORT_NUMBER);
-            sender = new PrintWriter(socket.getOutputStream(), true);
-            receiver = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            sendStream = new PrintWriter(socket.getOutputStream(), true);
+            receiveStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             userInput = new BufferedReader(new InputStreamReader(System.in));       // Only for testing purposes
             System.out.println("[*] Successfully connected with the server");
         } catch (IOException e) {
@@ -50,41 +55,35 @@ public class ClientConnectionManager implements Runnable {
             Message initCurrentSession = new Message(
                     MessageType.SESSION, Client.getUsername(), "Start session request"
             );
-            send(initCurrentSession);
-            Message confirmCurrentSession = receive();
-            if (confirmCurrentSession.getMessageContent().equals("ACCEPTED")) {
-                JOptionPane.showMessageDialog(
-                        null, "Successfully registered as: " + Client.getUsername(),
-                        "Success!", JOptionPane.INFORMATION_MESSAGE
-                );
-                break;
-            } else {
-                JOptionPane.showMessageDialog(
-                        null, "The choosen username already exist.",
-                        "Failed!", JOptionPane.ERROR_MESSAGE
-                );
+            Future send = executor.submit(new Sender(initCurrentSession, sendStream));
+            try {
+                send.get();     // We want this as an asynchronous call
+            } catch (InterruptedException | ExecutionException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
+            Future<Message> receive = executor.submit(new Receiver(receiveStream));
+            try {
+                Message confirmCurrentSession = receive.get();
+                if (confirmCurrentSession.getMessageContent().equals("ACCEPTED")) {
+                    JOptionPane.showMessageDialog(
+                            null, "Successfully registered as: " + Client.getUsername(),
+                            "Success!", JOptionPane.INFORMATION_MESSAGE
+                    );
+                    break;
+                } else {
+                    JOptionPane.showMessageDialog(
+                            null, "The choosen username already exist.",
+                            "Failed!", JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
             }
         }
-    }
-
-    public void send(Message message) {
-        String translatedMessage = MessageManager.prepareSend(message);
-        if (translatedMessage == null) {
-            throw new InvalidParameterException("Null message given");
-        }
-        sender.println(translatedMessage);
-    }
-
-    public Message receive() {
-        String receivedMessage = "";
-        try {
-            receivedMessage = receiver.readLine();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        return MessageManager.prepareReceive(receivedMessage);
     }
 
     private void shutdownClient() {
@@ -100,6 +99,7 @@ public class ClientConnectionManager implements Runnable {
     }
 
     private void test() {
+
         while (true) {
             String input = "";
 
@@ -116,10 +116,24 @@ public class ClientConnectionManager implements Runnable {
             }
             Message sendMessage = new Message(MessageType.CHAT, Client.getUsername(), input);
             // Send message test
-            send(sendMessage);
+            Future send = executor.submit(new Sender(sendMessage, sendStream));
+            try {
+                send.get();     // We want this as an asynchronous call
+            } catch (InterruptedException | ExecutionException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
             // Receive message test
-            Message receivedMessage = receive();
-            System.out.println(receivedMessage.getMessageContent());
+            Future<Message> receive = executor.submit(new Receiver(receiveStream));
+            try {
+                Message receivedMessage = receive.get();
+                System.out.println(receivedMessage.getMessageContent());
+            } catch (InterruptedException | ExecutionException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
         }
         shutdownClient();
     }

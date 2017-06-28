@@ -26,8 +26,8 @@ public class ServerConnectionManager implements Runnable {
     }
 
     private void acceptIncomingConnections() {
+            Server.consolePrintLine("[*] Server is ready for connection requests");
         while (keepServerAlive) {
-            Server.consolePrintLine("[*] Server is waiting for a client to connect...");
             try {
                 clientHandlers.add(new ClientHandler(socket.accept()));
                 clientThreads.add(new Thread(clientHandlers.get(clientHandlers.size() - 1)));
