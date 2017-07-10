@@ -20,7 +20,7 @@ public class ClientHandler implements Runnable {
     private final String serverID = "SERVER";
     private volatile boolean keepAlive = true;
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     public ClientHandler(Socket connection) {
         this.connection = connection;
@@ -41,7 +41,7 @@ public class ClientHandler implements Runnable {
         serveUserConnection();
     }
 
-    private void initUserConnection() {
+    private void _initUserConnection() {
         boolean isUsernameAccepted = false;
         while (!isUsernameAccepted) {
             Future<Message> receive = executor.submit(new Receiver(receiveStream));
@@ -78,7 +78,43 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void serveUserConnection() {
+    private void initUserConnection() {
+        boolean isUsernameAccepted = false;
+        while (!isUsernameAccepted) {
+            Future<Message> receive = executor.submit(new Receiver(receiveStream));
+            try {
+                Message newUsername = receive.get();
+                String newUser = newUsername.getMessageSender();
+                Message confirmUsername;
+                if (UserManager.addUser(newUser)) {
+                    connectedUser = newUser;
+                    confirmUsername = new Message(
+                            MessageType.SESSION, serverID, connectedUser, "ACCEPTED"
+                    );
+                    Server.consolePrintLine("[*] New client registered as: " + newUser);
+                    isUsernameAccepted = true;
+                } else {
+                    confirmUsername = new Message(
+                            MessageType.SESSION, serverID, "", "REFUSED"
+                    );
+                }
+                Future send = executor.submit(new Sender(confirmUsername, sendStream));
+                try {
+                    send.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.getMessage();
+                    e.getCause();
+                    e.printStackTrace();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void _serveUserConnection() {
         while (keepAlive) {
             // Receive message test
             Future<Message> receive = executor.submit(new Receiver(receiveStream));
@@ -94,6 +130,36 @@ public class ClientHandler implements Runnable {
                         "Server has received: " + receivedMessage.getMessageContent()), sendStream));
                 try {
                     send.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.getMessage();
+                    e.getCause();
+                    e.printStackTrace();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void serveUserConnection() {
+        while (keepAlive) {
+            // Wait for a message and pass it to the handler
+            Future<Message> receive = executor.submit(new Receiver(receiveStream));
+            try {
+                Message receivedMessage = receive.get();
+                if (receivedMessage == null) {
+                    break;
+                }
+                Server.consolePrintLine("Message from " + receivedMessage.getMessageSender() + ": " +
+                    receivedMessage.getMessageContent());
+                Future<Boolean> handle = executor.submit(new ServerEventHandler(receivedMessage));
+                try {
+                    Boolean handleResult = handle.get();
+                    if (!handleResult) {
+                        Server.consolePrintLine("Server cannot handle a received message");
+                    }
                 } catch (InterruptedException | ExecutionException e) {
                     e.getMessage();
                     e.getCause();
