@@ -39,10 +39,11 @@ public class ClientConnectionManager implements Runnable {
             e.printStackTrace();
         }
         initUserConnection();
-        test();
+        talkWithServer();
         shutdownClient();
     }
 
+    /*
     private void _initUserConnection() {
         while (true) {
             try {
@@ -85,9 +86,11 @@ public class ClientConnectionManager implements Runnable {
             }
         }
     }
+    */
 
     private void initUserConnection() {
         while (true) {
+            // Generate the login dialog for username retrieving
             try {
                 SwingUtilities.invokeAndWait(() -> Client.clientWindow.createLoginDialog());
             } catch (InterruptedException | InvocationTargetException e) {
@@ -95,27 +98,27 @@ public class ClientConnectionManager implements Runnable {
                 e.getCause();
                 e.printStackTrace();
             }
+            // In this phase we still have to compose a message without the handler
             Message initCurrentSession = new Message(
                     MessageType.SESSION, Client.getUsername(), "Start session request"
             );
-            Future send = executor.submit(new Sender(initCurrentSession, sendStream));
             try {
-                send.get();     // We want this as an asynchronous call
-            } catch (InterruptedException | ExecutionException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-            Future<Message> receive = executor.submit(new Receiver(receiveStream));
-            try {
-                Message confirmCurrentSession = receive.get();
-                if (confirmCurrentSession.getMessageContent().equals("ACCEPTED")) {
+                // Send request message to the server
+                Future send = executor.submit(new Sender(initCurrentSession, sendStream));
+                // Wait for response message and pass it to the handler
+                Future<Message> receive = executor.submit(new Receiver(receiveStream));
+                Future<Message> handle = executor.submit(new ClientEventHandler(receive.get()));
+                // Retrieve generated message from handler, check if server has accepted the choosen username
+                Message message = handle.get();
+                if (message != null) {
+                    // Show success message dialog
                     JOptionPane.showMessageDialog(
                             null, "Successfully registered as: " + Client.getUsername(),
                             "Success!", JOptionPane.INFORMATION_MESSAGE
                     );
                     break;
                 } else {
+                    // Show error message dialog
                     JOptionPane.showMessageDialog(
                             null, "The choosen username already exist.",
                             "Failed!", JOptionPane.ERROR_MESSAGE
@@ -129,11 +132,10 @@ public class ClientConnectionManager implements Runnable {
         }
     }
 
-    private void test() {
-
+    private void talkWithServer() {
         while (true) {
+            //NOTE: This first part is only for testing
             String input = "";
-
             // Getting user input
             try {
                 input = userInput.readLine();
@@ -145,19 +147,12 @@ public class ClientConnectionManager implements Runnable {
             if (input.equals("exit")) {
                 break;
             }
-            Message sendMessage = new Message(MessageType.CHAT, Client.getUsername(), input);
-            // Send message test
-            Future send = executor.submit(new Sender(sendMessage, sendStream));
+            // We are still in command-line mode, compose a simple chat message to test the system
+            Message chat = new Message(MessageType.CHAT, Client.getUsername(), "", input);
+            // Send message and receive the answer from the server
             try {
-                send.get();     // We want this as an asynchronous call
-            } catch (InterruptedException | ExecutionException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-            // Receive message test
-            Future<Message> receive = executor.submit(new Receiver(receiveStream));
-            try {
+                Future send = executor.submit(new Sender(chat, sendStream));
+                Future<Message> receive = executor.submit(new Receiver(receiveStream));
                 Message receivedMessage = receive.get();
                 System.out.println(receivedMessage.getMessageContent());
             } catch (InterruptedException | ExecutionException e) {
