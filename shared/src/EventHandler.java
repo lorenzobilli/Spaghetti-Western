@@ -4,9 +4,9 @@ import java.util.concurrent.Callable;
 /**
  * EventHandler class
  */
-public abstract class EventHandler implements Callable<Boolean> {
+public abstract class EventHandler implements Callable<Message> {
 
-    private Message message;
+    protected Message message;
 
     protected EventHandler(Message message) {
         if (message == null) {
@@ -16,26 +16,24 @@ public abstract class EventHandler implements Callable<Boolean> {
     }
 
     @Override
-    public Boolean call() {
-        Boolean handled;
+    public Message call() {
+        Message result;
         switch (message.getMessageType()) {
             case SESSION:
-                handleSession();
-                handled = true;
+                result = handleSession();
                 break;
             case CHAT:
-                handleChat();
-                handled = true;
+                result = handleChat();
                 break;
             default:
-                handled = false;
+                result = null;
                 break;
         }
-        return handled;
+        return result;
     }
 
-    protected abstract void handleSession();
+    protected abstract Message handleSession();
 
-    protected abstract void handleChat();
+    protected abstract Message handleChat();
 
 }

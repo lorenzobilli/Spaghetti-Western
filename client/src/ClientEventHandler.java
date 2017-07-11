@@ -8,12 +8,22 @@ public class ClientEventHandler extends EventHandler {
     }
 
     @Override
-    protected void handleSession() {
-
+    protected Message handleSession() {
+        if (message.getMessageContent().equals("ACCEPTED")) {
+            return new Message(
+                    MessageType.SESSION,
+                    message.getMessageSender(),
+                    "Confirmed"
+            );
+        } else if (message.getMessageContent().equals("REFUSED")) {
+            return null;
+        }
+        return null;
     }
 
     @Override
-    protected void handleChat() {
-
+    protected Message handleChat() {
+        //TODO: implement client-side chat
+        return null;
     }
 }
