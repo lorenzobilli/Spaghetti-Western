@@ -43,51 +43,6 @@ public class ClientConnectionManager implements Runnable {
         shutdownClient();
     }
 
-    /*
-    private void _initUserConnection() {
-        while (true) {
-            try {
-                SwingUtilities.invokeAndWait(() -> Client.clientWindow.createLoginDialog());
-            } catch (InterruptedException | InvocationTargetException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-            Message initCurrentSession = new Message(
-                    MessageType.SESSION, Client.getUsername(), "Start session request"
-            );
-            Future send = executor.submit(new Sender(initCurrentSession, sendStream));
-            try {
-                send.get();     // We want this as an asynchronous call
-            } catch (InterruptedException | ExecutionException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-            Future<Message> receive = executor.submit(new Receiver(receiveStream));
-            try {
-                Message confirmCurrentSession = receive.get();
-                if (confirmCurrentSession.getMessageContent().equals("ACCEPTED")) {
-                    JOptionPane.showMessageDialog(
-                            null, "Successfully registered as: " + Client.getUsername(),
-                            "Success!", JOptionPane.INFORMATION_MESSAGE
-                    );
-                    break;
-                } else {
-                    JOptionPane.showMessageDialog(
-                            null, "The choosen username already exist.",
-                            "Failed!", JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-        }
-    }
-    */
-
     private void initUserConnection() {
         while (true) {
             // Generate the login dialog for username retrieving
