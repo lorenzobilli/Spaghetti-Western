@@ -14,8 +14,8 @@ import java.util.concurrent.Future;
 public class ClientHandler implements Runnable {
 
     private Socket connection;
-    private PrintWriter sendStream;
-    private BufferedReader receiveStream;
+    public PrintWriter sendStream;
+    public BufferedReader receiveStream;
     private String connectedUser;
     private volatile boolean keepAlive = true;
 
@@ -40,6 +40,10 @@ public class ClientHandler implements Runnable {
         serveUserConnection();
     }
 
+    public String getConnectedUser() {
+        return connectedUser;
+    }
+
     private void initUserConnection() {
         boolean isUsernameAccepted = false;
         while (!isUsernameAccepted) {
@@ -54,7 +58,9 @@ public class ClientHandler implements Runnable {
                     Server.consolePrintLine("[*] New client registered as: " + connectedUser);
                     isUsernameAccepted = true;
                 }
-                Future send = executor.submit(new Sender(message, sendStream));
+                if (message != null) {
+                    Future send = executor.submit(new Sender(message, sendStream));
+                }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();

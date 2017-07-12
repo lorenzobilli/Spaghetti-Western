@@ -18,8 +18,8 @@ public class ClientConnectionManager implements Runnable {
     private final String HOSTNAME = "localhost";
     private final int PORT_NUMBER = 10000;
     private Socket socket;
-    private PrintWriter sendStream;
-    private BufferedReader receiveStream;
+    public PrintWriter sendStream;
+    public BufferedReader receiveStream;
     private BufferedReader userInput;    // Only for testing purposes
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();     //TODO: Use a better threadpool
@@ -85,38 +85,27 @@ public class ClientConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
+        Client.chatWindow = new ChatWindow();   // Spawning chat window
     }
 
     private void talkWithServer() {
         while (true) {
-            //NOTE: This first part is only for testing
-            String input = "";
-            // Getting user input
             try {
-                input = userInput.readLine();
-            } catch (IOException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-            if (input.equals("exit")) {
-                break;
-            }
-            // We are still in command-line mode, compose a simple chat message to test the system
-            Message chat = new Message(MessageType.CHAT, Client.getUsername(), "", input);
-            // Send message and receive the answer from the server
-            try {
-                Future send = executor.submit(new Sender(chat, sendStream));
+                // Wait for a message and pass it to the handler
                 Future<Message> receive = executor.submit(new Receiver(receiveStream));
-                Message receivedMessage = receive.get();
-                System.out.println(receivedMessage.getMessageContent());
+                Future<Message> handle = executor.submit(new ClientEventHandler(receive.get()));
+                // Retrieve generated message from handle and send it back
+                Message message = handle.get();
+                if (message != null) {
+                    Future send = executor.submit(new Sender(message, sendStream));
+                }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
             }
         }
-        shutdownClient();
+        //shutdownClient();
     }
 
     private void shutdownClient() {

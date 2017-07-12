@@ -23,7 +23,7 @@ public class ClientEventHandler extends EventHandler {
 
     @Override
     protected Message handleChat() {
-        //TODO: implement client-side chat
+        Client.chatWindow.updateChat(message);
         return null;
     }
 }
