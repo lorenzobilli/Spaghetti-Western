@@ -17,10 +17,9 @@ public class ClientHandler implements Runnable {
     private PrintWriter sendStream;
     private BufferedReader receiveStream;
     private String connectedUser;
-    private final String serverID = "SERVER";
     private volatile boolean keepAlive = true;
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     public ClientHandler(Socket connection) {
         this.connection = connection;
@@ -44,32 +43,18 @@ public class ClientHandler implements Runnable {
     private void initUserConnection() {
         boolean isUsernameAccepted = false;
         while (!isUsernameAccepted) {
-            Future<Message> receive = executor.submit(new Receiver(receiveStream));
             try {
-                Message newUsername = receive.get();
-                String newUser = newUsername.getMessageSender();
-                assert newUser != null;
-                Message confirmUsername;
-                if (UserManager.addUser(newUser)) {
-                    connectedUser = newUser;
-                    confirmUsername = new Message(
-                            MessageType.SESSION, serverID, connectedUser, "ACCEPTED"
-                    );
-                    Server.consolePrintLine("[*] New client registered as: " + newUser);
+                // Wait for first message from client and pass it to the handler
+                Future<Message> receive = executor.submit(new Receiver(receiveStream));
+                Future<Message> handle = executor.submit(new ServerEventHandler(receive.get()));
+                // Retrieve generated message from handle, check if username has been accepted and send it back
+                Message message = handle.get();
+                if (message.getMessageContent().equals("ACCEPTED")) {
+                    connectedUser = message.getMessageReceiver();
+                    Server.consolePrintLine("[*] New client registered as: " + connectedUser);
                     isUsernameAccepted = true;
-                } else {
-                    confirmUsername = new Message(
-                            MessageType.SESSION, serverID, "", "REFUSED"
-                    );
                 }
-                Future send = executor.submit(new Sender(confirmUsername, sendStream));
-                try {
-                    send.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.getMessage();
-                    e.getCause();
-                    e.printStackTrace();
-                }
+                Future send = executor.submit(new Sender(message, sendStream));
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();
@@ -79,25 +64,19 @@ public class ClientHandler implements Runnable {
     }
 
     private void serveUserConnection() {
-        while (keepAlive) {
-            // Receive message test
-            Future<Message> receive = executor.submit(new Receiver(receiveStream));
+        while (true) {
             try {
-                Message receivedMessage = receive.get();
-                if (receivedMessage == null) {
+                // Wait for a message and pass it to the handler
+                Future<Message> receive = executor.submit(new Receiver(receiveStream));
+                Future<Message> handle = executor.submit(new ServerEventHandler(receive.get()));
+                // Retrieve generated message from handle, print it on the server console and send it back
+                Message message = handle.get();
+                if (!message.getMessageContent().equals("SHUTDOWN")) {
+                    Server.consolePrintLine("Message from " + message.getMessageSender() + ": " +
+                            message.getMessageContent());
+                    Future send = executor.submit(new Sender(message, sendStream));
+                } else {
                     break;
-                }
-                Server.consolePrintLine("Received message from " + receivedMessage.getMessageSender() + " : " +
-                        receivedMessage.getMessageContent());
-                // Send message test
-                Future send = executor.submit(new Sender(new Message(MessageType.CHAT, this.serverID,
-                        "Server has received: " + receivedMessage.getMessageContent()), sendStream));
-                try {
-                    send.get();
-                } catch (InterruptedException | ExecutionException e) {
-                    e.getMessage();
-                    e.getCause();
-                    e.printStackTrace();
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
@@ -105,11 +84,27 @@ public class ClientHandler implements Runnable {
                 e.printStackTrace();
             }
         }
+        shutdownConnection();
     }
 
+    private void shutdownConnection() {
+        Server.consolePrintLine("[*] Shutting down connection with " + connectedUser + "...");
+        try {
+            connection.shutdownInput();
+            connection.shutdownOutput();
+            connection.close();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
+        Server.consolePrintLine("[*] Connection with " + connectedUser + " closed");
+    }
+
+    //TODO: Implement this the proper way
     public void terminateUserConnection() {
         Message notifyConnectionTerm = new Message(
-                MessageType.SESSION, serverID, connectedUser, "DISCONNECTED"
+                MessageType.SESSION, "SERVER", connectedUser, "DISCONNECTED"
         );
         Server.consolePrintLine("[*] Sending terminating message to: " + connectedUser);
             //TODO: Check if an async call is a better option...
