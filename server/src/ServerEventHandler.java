@@ -27,6 +27,15 @@ public class ServerEventHandler extends EventHandler {
             }
         } else if (message.getMessageContent().equals("Stop session request")) {
             //TODO: implement stop session request from a client
+            if (!UserManager.removeUser(message.getMessageSender())) {
+                throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");
+            }
+            return new Message(
+                    MessageType.SESSION,
+                    "SERVER",
+                    message.getMessageSender(),
+                    "SHUTDOWN"
+            );
         }
         return null;
     }

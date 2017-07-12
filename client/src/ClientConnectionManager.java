@@ -121,12 +121,27 @@ public class ClientConnectionManager implements Runnable {
 
     private void shutdownClient() {
         System.out.println("[*] Terminating current client session...");
+        Message terminateCurrentSession = new Message(
+                MessageType.SESSION, Client.getUsername(), "Stop session request"
+        );
         try {
-            socket.close();
-        } catch (IOException e) {
+            Future send = executor.submit(new Sender(terminateCurrentSession, sendStream));
+            send.get();
+        } catch (InterruptedException | ExecutionException e) {
             e.getMessage();
             e.getCause();
             e.printStackTrace();
+        }
+        if (!socket.isClosed()) {   // Never trust autocloseable objects :D
+            try {
+                socket.shutdownInput();
+                socket.shutdownOutput();
+                socket.close();
+            } catch (IOException e) {
+                e.getMessage();
+                e.getCause();
+                e.printStackTrace();
+            }
         }
         System.out.println("[*] Session terminated correctly");
     }

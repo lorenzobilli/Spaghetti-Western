@@ -64,22 +64,41 @@ public class ClientHandler implements Runnable {
     }
 
     private void serveUserConnection() {
-        while (keepAlive) {
+        while (true) {
             try {
                 // Wait for a message and pass it to the handler
                 Future<Message> receive = executor.submit(new Receiver(receiveStream));
                 Future<Message> handle = executor.submit(new ServerEventHandler(receive.get()));
                 // Retrieve generated message from handle, print it on the server console and send it back
                 Message message = handle.get();
-                Server.consolePrintLine("Message from " + message.getMessageSender() + ": " +
-                    message.getMessageContent());
-                Future send = executor.submit(new Sender(message, sendStream));
+                if (!message.getMessageContent().equals("SHUTDOWN")) {
+                    Server.consolePrintLine("Message from " + message.getMessageSender() + ": " +
+                            message.getMessageContent());
+                    Future send = executor.submit(new Sender(message, sendStream));
+                } else {
+                    break;
+                }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
             }
         }
+        shutdownConnection();
+    }
+
+    private void shutdownConnection() {
+        Server.consolePrintLine("[*] Shutting down connection with " + connectedUser + "...");
+        try {
+            connection.shutdownInput();
+            connection.shutdownOutput();
+            connection.close();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
+        Server.consolePrintLine("[*] Connection with " + connectedUser + " closed");
     }
 
     //TODO: Implement this the proper way

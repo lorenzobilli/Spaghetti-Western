@@ -18,6 +18,17 @@ public class UserManager {
         return false;
     }
 
+    public static boolean removeUser(String user) {
+        if (user == null) {
+            throw new InvalidParameterException("Invalid parameter given");
+        }
+        if (isUserConnected(user)) {
+            connectedUsers.remove(user);
+            return true;
+        }
+        return false;
+    }
+
     private static boolean isUserConnected(String user) {
         for (String checkUser : connectedUsers) {
             if (checkUser.equals(user)) {
