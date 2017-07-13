@@ -42,7 +42,7 @@ public class ServerEventHandler extends EventHandler {
 
     @Override
     protected Message handleChat() {
-        //TODO: implement server-side chat
-        return message;
+        Server.connectionManager.sendMessage(message.getMessageReceiver(), message);
+        return null;
     }
 }

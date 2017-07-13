@@ -20,9 +20,8 @@ public class ClientConnectionManager implements Runnable {
     private Socket socket;
     private PrintWriter sendStream;
     private BufferedReader receiveStream;
-    private BufferedReader userInput;    // Only for testing purposes
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();     //TODO: Use a better threadpool
+    private ExecutorService executor = Executors.newCachedThreadPool();     //TODO: Use a better threadpool
 
     @Override
     public void run() {
@@ -31,7 +30,6 @@ public class ClientConnectionManager implements Runnable {
             socket = new Socket(HOSTNAME, PORT_NUMBER);
             sendStream = new PrintWriter(socket.getOutputStream(), true);
             receiveStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            userInput = new BufferedReader(new InputStreamReader(System.in));       // Only for testing purposes
             System.out.println("[*] Successfully connected with the server");
         } catch (IOException e) {
             e.getMessage();
@@ -41,6 +39,14 @@ public class ClientConnectionManager implements Runnable {
         initUserConnection();
         talkWithServer();
         shutdownClient();
+    }
+
+    public synchronized PrintWriter getSendStream() {
+        return sendStream;
+    }
+
+    public synchronized BufferedReader getReceiveStream() {
+        return receiveStream;
     }
 
     private void initUserConnection() {
@@ -85,38 +91,33 @@ public class ClientConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
+        Client.chatWindow = new ChatWindow();   // Spawning chat window
     }
 
     private void talkWithServer() {
+        int iteration = 1;
         while (true) {
-            //NOTE: This first part is only for testing
-            String input = "";
-            // Getting user input
             try {
-                input = userInput.readLine();
-            } catch (IOException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-            if (input.equals("exit")) {
-                break;
-            }
-            // We are still in command-line mode, compose a simple chat message to test the system
-            Message chat = new Message(MessageType.CHAT, Client.getUsername(), "", input);
-            // Send message and receive the answer from the server
-            try {
-                Future send = executor.submit(new Sender(chat, sendStream));
-                Future<Message> receive = executor.submit(new Receiver(receiveStream));
-                Message receivedMessage = receive.get();
-                System.out.println(receivedMessage.getMessageContent());
+                // Wait for a message and pass it to the handler
+                System.err.println("Re-executing client loop: " + iteration + " iteration");
+                //Future<Message> receive = executor.submit(new Receiver(receiveStream));
+                Future<Message> receive = Client.globalExecutor.submit(new Receiver(getReceiveStream()));
+                //Future<Message> handle = executor.submit(new ClientEventHandler(receive.get()));
+                Future<Message> handle = Client.globalExecutor.submit(new ClientEventHandler(receive.get()));
+                // Retrieve generated message from handle and send it back
+                Message message = handle.get();
+                if (message != null) {
+                    //Future send = executor.submit(new Sender(message, sendStream));
+                    Future send = Client.globalExecutor.submit(new Sender(message, getSendStream()));
+                }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
             }
+            iteration++;
         }
-        shutdownClient();
+        //shutdownClient();
     }
 
     private void shutdownClient() {

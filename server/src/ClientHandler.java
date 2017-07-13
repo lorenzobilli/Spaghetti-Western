@@ -40,6 +40,18 @@ public class ClientHandler implements Runnable {
         serveUserConnection();
     }
 
+    public synchronized String getConnectedUser() {
+        return connectedUser;
+    }
+
+    public synchronized PrintWriter getSendStream() {
+        return sendStream;
+    }
+
+    public synchronized BufferedReader getReceiveStream() {
+        return receiveStream;
+    }
+
     private void initUserConnection() {
         boolean isUsernameAccepted = false;
         while (!isUsernameAccepted) {
@@ -71,12 +83,12 @@ public class ClientHandler implements Runnable {
                 Future<Message> handle = executor.submit(new ServerEventHandler(receive.get()));
                 // Retrieve generated message from handle, print it on the server console and send it back
                 Message message = handle.get();
-                if (!message.getMessageContent().equals("SHUTDOWN")) {
-                    Server.consolePrintLine("Message from " + message.getMessageSender() + ": " +
-                            message.getMessageContent());
+                if (message != null) {
+                    if (message.getMessageContent().equals("SHUTDOWN")) {
+                        break;
+                    }
+                    Server.consolePrintLine("Message from " + message.getMessageSender() + ": " + message.getMessageContent());
                     Future send = executor.submit(new Sender(message, sendStream));
-                } else {
-                    break;
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();

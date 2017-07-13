@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.concurrent.Future;
 
 /**
  * ServerConnectionManager class
@@ -38,6 +39,16 @@ public class ServerConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public boolean sendMessage(String client, Message message) {
+        for (ClientHandler connectedClient : clientHandlers) {
+            if (connectedClient.getConnectedUser().equals(client)) {
+                Future send = Server.globalExecutor.submit(new Sender(message, connectedClient.getSendStream()));
+                return true;
+            }
+        }
+        return false;
     }
 
     public void shutdown() {
