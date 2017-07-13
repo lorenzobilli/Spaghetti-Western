@@ -18,11 +18,10 @@ public class ClientConnectionManager implements Runnable {
     private final String HOSTNAME = "localhost";
     private final int PORT_NUMBER = 10000;
     private Socket socket;
-    public PrintWriter sendStream;
-    public BufferedReader receiveStream;
-    private BufferedReader userInput;    // Only for testing purposes
+    private PrintWriter sendStream;
+    private BufferedReader receiveStream;
 
-    private ExecutorService executor = Executors.newSingleThreadExecutor();     //TODO: Use a better threadpool
+    private ExecutorService executor = Executors.newCachedThreadPool();     //TODO: Use a better threadpool
 
     @Override
     public void run() {
@@ -31,7 +30,6 @@ public class ClientConnectionManager implements Runnable {
             socket = new Socket(HOSTNAME, PORT_NUMBER);
             sendStream = new PrintWriter(socket.getOutputStream(), true);
             receiveStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            userInput = new BufferedReader(new InputStreamReader(System.in));       // Only for testing purposes
             System.out.println("[*] Successfully connected with the server");
         } catch (IOException e) {
             e.getMessage();
@@ -41,6 +39,14 @@ public class ClientConnectionManager implements Runnable {
         initUserConnection();
         talkWithServer();
         shutdownClient();
+    }
+
+    public synchronized PrintWriter getSendStream() {
+        return sendStream;
+    }
+
+    public synchronized BufferedReader getReceiveStream() {
+        return receiveStream;
     }
 
     private void initUserConnection() {
@@ -89,21 +95,27 @@ public class ClientConnectionManager implements Runnable {
     }
 
     private void talkWithServer() {
+        int iteration = 1;
         while (true) {
             try {
                 // Wait for a message and pass it to the handler
-                Future<Message> receive = executor.submit(new Receiver(receiveStream));
-                Future<Message> handle = executor.submit(new ClientEventHandler(receive.get()));
+                System.err.println("Re-executing client loop: " + iteration + " iteration");
+                //Future<Message> receive = executor.submit(new Receiver(receiveStream));
+                Future<Message> receive = Client.globalExecutor.submit(new Receiver(getReceiveStream()));
+                //Future<Message> handle = executor.submit(new ClientEventHandler(receive.get()));
+                Future<Message> handle = Client.globalExecutor.submit(new ClientEventHandler(receive.get()));
                 // Retrieve generated message from handle and send it back
                 Message message = handle.get();
                 if (message != null) {
-                    Future send = executor.submit(new Sender(message, sendStream));
+                    //Future send = executor.submit(new Sender(message, sendStream));
+                    Future send = Client.globalExecutor.submit(new Sender(message, getSendStream()));
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
             }
+            iteration++;
         }
         //shutdownClient();
     }

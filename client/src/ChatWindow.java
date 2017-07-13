@@ -64,16 +64,16 @@ public class ChatWindow {
     }
 
     private void sendMessage() {
-        chatView.append(" " + Client.getUsername() + ": " + chatField.getText() + "\n");
+        System.out.println(Client.getUsername() + " is sending a message to " + chatSelectionField.getText());
+        chatView.append(" [" + Client.getUsername() + "]: " + chatField.getText() + "\n");
         Message chatMessage = new Message(
                 MessageType.CHAT, Client.getUsername(), chatSelectionField.getText(), chatField.getText()
         );
-        Future sendMessage = Client.globalExecutor.submit(new Sender(chatMessage, Client.connectionManager.sendStream));
-        chatSelectionField.setText("");
+        Future sendMessage = Client.globalExecutor.submit(new Sender(chatMessage, Client.connectionManager.getSendStream()));
         chatField.setText("");
     }
 
     public void updateChat(Message message) {
-        chatView.append(" " + message.getMessageSender() + ": " + message.getMessageContent() + "\n");
+        chatView.append(" [" + message.getMessageSender() + "]: " + message.getMessageContent() + "\n");
     }
 }

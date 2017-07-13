@@ -14,8 +14,8 @@ import java.util.concurrent.Future;
 public class ClientHandler implements Runnable {
 
     private Socket connection;
-    public PrintWriter sendStream;
-    public BufferedReader receiveStream;
+    private PrintWriter sendStream;
+    private BufferedReader receiveStream;
     private String connectedUser;
     private volatile boolean keepAlive = true;
 
@@ -40,8 +40,16 @@ public class ClientHandler implements Runnable {
         serveUserConnection();
     }
 
-    public String getConnectedUser() {
+    public synchronized String getConnectedUser() {
         return connectedUser;
+    }
+
+    public synchronized PrintWriter getSendStream() {
+        return sendStream;
+    }
+
+    public synchronized BufferedReader getReceiveStream() {
+        return receiveStream;
     }
 
     private void initUserConnection() {
@@ -58,9 +66,7 @@ public class ClientHandler implements Runnable {
                     Server.consolePrintLine("[*] New client registered as: " + connectedUser);
                     isUsernameAccepted = true;
                 }
-                if (message != null) {
-                    Future send = executor.submit(new Sender(message, sendStream));
-                }
+                Future send = executor.submit(new Sender(message, sendStream));
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();
@@ -77,12 +83,12 @@ public class ClientHandler implements Runnable {
                 Future<Message> handle = executor.submit(new ServerEventHandler(receive.get()));
                 // Retrieve generated message from handle, print it on the server console and send it back
                 Message message = handle.get();
-                if (!message.getMessageContent().equals("SHUTDOWN")) {
-                    Server.consolePrintLine("Message from " + message.getMessageSender() + ": " +
-                            message.getMessageContent());
+                if (message != null) {
+                    if (message.getMessageContent().equals("SHUTDOWN")) {
+                        break;
+                    }
+                    Server.consolePrintLine("Message from " + message.getMessageSender() + ": " + message.getMessageContent());
                     Future send = executor.submit(new Sender(message, sendStream));
-                } else {
-                    break;
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
