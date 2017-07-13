@@ -23,12 +23,10 @@ public class ClientConnectionManager implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("[*] Launching client session...");
         try {
             socket = new Socket(HOSTNAME, PORT_NUMBER);
             sendStream = new PrintWriter(socket.getOutputStream(), true);
             receiveStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("[*] Successfully connected with the server");
         } catch (IOException e) {
             e.getMessage();
             e.getCause();
@@ -93,11 +91,9 @@ public class ClientConnectionManager implements Runnable {
     }
 
     private void talkWithServer() {
-        int iteration = 1;
         while (true) {
             try {
                 // Wait for a message and pass it to the handler
-                System.err.println("Re-executing client loop: " + iteration + " iteration");
                 Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
                 Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
                 // Retrieve generated message from handle and send it back
@@ -111,7 +107,6 @@ public class ClientConnectionManager implements Runnable {
                 e.getCause();
                 e.printStackTrace();
             }
-            iteration++;
         }
         //shutdownClient();
     }
