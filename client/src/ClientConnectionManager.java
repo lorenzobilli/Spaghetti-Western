@@ -21,8 +21,6 @@ public class ClientConnectionManager implements Runnable {
     private PrintWriter sendStream;
     private BufferedReader receiveStream;
 
-    private ExecutorService executor = Executors.newCachedThreadPool();     //TODO: Use a better threadpool
-
     @Override
     public void run() {
         System.out.println("[*] Launching client session...");
@@ -65,10 +63,10 @@ public class ClientConnectionManager implements Runnable {
             );
             try {
                 // Send request message to the server
-                Future send = executor.submit(new Sender(initCurrentSession, sendStream));
+                Future send = Client.globalThreadPool.submit(new Sender(initCurrentSession, sendStream));
                 // Wait for response message and pass it to the handler
-                Future<Message> receive = executor.submit(new Receiver(receiveStream));
-                Future<Message> handle = executor.submit(new ClientEventHandler(receive.get()));
+                Future<Message> receive = Client.globalThreadPool.submit(new Receiver(receiveStream));
+                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
                 // Retrieve generated message from handler, check if server has accepted the choosen username
                 Message message = handle.get();
                 if (message != null) {
@@ -100,15 +98,13 @@ public class ClientConnectionManager implements Runnable {
             try {
                 // Wait for a message and pass it to the handler
                 System.err.println("Re-executing client loop: " + iteration + " iteration");
-                //Future<Message> receive = executor.submit(new Receiver(receiveStream));
-                Future<Message> receive = Client.globalExecutor.submit(new Receiver(getReceiveStream()));
-                //Future<Message> handle = executor.submit(new ClientEventHandler(receive.get()));
-                Future<Message> handle = Client.globalExecutor.submit(new ClientEventHandler(receive.get()));
+                Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
+                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
                 // Retrieve generated message from handle and send it back
                 Message message = handle.get();
                 if (message != null) {
                     //Future send = executor.submit(new Sender(message, sendStream));
-                    Future send = Client.globalExecutor.submit(new Sender(message, getSendStream()));
+                    Future send = Client.globalThreadPool.submit(new Sender(message, getSendStream()));
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
@@ -126,7 +122,7 @@ public class ClientConnectionManager implements Runnable {
                 MessageType.SESSION, Client.getUsername(), "Stop session request"
         );
         try {
-            Future send = executor.submit(new Sender(terminateCurrentSession, sendStream));
+            Future send = Client.globalThreadPool.submit(new Sender(terminateCurrentSession, sendStream));
             send.get();
         } catch (InterruptedException | ExecutionException e) {
             e.getMessage();

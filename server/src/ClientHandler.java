@@ -19,8 +19,6 @@ public class ClientHandler implements Runnable {
     private String connectedUser;
     private volatile boolean keepAlive = true;
 
-    private ExecutorService executor = Executors.newCachedThreadPool();
-
     public ClientHandler(Socket connection) {
         this.connection = connection;
     }
@@ -57,8 +55,8 @@ public class ClientHandler implements Runnable {
         while (!isUsernameAccepted) {
             try {
                 // Wait for first message from client and pass it to the handler
-                Future<Message> receive = executor.submit(new Receiver(receiveStream));
-                Future<Message> handle = executor.submit(new ServerEventHandler(receive.get()));
+                Future<Message> receive = Server.globalThreadPool.submit(new Receiver(receiveStream));
+                Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
                 // Retrieve generated message from handle, check if username has been accepted and send it back
                 Message message = handle.get();
                 if (message.getMessageContent().equals("ACCEPTED")) {
@@ -66,7 +64,7 @@ public class ClientHandler implements Runnable {
                     Server.consolePrintLine("[*] New client registered as: " + connectedUser);
                     isUsernameAccepted = true;
                 }
-                Future send = executor.submit(new Sender(message, sendStream));
+                Future send = Server.globalThreadPool.submit(new Sender(message, sendStream));
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();
@@ -79,8 +77,8 @@ public class ClientHandler implements Runnable {
         while (true) {
             try {
                 // Wait for a message and pass it to the handler
-                Future<Message> receive = executor.submit(new Receiver(receiveStream));
-                Future<Message> handle = executor.submit(new ServerEventHandler(receive.get()));
+                Future<Message> receive = Server.globalThreadPool.submit(new Receiver(receiveStream));
+                Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
                 // Retrieve generated message from handle, print it on the server console and send it back
                 Message message = handle.get();
                 if (message != null) {
@@ -88,7 +86,7 @@ public class ClientHandler implements Runnable {
                         break;
                     }
                     Server.consolePrintLine("Message from " + message.getMessageSender() + ": " + message.getMessageContent());
-                    Future send = executor.submit(new Sender(message, sendStream));
+                    Future send = Server.globalThreadPool.submit(new Sender(message, sendStream));
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
@@ -120,7 +118,7 @@ public class ClientHandler implements Runnable {
         );
         Server.consolePrintLine("[*] Sending terminating message to: " + connectedUser);
             //TODO: Check if an async call is a better option...
-        Future send = executor.submit(new Sender(notifyConnectionTerm, sendStream));
+        Future send = Server.globalThreadPool.submit(new Sender(notifyConnectionTerm, sendStream));
         keepAlive = false;
         try {
             connection.close();

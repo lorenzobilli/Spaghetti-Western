@@ -69,7 +69,7 @@ public class ChatWindow {
         Message chatMessage = new Message(
                 MessageType.CHAT, Client.getUsername(), chatSelectionField.getText(), chatField.getText()
         );
-        Future sendMessage = Client.globalExecutor.submit(new Sender(chatMessage, Client.connectionManager.getSendStream()));
+        Future sendMessage = Client.globalThreadPool.submit(new Sender(chatMessage, Client.connectionManager.getSendStream()));
         chatField.setText("");
     }
 

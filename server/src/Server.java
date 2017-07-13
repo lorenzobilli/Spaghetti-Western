@@ -10,13 +10,13 @@ public class Server {
     public static ServerConnectionManager connectionManager;
     private static Thread connectionThread;
 
-    public static ExecutorService globalExecutor;   //FIXME: Find a better solution than this
+    public static ExecutorService globalThreadPool;
 
     public static void main(String[] args) {
         serverWindow = new MainWindow("Spaghetti Western server");
         connectionManager = new ServerConnectionManager();
         connectionThread = new Thread(connectionManager);
-        globalExecutor = Executors.newCachedThreadPool();
+        globalThreadPool = Executors.newCachedThreadPool();
     }
 
     public static void consolePrint(String message) {

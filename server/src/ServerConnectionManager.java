@@ -44,7 +44,7 @@ public class ServerConnectionManager implements Runnable {
     public boolean sendMessage(String client, Message message) {
         for (ClientHandler connectedClient : clientHandlers) {
             if (connectedClient.getConnectedUser().equals(client)) {
-                Future send = Server.globalExecutor.submit(new Sender(message, connectedClient.getSendStream()));
+                Future send = Server.globalThreadPool.submit(new Sender(message, connectedClient.getSendStream()));
                 return true;
             }
         }

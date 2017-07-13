@@ -13,13 +13,13 @@ public class Client {
     public static Thread connectionThread;
     private static String username;
 
-    public static ExecutorService globalExecutor;   //FIXME: Find a better solution than this
+    public static ExecutorService globalThreadPool;
 
     public static void main(String[] args) {
         clientWindow = new MainWindow("Spaghetti Western");
         connectionManager = new ClientConnectionManager();
         connectionThread = new Thread(connectionManager);
-        globalExecutor = Executors.newCachedThreadPool();
+        globalThreadPool = Executors.newCachedThreadPool();
         startClient();
     }
 
