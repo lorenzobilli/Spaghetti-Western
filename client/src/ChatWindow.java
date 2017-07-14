@@ -64,7 +64,6 @@ public class ChatWindow {
     }
 
     private void sendMessage() {
-        System.out.println(Client.getUsername() + " is sending a message to " + chatSelectionField.getText());
         chatView.append(" [" + Client.getUsername() + "]: " + chatField.getText() + "\n");
         Message chatMessage = new Message(
                 MessageType.CHAT, Client.getUsername(), chatSelectionField.getText(), chatField.getText()

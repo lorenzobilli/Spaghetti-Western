@@ -17,13 +17,19 @@ public abstract class EventHandler implements Callable<Message> {
 
     @Override
     public Message call() {
-        Message result;
+        Message result = null;
         switch (message.getMessageType()) {
             case SESSION:
                 result = handleSession();
                 break;
             case CHAT:
-                result = handleChat();
+                try {
+                    result = handleChat();
+                } catch (Exception e) {
+                    e.getMessage();
+                    e.getCause();
+                    e.printStackTrace();
+                }
                 break;
             default:
                 result = null;
@@ -34,6 +40,6 @@ public abstract class EventHandler implements Callable<Message> {
 
     protected abstract Message handleSession();
 
-    protected abstract Message handleChat();
+    protected abstract Message handleChat() throws Exception;
 
 }

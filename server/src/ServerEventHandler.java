@@ -41,8 +41,10 @@ public class ServerEventHandler extends EventHandler {
     }
 
     @Override
-    protected Message handleChat() {
-        Server.connectionManager.sendMessage(message.getMessageReceiver(), message);
+    protected Message handleChat() throws Exception {
+        if (!Server.connectionManager.sendMessage(message.getMessageReceiver(), message)) {
+            throw new Exception("handleChat() error: specified user isn't logged in");
+        }
         return null;
     }
 }

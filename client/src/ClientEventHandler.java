@@ -23,7 +23,6 @@ public class ClientEventHandler extends EventHandler {
 
     @Override
     protected Message handleChat() {
-        System.out.println(Client.getUsername() + " is receiving a chat message");
         Client.chatWindow.updateChat(message);
         return null;
     }
