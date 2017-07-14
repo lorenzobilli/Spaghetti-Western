@@ -21,7 +21,9 @@ public class Receiver implements Callable<Message> {
     public Message call() throws Exception {
         String receivedMessage = "";
         try {
-            receivedMessage = receiveStream.readLine();
+            synchronized (this) {
+                receivedMessage = receiveStream.readLine();
+            }
         } catch (IOException e) {
             e.getMessage();
             e.getCause();

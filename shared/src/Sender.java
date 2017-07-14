@@ -24,7 +24,9 @@ public class Sender implements Callable<Object> {
     @Override
     public Object call() throws Exception {
         String translatedMessage = MessageManager.prepareSend(message);
-        sendStream.println(translatedMessage);
+        synchronized (this) {
+            sendStream.println(translatedMessage);
+        }
         return null;
     }
 }

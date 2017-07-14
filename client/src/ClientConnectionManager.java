@@ -6,8 +6,6 @@ import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -61,9 +59,9 @@ public class ClientConnectionManager implements Runnable {
             );
             try {
                 // Send request message to the server
-                Future send = Client.globalThreadPool.submit(new Sender(initCurrentSession, sendStream));
+                Future send = Client.globalThreadPool.submit(new Sender(initCurrentSession, getSendStream()));
                 // Wait for response message and pass it to the handler
-                Future<Message> receive = Client.globalThreadPool.submit(new Receiver(receiveStream));
+                Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
                 Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
                 // Retrieve generated message from handler, check if server has accepted the choosen username
                 Message message = handle.get();
@@ -99,7 +97,6 @@ public class ClientConnectionManager implements Runnable {
                 // Retrieve generated message from handle and send it back
                 Message message = handle.get();
                 if (message != null) {
-                    //Future send = executor.submit(new Sender(message, sendStream));
                     Future send = Client.globalThreadPool.submit(new Sender(message, getSendStream()));
                 }
             } catch (InterruptedException | ExecutionException e) {
@@ -117,7 +114,7 @@ public class ClientConnectionManager implements Runnable {
                 MessageType.SESSION, Client.getUsername(), "Stop session request"
         );
         try {
-            Future send = Client.globalThreadPool.submit(new Sender(terminateCurrentSession, sendStream));
+            Future send = Client.globalThreadPool.submit(new Sender(terminateCurrentSession, getSendStream()));
             send.get();
         } catch (InterruptedException | ExecutionException e) {
             e.getMessage();

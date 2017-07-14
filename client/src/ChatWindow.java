@@ -1,9 +1,5 @@
-import javafx.scene.input.KeyCode;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.concurrent.Future;
 
 /**
