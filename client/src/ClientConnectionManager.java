@@ -86,6 +86,9 @@ public class ClientConnectionManager implements Runnable {
             }
         }
         Client.chatWindow = new ChatWindow();   // Spawning chat window
+        Future send = Client.globalThreadPool.submit(new Sender(new Message(
+                MessageType.TIME, Client.getUsername(), "Start wait request"
+        ), getSendStream()));
     }
 
     private void talkWithServer() {

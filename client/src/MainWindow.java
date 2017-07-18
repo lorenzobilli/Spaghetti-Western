@@ -9,6 +9,8 @@ import java.security.InvalidParameterException;
 public class MainWindow {
 
     private JFrame window;
+    private BackgroundPanel background;
+    private Container content;
 
     public MainWindow(String title) {
         final String backgroundImagePath = "shared/assets/far_west.jpg";
@@ -22,12 +24,12 @@ public class MainWindow {
         window.setSize(1280, 800);
 
         // Setting JFrame main layout manager
-        Container content = window.getContentPane();
+        content = window.getContentPane();
         content.setLayout(new BorderLayout());
 
         // Configuring central part of the window
         try {
-            BackgroundPanel background = new BackgroundPanel(backgroundImagePath);
+            background = new BackgroundPanel(backgroundImagePath);
             content.add(background, BorderLayout.CENTER);
         } catch (IOException e) {
             e.getMessage();
@@ -44,5 +46,20 @@ public class MainWindow {
 
     public void createLoginDialog() {
         new LoginDialog(window);
+    }
+
+    public void showWaitingScreen() {
+        final String waitingImagePath = "shared/assets/tumbleweed.jpg";
+        try {
+            content.remove(background);
+            background = new BackgroundPanel(waitingImagePath);
+            content.add(background, BorderLayout.CENTER);
+            content.revalidate();
+            content.repaint();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
     }
 }

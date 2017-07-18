@@ -41,6 +41,18 @@ public class ServerEventHandler extends EventHandler {
     }
 
     @Override
+    protected Message handleTime() {
+        if (message.getMessageContent().equals("Start wait request")) {
+            Server.connectionManager.broadcastMessage(new Message(
+                    MessageType.TIME,
+                    "SERVER",
+                    "Start wait accepted"
+            ));
+        }
+        return null;
+    }
+
+    @Override
     protected Message handleChat() throws Exception {
         if (!Server.connectionManager.sendMessage(message.getMessageReceiver(), message)) {
             throw new Exception("handleChat() error: specified user isn't logged in");
