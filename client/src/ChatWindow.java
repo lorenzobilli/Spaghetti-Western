@@ -62,13 +62,17 @@ public class ChatWindow {
     private void sendMessage() {
         chatView.append(" [" + Client.getUsername() + "]: " + chatField.getText() + "\n");
         Message chatMessage = new Message(
-                MessageType.CHAT, Client.getUsername(), chatSelectionField.getText(), chatField.getText()
+                MessageType.CHAT,
+                Client.getUsername(),
+                chatSelectionField.getText(),
+                MessageManager.createXML("content", chatField.getText())
         );
         Future sendMessage = Client.globalThreadPool.submit(new Sender(chatMessage, Client.connectionManager.getSendStream()));
         chatField.setText("");
     }
 
     public void updateChat(Message message) {
-        chatView.append(" [" + message.getMessageSender() + "]: " + message.getMessageContent() + "\n");
+        String chatMessage = MessageManager.convertXML(message.getMessageContent()).getElementsByTagName("content").item(0).getTextContent();
+        chatView.append(" [" + message.getMessageSender() + "]: " + chatMessage + "\n");
     }
 }
