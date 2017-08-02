@@ -57,7 +57,8 @@ public class ClientHandler implements Runnable {
                 Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
                 // Retrieve generated message from handle, check if username has been accepted and send it back
                 Message message = handle.get();
-                if (message.getMessageContent().equals("ACCEPTED")) {
+                String header = MessageManager.convertXML(message.getMessageContent()).getElementsByTagName("header").item(0).getTextContent();
+                if (header.equals("ACCEPTED")) {
                     connectedUser = message.getMessageReceiver();
                     Server.consolePrintLine("[*] New client registered as: " + connectedUser);
                     isUsernameAccepted = true;
@@ -80,10 +81,10 @@ public class ClientHandler implements Runnable {
                 // Retrieve generated message from handle, print it on the server console and send it back
                 Message message = handle.get();
                 if (message != null) {
-                    if (message.getMessageContent().equals("SHUTDOWN")) {
+                    String header = MessageManager.convertXML(message.getMessageContent()).getElementsByTagName("header").item(0).getTextContent();
+                    if (header.equals("SHUTDOWN")) {
                         break;
                     }
-                    Server.consolePrintLine("Message from " + message.getMessageSender() + ": " + message.getMessageContent());
                     Future send = Server.globalThreadPool.submit(new Sender(message, getSendStream()));
                 }
             } catch (InterruptedException | ExecutionException e) {
@@ -112,7 +113,10 @@ public class ClientHandler implements Runnable {
     //TODO: Implement this the proper way
     public void terminateUserConnection() {
         Message notifyConnectionTerm = new Message(
-                MessageType.SESSION, "SERVER", connectedUser, "DISCONNECTED"
+                MessageType.SESSION,
+                "SERVER",
+                connectedUser,
+                MessageManager.createXML("header", "DISCONNECTED")
         );
         Server.consolePrintLine("[*] Sending terminating message to: " + connectedUser);
             //TODO: Check if an async call is a better option...
