@@ -23,28 +23,35 @@ public class MessageManager {
         return manager.fromJson(message, Message.class);
     }
 
-    public static Document convertXML(String contentXML) {
-        Document xml = null;
-        if (contentXML == null) {
-            throw new InvalidParameterException("Content passed cannot be null");
+    public static String createXML(String tag, String value) {
+        if (tag == null) {
+            throw new InvalidParameterException("tag cannot be null");
         }
+        if (value == null) {
+            throw new InvalidParameterException("value cannot be null");
+        }
+        return "<" + tag + ">" + value + "</" + tag + ">";
+    }
+
+    public static String convertXML(String tag, String content) {
+        if (tag == null) {
+            throw new InvalidParameterException("tag cannot be null");
+        }
+        if (content == null) {
+            throw new InvalidParameterException("content cannot be null");
+        }
+        String result = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            InputSource input = new InputSource(new StringReader(contentXML));
-            xml = builder.parse(input);
+            InputSource input = new InputSource(new StringReader(content));
+            Document document = builder.parse(input);
+            result = document.getElementsByTagName(tag).item(0).getTextContent();
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.getMessage();
             e.getCause();
             e.printStackTrace();
         }
-        return xml;
-    }
-
-    public static String createXML(String tag, String value) {
-        if (tag == null || value == null) {
-            throw new InvalidParameterException("Tag/Value cannot be null");
-        }
-        return "<" + tag + ">" + value + "</" + tag + ">";
+        return result;
     }
 }

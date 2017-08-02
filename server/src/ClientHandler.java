@@ -57,8 +57,7 @@ public class ClientHandler implements Runnable {
                 Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
                 // Retrieve generated message from handle, check if username has been accepted and send it back
                 Message message = handle.get();
-                String header = MessageManager.convertXML(message.getMessageContent()).getElementsByTagName("header").item(0).getTextContent();
-                if (header.equals("ACCEPTED")) {
+                if (MessageManager.convertXML("header", message.getMessageContent()).equals("ACCEPTED")) {
                     connectedUser = message.getMessageReceiver();
                     Server.consolePrintLine("[*] New client registered as: " + connectedUser);
                     isUsernameAccepted = true;
@@ -81,8 +80,7 @@ public class ClientHandler implements Runnable {
                 // Retrieve generated message from handle, print it on the server console and send it back
                 Message message = handle.get();
                 if (message != null) {
-                    String header = MessageManager.convertXML(message.getMessageContent()).getElementsByTagName("header").item(0).getTextContent();
-                    if (header.equals("SHUTDOWN")) {
+                    if (MessageManager.convertXML("header", message.getMessageContent()).equals("SHUTDOWN")) {
                         break;
                     }
                     Future send = Server.globalThreadPool.submit(new Sender(message, getSendStream()));

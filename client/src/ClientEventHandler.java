@@ -9,14 +9,13 @@ public class ClientEventHandler extends EventHandler {
 
     @Override
     protected Message handleSession() {
-        String header = MessageManager.convertXML(message.getMessageContent()).getElementsByTagName("header").item(0).getTextContent();
-        if (header.equals("ACCEPTED")) {
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("ACCEPTED")) {
             return new Message(
                     MessageType.SESSION,
                     message.getMessageSender(),
                     MessageManager.createXML("header", "CONFIRMED")
             );
-        } else if (header.equals("REFUSED")) {
+        } else if (MessageManager.convertXML("header", message.getMessageContent()).equals("REFUSED")) {
             return null;
         }
         return null;
