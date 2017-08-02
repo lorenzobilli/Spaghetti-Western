@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * ServerEventHandler class
  */
@@ -42,12 +45,20 @@ public class ServerEventHandler extends EventHandler {
 
     @Override
     protected Message handleTime() {
-        if (message.getMessageContent().equals("Start wait request")) {
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_START_REQUEST")) {
+            String content = MessageManager.createXML("header", "WAIT_START_ACCEPTED") +
+            MessageManager.createXML("content", Server.remainingWaitTime.toString());
             return new Message(
                     MessageType.TIME,
                     "SERVER",
                     message.getMessageSender(),
-                    "Start wait accepted: <" + Server.remainingWaitTime.toString()
+                    MessageManager.createXML(
+                            new ArrayList<String>(Arrays.asList(
+                                    "header", "content"
+                            )),
+                            new ArrayList<String>(Arrays.asList(
+                                    "WAIT_START_ACCEPTED", Server.remainingWaitTime.toString())
+                            ))
             );
         }
         return null;

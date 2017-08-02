@@ -89,7 +89,9 @@ public class ClientConnectionManager implements Runnable {
         }
         Client.chatWindow = new ChatWindow();   // Spawning chat window
         Future send = Client.globalThreadPool.submit(new Sender(new Message(
-                MessageType.TIME, Client.getUsername(), "Start wait request"
+                MessageType.TIME,
+                Client.getUsername(),
+                MessageManager.createXML("header", "WAIT_START_REQUEST")
         ), getSendStream()));
     }
 
