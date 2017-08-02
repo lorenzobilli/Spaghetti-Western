@@ -55,7 +55,9 @@ public class ClientConnectionManager implements Runnable {
             }
             // In this phase we still have to compose a message without the handler
             Message initCurrentSession = new Message(
-                    MessageType.SESSION, Client.getUsername(), "Start session request"
+                    MessageType.SESSION,
+                    Client.getUsername(),
+                    MessageManager.createXML("header", "SESSION_START_REQUEST")
             );
             try {
                 // Send request message to the server
@@ -114,7 +116,9 @@ public class ClientConnectionManager implements Runnable {
     private void shutdownClient() {
         System.out.println("[*] Terminating current client session...");
         Message terminateCurrentSession = new Message(
-                MessageType.SESSION, Client.getUsername(), "Stop session request"
+                MessageType.SESSION,
+                Client.getUsername(),
+                MessageManager.createXML("header", "SESSION_STOP_REQUEST")
         );
         try {
             Future send = Client.globalThreadPool.submit(new Sender(terminateCurrentSession, getSendStream()));
