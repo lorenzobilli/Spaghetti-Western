@@ -43,11 +43,12 @@ public class ServerEventHandler extends EventHandler {
     @Override
     protected Message handleTime() {
         if (message.getMessageContent().equals("Start wait request")) {
-            Server.connectionManager.broadcastMessage(new Message(
+            return new Message(
                     MessageType.TIME,
                     "SERVER",
-                    "Start wait accepted"
-            ));
+                    message.getMessageSender(),
+                    "Start wait accepted: <" + Server.remainingWaitTime.toString()
+            );
         }
         return null;
     }

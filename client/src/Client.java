@@ -1,4 +1,5 @@
 import java.security.InvalidParameterException;
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -7,11 +8,16 @@ import java.util.concurrent.Executors;
  */
 public class Client {
 
+    public final static Duration waitTime = Duration.ofMinutes(5);
+    public final static Duration playTime = Duration.ofMinutes(10);
+
     public static MainWindow clientWindow;
     public static ChatWindow chatWindow;
     public static ClientConnectionManager connectionManager;
     public static Thread connectionThread;
     private static String username;
+    public static TimeManager remainingWaitTime;
+    public static TimeManager remainingPlayTime;
 
     public static ExecutorService globalThreadPool;
 
@@ -20,6 +26,8 @@ public class Client {
         connectionManager = new ClientConnectionManager();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
+        remainingWaitTime = new TimeManager(waitTime);
+        remainingPlayTime = new TimeManager(playTime);
         startClient();
     }
 

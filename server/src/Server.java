@@ -1,3 +1,4 @@
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -6,17 +7,23 @@ import java.util.concurrent.Executors;
  */
 public class Server {
 
+    public final static Duration waitTime = Duration.ofMinutes(5);
+    public final static Duration playTime = Duration.ofMinutes(10);
+
     private static MainWindow serverWindow;
     public static ServerConnectionManager connectionManager;
     private static Thread connectionThread;
-
     public static ExecutorService globalThreadPool;
+    public static TimeManager remainingWaitTime;
+    public static TimeManager remainingPlayTime;
 
     public static void main(String[] args) {
         serverWindow = new MainWindow("Spaghetti Western server");
         connectionManager = new ServerConnectionManager();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
+        remainingWaitTime = new TimeManager(waitTime);
+        remainingPlayTime = new TimeManager(playTime);
     }
 
     public static void consolePrint(String message) {

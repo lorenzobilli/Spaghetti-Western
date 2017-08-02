@@ -24,7 +24,7 @@ public class ClientEventHandler extends EventHandler {
     @Override
     protected Message handleTime() {
         if (message.getMessageContent().equals("Start wait accepted")) {
-            Client.clientWindow.showWaitingScreen();
+            Client.clientWindow.showWaitingCountdown();
         }
         return null;
     }

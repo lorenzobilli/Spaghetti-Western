@@ -1,5 +1,6 @@
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.concurrent.Future;
 
 /**
  * UserManager class
@@ -13,6 +14,7 @@ public class UserManager {
         }
         if (!isUserConnected(user)) {
             connectedUsers.add(user);
+            Future<Boolean> runWaitTime = Server.globalThreadPool.submit(Server.remainingWaitTime);
             return true;
         }
         return false;

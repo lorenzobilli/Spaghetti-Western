@@ -13,11 +13,14 @@ public class TimeManager implements Callable<Boolean> {
     private Timer timer;
     private TimerTask countdown;
 
-    public TimeManager(int seconds) {
-        if (seconds < 0) {
-            throw new InvalidParameterException("Seconds cannot be a negative value");
+    public TimeManager(Duration time) {
+        if (time == null) {
+            throw new InvalidParameterException("Duration cannot be null");
         }
-        duration = Duration.ofSeconds(seconds);
+        if (time.isZero()) {
+            throw new InvalidParameterException("Duration cannot be zero");
+        }
+        duration = time;
         timer = new Timer();
         countdown = new TimerTask() {
             @Override
@@ -30,25 +33,18 @@ public class TimeManager implements Callable<Boolean> {
         };
     }
 
-    public TimeManager(int minutes, int seconds) {
-        this(seconds);
-        if (minutes < 0) {
-            throw new InvalidParameterException("Minutes cannot be a negative value");
-        }
-        duration = Duration.ofMinutes(minutes);
-    }
-
-    public TimeManager(int hours, int minutes, int seconds) {
-        this(seconds, minutes);
-        if (hours < 0) {
-            throw new InvalidParameterException("Hours cannot be a negative value");
-        }
-        duration = Duration.ofHours(hours);
+    public Duration getRemainingTime() {
+        return duration;
     }
 
     @Override
     public Boolean call() throws Exception {
         timer.scheduleAtFixedRate(countdown, 0, 1000);      // Repeat every second
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(duration.getSeconds());
     }
 }
