@@ -16,8 +16,6 @@ public class Client {
     public static ClientConnectionManager connectionManager;
     public static Thread connectionThread;
     private static String username;
-    public static TimeManager remainingWaitTime;
-    public static TimeManager remainingPlayTime;
 
     public static ExecutorService globalThreadPool;
 
@@ -26,8 +24,6 @@ public class Client {
         connectionManager = new ClientConnectionManager();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
-        remainingWaitTime = new TimeManager(waitTime);
-        remainingPlayTime = new TimeManager(playTime);
         startClient();
     }
 

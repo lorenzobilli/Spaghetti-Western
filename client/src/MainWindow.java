@@ -48,12 +48,12 @@ public class MainWindow {
         new LoginDialog(window);
     }
 
-    public void showWaitingCountdown() {
+    public void showWaitingCountdown(int minutes) {
         JPanel glass = (JPanel) window.getGlassPane();
         glass.setVisible(true);
         glass.setLayout(new GridBagLayout());   //TODO: Configure this layout
         JLabel label = new JLabel("New session will begin in: ");
-        JLabel time = new JLabel("10:00");
+        JLabel time = new JLabel(String.valueOf(minutes) + " minutes");
         label.setFont(new Font(null, Font.BOLD, 50));
         label.setBackground(new Color(0, 0, 0, 0));
         label.setForeground(Color.WHITE);

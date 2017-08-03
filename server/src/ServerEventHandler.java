@@ -46,8 +46,6 @@ public class ServerEventHandler extends EventHandler {
     @Override
     protected Message handleTime() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_START_REQUEST")) {
-            String content = MessageManager.createXML("header", "WAIT_START_ACCEPTED") +
-            MessageManager.createXML("content", Server.remainingWaitTime.toString());
             return new Message(
                     MessageType.TIME,
                     "SERVER",
@@ -57,7 +55,7 @@ public class ServerEventHandler extends EventHandler {
                                     "header", "content"
                             )),
                             new ArrayList<String>(Arrays.asList(
-                                    "WAIT_START_ACCEPTED", Server.remainingWaitTime.toString())
+                                    "WAIT_REMAINING", Server.remainingWaitTime.toString())
                             ))
             );
         }

@@ -12,9 +12,12 @@ public class UserManager {
         if (user == null) {
             throw new InvalidParameterException("Invalid parameter given");
         }
-        if (!isUserConnected(user)) {
+        if (connectedUsers.isEmpty()) {
             connectedUsers.add(user);
             Future<Boolean> runWaitTime = Server.globalThreadPool.submit(Server.remainingWaitTime);
+            return true;
+        } else if (!isUserConnected(user)) {
+            connectedUsers.add(user);
             return true;
         }
         return false;

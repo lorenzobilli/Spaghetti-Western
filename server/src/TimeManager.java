@@ -1,5 +1,7 @@
 import java.security.InvalidParameterException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -26,6 +28,20 @@ public class TimeManager implements Callable<Boolean> {
             @Override
             public void run() {
                 duration.minusSeconds(1);
+                if (duration.getSeconds() % 60 == 0) {
+                    Server.connectionManager.broadcastMessage(new Message(
+                            MessageType.TIME,
+                            "SERVER",
+                            MessageManager.createXML(
+                                    new ArrayList<String>(Arrays.asList(
+                                            "header", "content"
+                                    )),
+                                    new ArrayList<String>(Arrays.asList(
+                                            "WAIT_REMAINING", Server.remainingWaitTime.toString()
+                                    ))
+                            )
+                    ));
+                }
                 if (duration.isZero()) {
                     this.cancel();
                 }
