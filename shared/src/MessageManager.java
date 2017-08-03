@@ -45,16 +45,19 @@ public class MessageManager {
         if (valueList == null) {
             throw new InvalidParameterException("value list cannot be null");
         }
+        if (tagList.size() != valueList.size()) {
+            throw new InvalidParameterException("tag-value list size mismatch");
+        }
         String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
         String begin = "<message>";
         String end = "</message>";
-        String elems = "";
-        for (String tag : tagList) {
-            for (String value : valueList) {
-                elems = elems.concat("<" + tag + ">" + value + "</" + tag + ">");
-            }
+        String elem = "";
+
+        for (int i = 0; i < tagList.size(); i++) {
+            elem = elem.concat("<" + tagList.get(i) + ">" + valueList.get(i) + "</" + tagList.get(i) + ">");
         }
-        return header + begin + elems + end;
+
+        return header + begin + elem + end;
     }
 
     public static String convertXML(String tag, String content) {
