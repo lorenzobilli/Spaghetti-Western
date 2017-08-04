@@ -1,6 +1,5 @@
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.concurrent.Future;
 
 /**
  * UserManager class
@@ -12,11 +11,7 @@ public class UserManager {
         if (user == null) {
             throw new InvalidParameterException("Invalid parameter given");
         }
-        if (connectedUsers.isEmpty()) {
-            connectedUsers.add(user);
-            Future<Boolean> runWaitTime = Server.globalThreadPool.submit(Server.remainingWaitTime);
-            return true;
-        } else if (!isUserConnected(user)) {
+        if (connectedUsers.isEmpty() || !isUserConnected(user)) {
             connectedUsers.add(user);
             return true;
         }
@@ -41,5 +36,9 @@ public class UserManager {
             }
         }
         return false;
+    }
+
+    public static int getConnectedUsersNumber() {
+        return connectedUsers.size();
     }
 }

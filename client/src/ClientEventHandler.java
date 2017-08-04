@@ -25,7 +25,7 @@ public class ClientEventHandler extends EventHandler {
     protected Message handleTime() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_REMAINING")) {
             int secondsRemaining = Integer.parseInt(MessageManager.convertXML("content", message.getMessageContent()));
-            Client.clientWindow.showWaitingCountdown(secondsRemaining / 60);
+            Client.clientWindow.updateWaitingCountdown(secondsRemaining / 60);
         }
         return null;
     }

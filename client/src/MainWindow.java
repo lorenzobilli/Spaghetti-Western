@@ -1,3 +1,4 @@
+import javax.imageio.plugins.jpeg.JPEGHuffmanTable;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -9,6 +10,9 @@ import java.security.InvalidParameterException;
 public class MainWindow {
 
     private JFrame window;
+    private JPanel glass;
+    private JLabel remainingAdvice;
+    private JLabel remainingWaitTime;
     private BackgroundPanel background;
     private Container content;
 
@@ -48,19 +52,23 @@ public class MainWindow {
         new LoginDialog(window);
     }
 
-    public void showWaitingCountdown(int minutes) {
-        JPanel glass = (JPanel) window.getGlassPane();
+    public void createWaitingCountdown() {
+        glass = (JPanel) window.getGlassPane();
         glass.setVisible(true);
         glass.setLayout(new GridBagLayout());   //TODO: Configure this layout
-        JLabel label = new JLabel("New session will begin in: ");
-        JLabel time = new JLabel(String.valueOf(minutes) + " minutes");
-        label.setFont(new Font(null, Font.BOLD, 50));
-        label.setBackground(new Color(0, 0, 0, 0));
-        label.setForeground(Color.WHITE);
-        time.setFont(new Font(null, Font.BOLD, 50));
-        time.setBackground(new Color(0, 0, 0, 0));
-        time.setForeground(Color.WHITE);
-        glass.add(label);
-        glass.add(time);
+        remainingAdvice = new JLabel("New session will begin in: ");
+        remainingWaitTime = new JLabel("minutes");
+        remainingAdvice.setFont(new Font(null, Font.BOLD, 50));
+        remainingAdvice.setBackground(new Color(0,0,0,0));
+        remainingAdvice.setForeground(Color.WHITE);
+        remainingWaitTime.setFont(new Font(null, Font.BOLD, 50));
+        remainingWaitTime.setBackground(new Color(0,0,0,0));
+        remainingWaitTime.setForeground(Color.WHITE);
+        glass.add(remainingAdvice);
+        glass.add(remainingWaitTime);
+    }
+
+    public void updateWaitingCountdown(int minutes) {
+        remainingWaitTime.setText(String.valueOf(minutes) + " minutes");
     }
 }

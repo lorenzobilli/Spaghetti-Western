@@ -62,10 +62,18 @@ public class ClientConnectionManager implements Runnable {
             try {
                 // Send request message to the server
                 Future send = Client.globalThreadPool.submit(new Sender(initCurrentSession, getSendStream()));
+                Message response = null;
+                boolean sessionResponse = false;
+                do {
+                    Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
+                    response = receive.get();
+                    if (response.getMessageType() == MessageType.SESSION) {     // Accept only session related messages
+                        sessionResponse = true;
+                    }
+                } while (!sessionResponse);
                 // Wait for response message and pass it to the handler
-                Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
-                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
-                // Retrieve generated message from handler, check if server has accepted the choosen username
+                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(response));
+                // Retrieve generated message from handler, check if server has accepted the chosen username
                 Message message = handle.get();
                 if (message != null) {
                     // Show success message dialog
@@ -93,6 +101,7 @@ public class ClientConnectionManager implements Runnable {
                 Client.getUsername(),
                 MessageManager.createXML("header", "WAIT_START_REQUEST")
         ), getSendStream()));
+        Client.clientWindow.createWaitingCountdown();
     }
 
     private void talkWithServer() {

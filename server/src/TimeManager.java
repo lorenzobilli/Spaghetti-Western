@@ -27,21 +27,19 @@ public class TimeManager implements Callable<Boolean> {
         countdown = new TimerTask() {
             @Override
             public void run() {
-                duration.minusSeconds(1);
-                if (duration.getSeconds() % 60 == 0) {
-                    Server.connectionManager.broadcastMessage(new Message(
-                            MessageType.TIME,
-                            "SERVER",
-                            MessageManager.createXML(
-                                    new ArrayList<String>(Arrays.asList(
-                                            "header", "content"
-                                    )),
-                                    new ArrayList<String>(Arrays.asList(
-                                            "WAIT_REMAINING", Server.remainingWaitTime.toString()
-                                    ))
-                            )
-                    ));
-                }
+                duration = duration.minusSeconds(1);
+                Server.connectionManager.broadcastMessage(new Message(
+                        MessageType.TIME,
+                        "SERVER",
+                        MessageManager.createXML(
+                                new ArrayList<>(Arrays.asList(
+                                       "header", "content"
+                                )),
+                                new ArrayList<>(Arrays.asList(
+                                        "WAIT_REMAINING", String.valueOf(duration.getSeconds())
+                                ))
+                        )
+                ));
                 if (duration.isZero()) {
                     this.cancel();
                 }
@@ -49,18 +47,9 @@ public class TimeManager implements Callable<Boolean> {
         };
     }
 
-    public Duration getRemainingTime() {
-        return duration;
-    }
-
     @Override
     public Boolean call() throws Exception {
         timer.scheduleAtFixedRate(countdown, 0, 1000);      // Repeat every second
         return false;
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(duration.getSeconds());
     }
 }

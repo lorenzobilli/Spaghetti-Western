@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.concurrent.Future;
 
 /**
  * ServerEventHandler class
@@ -46,18 +45,10 @@ public class ServerEventHandler extends EventHandler {
     @Override
     protected Message handleTime() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_START_REQUEST")) {
-            return new Message(
-                    MessageType.TIME,
-                    "SERVER",
-                    message.getMessageSender(),
-                    MessageManager.createXML(
-                            new ArrayList<String>(Arrays.asList(
-                                    "header", "content"
-                            )),
-                            new ArrayList<String>(Arrays.asList(
-                                    "WAIT_REMAINING", Server.remainingWaitTime.toString())
-                            ))
-            );
+            if (UserManager.getConnectedUsersNumber() == 1) {
+                Future<Boolean> runWaitTime = Server.globalThreadPool.submit(Server.remainingWaitTime);
+                Server.consolePrintLine("[*] Session wait timer started");
+            }
         }
         return null;
     }
