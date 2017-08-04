@@ -55,15 +55,25 @@ public class ClientConnectionManager implements Runnable {
             }
             // In this phase we still have to compose a message without the handler
             Message initCurrentSession = new Message(
-                    MessageType.SESSION, Client.getUsername(), "Start session request"
+                    MessageType.SESSION,
+                    Client.getUsername(),
+                    MessageManager.createXML("header", "SESSION_START_REQUEST")
             );
             try {
                 // Send request message to the server
                 Future send = Client.globalThreadPool.submit(new Sender(initCurrentSession, getSendStream()));
+                Message response = null;
+                boolean sessionResponse = false;
+                do {
+                    Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
+                    response = receive.get();
+                    if (response.getMessageType() == MessageType.SESSION) {     // Accept only session related messages
+                        sessionResponse = true;
+                    }
+                } while (!sessionResponse);
                 // Wait for response message and pass it to the handler
-                Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
-                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
-                // Retrieve generated message from handler, check if server has accepted the choosen username
+                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(response));
+                // Retrieve generated message from handler, check if server has accepted the chosen username
                 Message message = handle.get();
                 if (message != null) {
                     // Show success message dialog
@@ -86,6 +96,12 @@ public class ClientConnectionManager implements Runnable {
             }
         }
         Client.chatWindow = new ChatWindow();   // Spawning chat window
+        Future send = Client.globalThreadPool.submit(new Sender(new Message(
+                MessageType.TIME,
+                Client.getUsername(),
+                MessageManager.createXML("header", "WAIT_START_REQUEST")
+        ), getSendStream()));
+        Client.clientWindow.createWaitingCountdown();
     }
 
     private void talkWithServer() {
@@ -111,7 +127,9 @@ public class ClientConnectionManager implements Runnable {
     private void shutdownClient() {
         System.out.println("[*] Terminating current client session...");
         Message terminateCurrentSession = new Message(
-                MessageType.SESSION, Client.getUsername(), "Stop session request"
+                MessageType.SESSION,
+                Client.getUsername(),
+                MessageManager.createXML("header", "SESSION_STOP_REQUEST")
         );
         try {
             Future send = Client.globalThreadPool.submit(new Sender(terminateCurrentSession, getSendStream()));

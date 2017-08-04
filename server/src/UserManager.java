@@ -11,7 +11,7 @@ public class UserManager {
         if (user == null) {
             throw new InvalidParameterException("Invalid parameter given");
         }
-        if (!isUserConnected(user)) {
+        if (connectedUsers.isEmpty() || !isUserConnected(user)) {
             connectedUsers.add(user);
             return true;
         }
@@ -36,5 +36,9 @@ public class UserManager {
             }
         }
         return false;
+    }
+
+    public static int getConnectedUsersNumber() {
+        return connectedUsers.size();
     }
 }

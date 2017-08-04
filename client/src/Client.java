@@ -1,4 +1,5 @@
 import java.security.InvalidParameterException;
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -6,6 +7,9 @@ import java.util.concurrent.Executors;
  * Client class
  */
 public class Client {
+
+    public final static Duration waitTime = Duration.ofMinutes(5);
+    public final static Duration playTime = Duration.ofMinutes(10);
 
     public static MainWindow clientWindow;
     public static ChatWindow chatWindow;

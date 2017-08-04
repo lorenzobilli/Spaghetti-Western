@@ -51,6 +51,12 @@ public class ServerConnectionManager implements Runnable {
         return false;
     }
 
+    public void broadcastMessage(Message message) {
+        for (ClientHandler connectedClient : clientHandlers) {
+            Future send = Server.globalThreadPool.submit(new Sender(message, connectedClient.getSendStream()));
+        }
+    }
+
     public void shutdown() {
         keepServerAlive = false;
         executeServerShutdown();
