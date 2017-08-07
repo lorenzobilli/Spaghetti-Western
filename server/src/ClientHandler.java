@@ -61,6 +61,14 @@ public class ClientHandler implements Runnable {
                     connectedUser = message.getMessageReceiver();
                     Server.consolePrintLine("[*] New client registered as: " + connectedUser);
                     isUsernameAccepted = true;
+                } else {
+                    Server.consolePrint("[!] Attempt to log in from client " + message.getMessageReceiver() +
+                    " has been refused: ");
+                    if (MessageManager.convertXML("header", message.getMessageContent()).equals("ALREADY_CONNECTED")) {
+                        Server.consolePrintLine("username already in use");
+                    } else if (MessageManager.convertXML("header", message.getMessageContent()).equals("MAX_NUM_REACHED")) {
+                        Server.consolePrintLine("max number of concurrent users reached");
+                    }
                 }
                 Future send = Server.globalThreadPool.submit(new Sender(message, sendStream));
             } catch (InterruptedException | ExecutionException e) {

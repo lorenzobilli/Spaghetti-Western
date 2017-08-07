@@ -75,19 +75,29 @@ public class ClientConnectionManager implements Runnable {
                 Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(response));
                 // Retrieve generated message from handler, check if server has accepted the chosen username
                 Message message = handle.get();
-                if (message != null) {
+                if (message == null) {
+                    throw new RuntimeException("Invalid message received");
+                }
+                if (MessageManager.convertXML("header", message.getMessageContent()).equals("ACCEPTED")) {
                     // Show success message dialog
                     JOptionPane.showMessageDialog(
                             null, "Successfully registered as: " + Client.getUsername(),
                             "Success!", JOptionPane.INFORMATION_MESSAGE
                     );
                     break;
-                } else {
+                } else if (MessageManager.convertXML("header", message.getMessageContent()).equals("ALREADY_CONNECTED")) {
                     // Show error message dialog
                     JOptionPane.showMessageDialog(
                             null, "The choosen username already exist.",
                             "Failed!", JOptionPane.ERROR_MESSAGE
                     );
+                } else if (MessageManager.convertXML("header", message.getMessageContent()).equals("MAX_NUM_REACHED")) {
+                    // Show max number of users reached advice
+                    JOptionPane.showMessageDialog(
+                            null, "Max number of players reached. Please try again later.",
+                            "Failed!", JOptionPane.ERROR_MESSAGE
+                    );
+                    System.exit(0);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();

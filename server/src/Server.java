@@ -7,8 +7,9 @@ import java.util.concurrent.Executors;
  */
 public class Server {
 
-    public final static Duration waitTime = Duration.ofMinutes(5);
-    public final static Duration playTime = Duration.ofMinutes(10);
+    public final static int MAX_PLAYERS = 50;
+    public final static Duration WAIT_TIME = Duration.ofMinutes(5);
+    public final static Duration PLAY_TIME = Duration.ofMinutes(10);
 
     private static MainWindow serverWindow;
     public static ServerConnectionManager connectionManager;
@@ -22,8 +23,8 @@ public class Server {
         connectionManager = new ServerConnectionManager();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
-        remainingWaitTime = new TimeManager(waitTime);
-        remainingPlayTime = new TimeManager(playTime);
+        remainingWaitTime = new TimeManager(WAIT_TIME);
+        remainingPlayTime = new TimeManager(PLAY_TIME);
     }
 
     public static void consolePrint(String message) {

@@ -12,20 +12,31 @@ public class ServerEventHandler extends EventHandler {
     @Override
     protected Message handleSession() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("SESSION_START_REQUEST")) {
-            if (UserManager.addUser(message.getMessageSender())) {
-                return new Message(
-                        MessageType.SESSION,
-                        "SERVER",
-                        message.getMessageSender(),
-                        MessageManager.createXML("header", "ACCEPTED")
-                );
-            } else {
-                return new Message(
-                        MessageType.SESSION,
-                        "SERVER",
-                        message.getMessageSender(),
-                        MessageManager.createXML("header", "REFUSED")
-                );
+            UserManager.Status userManagerStatus = UserManager.addUser(message.getMessageSender());
+            switch (userManagerStatus) {
+                case SUCCESS:
+                    return new Message(
+                            MessageType.SESSION,
+                            "SERVER",
+                            message.getMessageSender(),
+                            MessageManager.createXML("header", "ACCEPTED")
+                    );
+                case ALREADY_REGISTERED:
+                    return new Message(
+                            MessageType.SESSION,
+                            "SERVER",
+                            message.getMessageSender(),
+                            MessageManager.createXML("header", "ALREADY_CONNECTED")
+                    );
+                case MAX_NUM_REACHED:
+                    return new Message(
+                            MessageType.SESSION,
+                            "SERVER",
+                            message.getMessageSender(),
+                            MessageManager.createXML("header", "MAX_NUM_REACHED")
+                    );
+                default:
+                    return null;
             }
         } else if (MessageManager.convertXML("header", message.getMessageContent()).equals("SESSION_STOP_REQUEST")) {
             //TODO: implement stop session request from a client

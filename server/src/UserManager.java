@@ -7,15 +7,24 @@ import java.util.ArrayList;
 public class UserManager {
     private static ArrayList<String> connectedUsers = new ArrayList<>();
 
-    public static boolean addUser(String user) {
+    public enum Status {
+        SUCCESS,
+        ALREADY_REGISTERED,
+        MAX_NUM_REACHED
+    }
+
+    public static Status addUser(String user) {
         if (user == null) {
             throw new InvalidParameterException("Invalid parameter given");
         }
         if (connectedUsers.isEmpty() || !isUserConnected(user)) {
+            if (connectedUsers.size() >= Server.MAX_PLAYERS) {
+                return Status.MAX_NUM_REACHED;
+            }
             connectedUsers.add(user);
-            return true;
+            return Status.SUCCESS;
         }
-        return false;
+        return Status.ALREADY_REGISTERED;
     }
 
     public static boolean removeUser(String user) {
