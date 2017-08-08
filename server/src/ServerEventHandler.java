@@ -11,7 +11,9 @@ public class ServerEventHandler extends EventHandler {
 
     @Override
     protected Message handleSession() {
-        if (MessageManager.convertXML("header", message.getMessageContent()).equals("SESSION_START_REQUEST")) {
+        if (MessageManager.convertXML(
+                "header",
+                message.getMessageContent()).equals("SESSION_START_REQUEST")) {
             UserManager.Status userManagerStatus = UserManager.addUser(message.getMessageSender());
             switch (userManagerStatus) {
                 case SUCCESS:
@@ -38,7 +40,9 @@ public class ServerEventHandler extends EventHandler {
                 default:
                     return null;
             }
-        } else if (MessageManager.convertXML("header", message.getMessageContent()).equals("SESSION_STOP_REQUEST")) {
+        } else if (MessageManager.convertXML(
+                "header",
+                message.getMessageContent()).equals("SESSION_STOP_REQUEST")) {
             //TODO: implement stop session request from a client
             if (!UserManager.removeUser(message.getMessageSender())) {
                 throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");

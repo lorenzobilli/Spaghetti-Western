@@ -78,20 +78,26 @@ public class ClientConnectionManager implements Runnable {
                 if (message == null) {
                     throw new RuntimeException("Invalid message received");
                 }
-                if (MessageManager.convertXML("header", message.getMessageContent()).equals("ACCEPTED")) {
+                if (MessageManager.convertXML(
+                        "header",
+                        message.getMessageContent()).equals("ACCEPTED")) {
                     // Show success message dialog
                     JOptionPane.showMessageDialog(
                             null, "Successfully registered as: " + Client.getUsername(),
                             "Success!", JOptionPane.INFORMATION_MESSAGE
                     );
                     break;
-                } else if (MessageManager.convertXML("header", message.getMessageContent()).equals("ALREADY_CONNECTED")) {
+                } else if (MessageManager.convertXML(
+                        "header",
+                        message.getMessageContent()).equals("ALREADY_CONNECTED")) {
                     // Show error message dialog
                     JOptionPane.showMessageDialog(
                             null, "The choosen username already exist.",
                             "Failed!", JOptionPane.ERROR_MESSAGE
                     );
-                } else if (MessageManager.convertXML("header", message.getMessageContent()).equals("MAX_NUM_REACHED")) {
+                } else if (MessageManager.convertXML(
+                        "header",
+                        message.getMessageContent()).equals("MAX_NUM_REACHED")) {
                     // Show max number of users reached advice
                     JOptionPane.showMessageDialog(
                             null, "Max number of players reached. Please try again later.",
