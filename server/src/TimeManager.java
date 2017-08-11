@@ -30,7 +30,7 @@ public class TimeManager implements Callable<Boolean> {
                 duration = duration.minusSeconds(1);
                 Server.connectionManager.broadcastMessage(new Message(
                         MessageType.TIME,
-                        "SERVER",
+                        new Player("SERVER", Player.Team.SERVER),
                         MessageManager.createXML(
                                 new ArrayList<>(Arrays.asList(
                                        "header", "content"

@@ -56,7 +56,7 @@ public class ClientConnectionManager implements Runnable {
             // In this phase we still have to compose a message without the handler
             Message initCurrentSession = new Message(
                     MessageType.SESSION,
-                    Client.getUsername(),
+                    Client.getPlayer(),
                     MessageManager.createXML("header", "SESSION_START_REQUEST")
             );
             try {
@@ -83,7 +83,7 @@ public class ClientConnectionManager implements Runnable {
                         message.getMessageContent()).equals("ACCEPTED")) {
                     // Show success message dialog
                     JOptionPane.showMessageDialog(
-                            null, "Successfully registered as: " + Client.getUsername(),
+                            null, "Successfully registered as: " + Client.getPlayer().getName(),
                             "Success!", JOptionPane.INFORMATION_MESSAGE
                     );
                     break;
@@ -114,7 +114,7 @@ public class ClientConnectionManager implements Runnable {
         Client.chatWindow = new ChatWindow();   // Spawning chat window
         Future send = Client.globalThreadPool.submit(new Sender(new Message(
                 MessageType.TIME,
-                Client.getUsername(),
+                Client.getPlayer(),
                 MessageManager.createXML("header", "WAIT_START_REQUEST")
         ), getSendStream()));
         Client.clientWindow.createWaitingCountdown();
@@ -144,7 +144,7 @@ public class ClientConnectionManager implements Runnable {
         System.out.println("[*] Terminating current client session...");
         Message terminateCurrentSession = new Message(
                 MessageType.SESSION,
-                Client.getUsername(),
+                Client.getPlayer(),
                 MessageManager.createXML("header", "SESSION_STOP_REQUEST")
         );
         try {

@@ -42,7 +42,7 @@ public class LoginDialog {
         // Setting up login button
         JButton loginButton = new JButton("Login");
         loginButton.addActionListener(e -> {
-            Client.setUsername(usernameTextField.getText().trim());
+            Client.setPlayer(new Player(usernameTextField.getText().trim(), Player.Team.GOOD));     //TODO: Handle team selection
             dialog.dispose();
         });
         lowerPanel.add(loginButton);

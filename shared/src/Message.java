@@ -6,11 +6,11 @@ import java.security.InvalidParameterException;
 public class Message {
 
     private MessageType messageType;
-    private String messageSender;
-    private String messageReceiver;
+    private Player messageSender;
+    private Player messageReceiver;
     private String messageContent;
 
-    public Message(MessageType messageType, String messageSender, String messageReceiver, String messageContent) {
+    public Message(MessageType messageType, Player messageSender, Player messageReceiver, String messageContent) {
         if (messageType == null) {
             throw new InvalidParameterException("MessageType cannot be null");
         }
@@ -29,7 +29,7 @@ public class Message {
         this.messageContent = messageContent;
     }
 
-    public Message(MessageType messageType, String messageSender, String messageContent) {
+    public Message(MessageType messageType, Player messageSender, String messageContent) {
         if (messageType == null) {
             throw new InvalidParameterException("MessageType cannot be null");
         }
@@ -41,7 +41,7 @@ public class Message {
         }
         this.messageType = messageType;
         this.messageSender = messageSender;
-        this.messageReceiver = "SERVER";
+        this.messageReceiver = new Player("SERVER", Player.Team.SERVER);
         this.messageContent = messageContent;
     }
 
@@ -49,11 +49,11 @@ public class Message {
         return this.messageType;
     }
 
-    public String getMessageSender() {
+    public Player getMessageSender() {
         return this.messageSender;
     }
 
-    public String getMessageReceiver() {
+    public Player getMessageReceiver() {
         return this.messageReceiver;
     }
 

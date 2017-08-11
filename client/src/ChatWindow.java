@@ -14,7 +14,7 @@ public class ChatWindow {
     public ChatWindow() {
 
         // Window settings
-        JFrame window = new JFrame(Client.getUsername());
+        JFrame window = new JFrame(Client.getPlayer().getName());
         window.setSize(400, 700);
 
         // Setting JFrame main layout manager
@@ -60,11 +60,11 @@ public class ChatWindow {
     }
 
     private void sendMessage() {
-        chatView.append(" [" + Client.getUsername() + "]: " + chatField.getText() + "\n");
+        chatView.append(" [" + Client.getPlayer().getName() + "]: " + chatField.getText() + "\n");
         Message chatMessage = new Message(
                 MessageType.CHAT,
-                Client.getUsername(),
-                chatSelectionField.getText(),
+                Client.getPlayer(),
+                new Player(chatSelectionField.getText(), Player.Team.GOOD),     //TODO: Handle team here
                 MessageManager.createXML("content", chatField.getText())
         );
         Future sendMessage = Client.globalThreadPool.submit(
@@ -74,7 +74,7 @@ public class ChatWindow {
     }
 
     public void updateChat(Message message) {
-        chatView.append(" [" + message.getMessageSender() + "]: " +
+        chatView.append(" [" + message.getMessageSender().getName() + "]: " +
                 MessageManager.convertXML("content", message.getMessageContent()) + "\n"
         );
     }

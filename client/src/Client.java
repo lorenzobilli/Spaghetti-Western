@@ -15,7 +15,7 @@ public class Client {
     public static ChatWindow chatWindow;
     public static ClientConnectionManager connectionManager;
     public static Thread connectionThread;
-    private static String username;
+    private static Player player;   //TODO: Handle refactoring of this field
 
     public static ExecutorService globalThreadPool;
 
@@ -31,14 +31,14 @@ public class Client {
         connectionThread.start();
     }
 
-    public static String getUsername() {
-        return username;
+    public static Player getPlayer() {
+        return player;
     }
 
-    public static void setUsername(String username) {
-        if (username == null) {
-            throw new InvalidParameterException("Client username cannot be null");
+    public static void setPlayer(Player player) {
+        if (player == null) {
+            throw new InvalidParameterException("Client player cannot be null");
         }
-        Client.username = username;
+        Client.player = player;
     }
 }
