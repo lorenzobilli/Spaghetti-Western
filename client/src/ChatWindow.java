@@ -9,7 +9,6 @@ public class ChatWindow {
 
     private JTextArea chatView;
     private JTextArea chatField;
-    private JTextArea chatSelectionField;
 
     public ChatWindow() {
 
@@ -20,17 +19,6 @@ public class ChatWindow {
         // Setting JFrame main layout manager
         Container content = window.getContentPane();
         content.setLayout(new BorderLayout());
-
-        // Configuring upper part of the window
-        JPanel chatSelector = new JPanel();
-        chatSelector.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        chatSelector.setLayout(new BorderLayout());
-        content.add(chatSelector, BorderLayout.PAGE_START);
-
-
-        chatSelectionField = new JTextArea();
-        chatSelectionField.setEditable(true);
-        chatSelector.add(chatSelectionField, BorderLayout.CENTER);
 
         // Configuring central part of the window
         chatView = new JTextArea();
@@ -64,7 +52,6 @@ public class ChatWindow {
         Message chatMessage = new Message(
                 MessageType.CHAT,
                 Client.getPlayer(),
-                new Player(chatSelectionField.getText(), Player.Team.GOOD),     //TODO: Handle team here
                 MessageManager.createXML("content", chatField.getText())
         );
         Future sendMessage = Client.globalThreadPool.submit(

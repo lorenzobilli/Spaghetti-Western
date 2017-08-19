@@ -41,14 +41,25 @@ public class ServerConnectionManager implements Runnable {
         }
     }
 
-    public boolean sendMessage(Player player, Message message) {
+    public boolean sendMessageToPlayer(Player player, Message message) {
         for (ClientHandler connectedPlayer : clientHandlers) {
-            if (connectedPlayer.getConnectedPlayer().getTeam().equals(player.getTeam())) {
+            if (connectedPlayer.getConnectedPlayer().getName().equals(player.getName())) {
                 Future send = Server.globalThreadPool.submit(new Sender(message, connectedPlayer.getSendStream()));
                 return true;
             }
         }
         return false;
+    }
+
+    public void sendMessageToTeam(Player player, Message message) {
+        for (ClientHandler connectedPlayer : clientHandlers) {
+            if (connectedPlayer.getConnectedPlayer().getTeam().equals(player.getTeam())) {
+                // Avoid sending message also to the original sender
+                if (!connectedPlayer.getConnectedPlayer().getName().equals(player.getName())) {
+                    Future send = Server.globalThreadPool.submit(new Sender(message, connectedPlayer.getSendStream()));
+                }
+            }
+        }
     }
 
     public void broadcastMessage(Message message) {
