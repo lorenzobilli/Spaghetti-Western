@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
  */
 public class Server {
 
-    public final static int MAX_PLAYERS = 50;
+    public final static int MAX_PLAYERS = 30;
     public final static Duration WAIT_TIME = Duration.ofMinutes(5);
     public final static Duration PLAY_TIME = Duration.ofMinutes(10);
 
