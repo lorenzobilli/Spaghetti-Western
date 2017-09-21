@@ -8,7 +8,7 @@ import java.security.InvalidParameterException;
  */
 public abstract class Scenery {
 
-    private Graph<Place, Path> sceneryGraph = new SimpleWeightedGraph<>(Path.class);
+    protected Graph<Place, Path> sceneryGraph = new SimpleWeightedGraph<>(Path.class);
 
     private enum SceneryEvents {
         PLAYER_MOVED,
