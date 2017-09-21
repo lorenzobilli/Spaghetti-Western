@@ -79,6 +79,27 @@ public class Place {
         return playerRemoved;
     }
 
+    public boolean isPlayerPresent(Player player) {
+        if (player == null) {
+            throw new InvalidParameterException("Player to be checked cannot be null");
+        }
+
+        boolean playerFound = false;
+        switch (player.getTeam()) {
+            case GOOD:
+                if (goodPlayers.contains(player)) {
+                    playerFound = true;
+                }
+                break;
+            case BAD:
+                if (badPlayers.contains(player)) {
+                    playerFound = true;
+                }
+                break;
+        }
+        return playerFound;
+    }
+
     public boolean getClashStatus() {
         return clashEnabled;
     }
