@@ -42,6 +42,11 @@ public class TimeManager implements Callable<Boolean> {
                 ));
                 if (duration.isZero()) {
                     this.cancel();
+                    Server.connectionManager.broadcastMessage(new Message(
+                            MessageType.TIME,
+                            new Player("SERVER", Player.Team.SERVER),
+                            MessageManager.createXML("header", "WAIT_TIMEOUT")
+                    ));
                 }
             }
         };

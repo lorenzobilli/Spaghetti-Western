@@ -104,6 +104,15 @@ public class ClientConnectionManager implements Runnable {
                             "Failed!", JOptionPane.ERROR_MESSAGE
                     );
                     System.exit(0);
+                } else if (MessageManager.convertXML(
+                        "header",
+                        message.getMessageContent()).equals("SESSION_RUNNING")) {
+                    // Show session running message dialog
+                    JOptionPane.showMessageDialog(
+                            null, "A play session is already running. Please try again later.",
+                            "Failed!", JOptionPane.ERROR_MESSAGE
+                    );
+                    System.exit(0);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();

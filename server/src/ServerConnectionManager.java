@@ -13,6 +13,7 @@ public class ServerConnectionManager implements Runnable {
     private ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
     private ArrayList<Thread> clientThreads = new ArrayList<>();
     private volatile boolean keepServerAlive = true;
+    private static boolean sessionRunning = false;
 
     @Override
     public void run() {
@@ -24,6 +25,14 @@ public class ServerConnectionManager implements Runnable {
             e.printStackTrace();
         }
         acceptIncomingConnections();
+    }
+
+    public boolean isSessionRunning() {
+        return sessionRunning;
+    }
+
+    public void setSessionRunning(boolean running) {
+        sessionRunning = running;
     }
 
     private void acceptIncomingConnections() {

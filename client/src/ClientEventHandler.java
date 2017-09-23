@@ -11,7 +11,8 @@ public class ClientEventHandler extends EventHandler {
     protected Message handleSession() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("ACCEPTED") ||
                 MessageManager.convertXML("header", message.getMessageContent()).equals("ALREADY_CONNECTED") ||
-                MessageManager.convertXML("header", message.getMessageContent()).equals("MAX_NUM_REACHED")) {
+                MessageManager.convertXML("header", message.getMessageContent()).equals("MAX_NUM_REACHED") ||
+                MessageManager.convertXML("header", message.getMessageContent()).equals("SESSION_RUNNING")) {
             return message;
         } else {
             return null;
@@ -24,7 +25,10 @@ public class ClientEventHandler extends EventHandler {
             int secondsRemaining = Integer.parseInt(
                     MessageManager.convertXML("content", message.getMessageContent())
             );
-            Client.clientWindow.updateWaitingCountdown(secondsRemaining / 60);
+            Client.clientWindow.updateWaitingCountdown((secondsRemaining / 60) + 1);   // +1 to avoid round down
+        }
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_TIMEOUT")) {
+            Client.clientWindow.prepareSceneryLoad();
         }
         return null;
     }

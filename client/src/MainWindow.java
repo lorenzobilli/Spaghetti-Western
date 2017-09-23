@@ -68,6 +68,18 @@ public class MainWindow {
     }
 
     public void updateWaitingCountdown(int minutes) {
-        remainingWaitTime.setText(String.valueOf(minutes) + " minutes");
+        String label;
+        if (minutes > 1) {
+            label = "minutes";
+        } else {
+            label = "minute";
+        }
+        remainingWaitTime.setText(String.valueOf(minutes) + " " + label);
+    }
+
+    public void prepareSceneryLoad() {
+        glass.remove(remainingWaitTime);
+        glass.updateUI();
+        remainingAdvice.setText("Get ready!");
     }
 }

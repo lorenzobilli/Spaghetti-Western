@@ -11,12 +11,16 @@ public class PlayerManager {
     public enum Status {
         SUCCESS,
         ALREADY_REGISTERED,
-        MAX_NUM_REACHED
+        MAX_NUM_REACHED,
+        SESSION_RUNNING
     }
 
     public static Status addPlayer(Player player) {
         if (player == null) {
             throw new InvalidParameterException("Invalid parameter given");
+        }
+        if (Server.connectionManager.isSessionRunning()) {
+            return Status.SESSION_RUNNING;
         }
         if (connectedPlayers.isEmpty() || !isUserConnected(player)) {
             if (connectedPlayers.size() >= Server.MAX_PLAYERS) {

@@ -17,6 +17,7 @@ public class Server {
     public static ExecutorService globalThreadPool;
     public static TimeManager remainingWaitTime;
     public static TimeManager remainingPlayTime;
+    private static Scenery currentScenery;
 
     public static void main(String[] args) {
         serverWindow = new MainWindow("Spaghetti Western server");
