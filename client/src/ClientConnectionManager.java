@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -18,6 +19,7 @@ public class ClientConnectionManager implements Runnable {
     private Socket socket;
     private PrintWriter sendStream;
     private BufferedReader receiveStream;
+    private SceneryManager sessionScenery;
 
     @Override
     public void run() {
@@ -55,29 +57,64 @@ public class ClientConnectionManager implements Runnable {
             }
             // In this phase we still have to compose a message without the handler
             Message initCurrentSession = new Message(
-                    MessageType.SESSION, Client.getUsername(), "Start session request"
+                    MessageType.SESSION,
+                    Client.getPlayer(),
+                    MessageManager.createXML("header", "SESSION_START_REQUEST")
             );
             try {
                 // Send request message to the server
                 Future send = Client.globalThreadPool.submit(new Sender(initCurrentSession, getSendStream()));
+                Message response = null;
+                boolean sessionResponse = false;
+                do {
+                    Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
+                    response = receive.get();
+                    if (response.getMessageType() == MessageType.SESSION) {     // Accept only session related messages
+                        sessionResponse = true;
+                    }
+                } while (!sessionResponse);
                 // Wait for response message and pass it to the handler
-                Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
-                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
-                // Retrieve generated message from handler, check if server has accepted the choosen username
+                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(response));
+                // Retrieve generated message from handler, check if server has accepted the chosen username
                 Message message = handle.get();
-                if (message != null) {
+                if (message == null) {
+                    throw new RuntimeException("Invalid message received");
+                }
+                if (MessageManager.convertXML(
+                        "header",
+                        message.getMessageContent()).equals("ACCEPTED")) {
                     // Show success message dialog
                     JOptionPane.showMessageDialog(
-                            null, "Successfully registered as: " + Client.getUsername(),
+                            null, "Successfully registered as: " + Client.getPlayer().getName(),
                             "Success!", JOptionPane.INFORMATION_MESSAGE
                     );
                     break;
-                } else {
+                } else if (MessageManager.convertXML(
+                        "header",
+                        message.getMessageContent()).equals("ALREADY_CONNECTED")) {
                     // Show error message dialog
                     JOptionPane.showMessageDialog(
                             null, "The choosen username already exist.",
                             "Failed!", JOptionPane.ERROR_MESSAGE
                     );
+                } else if (MessageManager.convertXML(
+                        "header",
+                        message.getMessageContent()).equals("MAX_NUM_REACHED")) {
+                    // Show max number of users reached advice
+                    JOptionPane.showMessageDialog(
+                            null, "Max number of players reached. Please try again later.",
+                            "Failed!", JOptionPane.ERROR_MESSAGE
+                    );
+                    System.exit(0);
+                } else if (MessageManager.convertXML(
+                        "header",
+                        message.getMessageContent()).equals("SESSION_RUNNING")) {
+                    // Show session running message dialog
+                    JOptionPane.showMessageDialog(
+                            null, "A play session is already running. Please try again later.",
+                            "Failed!", JOptionPane.ERROR_MESSAGE
+                    );
+                    System.exit(0);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
@@ -85,7 +122,12 @@ public class ClientConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
-        Client.chatWindow = new ChatWindow();   // Spawning chat window
+        Future send = Client.globalThreadPool.submit(new Sender(new Message(
+                MessageType.TIME,
+                Client.getPlayer(),
+                MessageManager.createXML("header", "WAIT_START_REQUEST")
+        ), getSendStream()));
+        Client.clientWindow.createWaitingCountdown();
     }
 
     private void talkWithServer() {
@@ -108,10 +150,24 @@ public class ClientConnectionManager implements Runnable {
         //shutdownClient();
     }
 
+    public SceneryManager getSceneryManager() {
+        return sessionScenery;
+    }
+
+    public void setScenery(Scenery scenery) {
+        if (scenery == null) {
+            throw new InvalidParameterException("Scenery cannot be null");
+        }
+        sessionScenery = new SceneryManager(scenery);
+        Client.clientWindow.loadScenery(scenery);
+    }
+
     private void shutdownClient() {
         System.out.println("[*] Terminating current client session...");
         Message terminateCurrentSession = new Message(
-                MessageType.SESSION, Client.getUsername(), "Stop session request"
+                MessageType.SESSION,
+                Client.getPlayer(),
+                MessageManager.createXML("header", "SESSION_STOP_REQUEST")
         );
         try {
             Future send = Client.globalThreadPool.submit(new Sender(terminateCurrentSession, getSendStream()));

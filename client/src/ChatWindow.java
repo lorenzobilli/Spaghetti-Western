@@ -9,28 +9,16 @@ public class ChatWindow {
 
     private JTextArea chatView;
     private JTextArea chatField;
-    private JTextArea chatSelectionField;
 
     public ChatWindow() {
 
         // Window settings
-        JFrame window = new JFrame(Client.getUsername());
+        JFrame window = new JFrame(Client.getPlayer().getName());
         window.setSize(400, 700);
 
         // Setting JFrame main layout manager
         Container content = window.getContentPane();
         content.setLayout(new BorderLayout());
-
-        // Configuring upper part of the window
-        JPanel chatSelector = new JPanel();
-        chatSelector.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        chatSelector.setLayout(new BorderLayout());
-        content.add(chatSelector, BorderLayout.PAGE_START);
-
-
-        chatSelectionField = new JTextArea();
-        chatSelectionField.setEditable(true);
-        chatSelector.add(chatSelectionField, BorderLayout.CENTER);
 
         // Configuring central part of the window
         chatView = new JTextArea();
@@ -60,15 +48,21 @@ public class ChatWindow {
     }
 
     private void sendMessage() {
-        chatView.append(" [" + Client.getUsername() + "]: " + chatField.getText() + "\n");
+        chatView.append(" [" + Client.getPlayer().getName() + "]: " + chatField.getText() + "\n");
         Message chatMessage = new Message(
-                MessageType.CHAT, Client.getUsername(), chatSelectionField.getText(), chatField.getText()
+                MessageType.CHAT,
+                Client.getPlayer(),
+                MessageManager.createXML("content", chatField.getText())
         );
-        Future sendMessage = Client.globalThreadPool.submit(new Sender(chatMessage, Client.connectionManager.getSendStream()));
+        Future sendMessage = Client.globalThreadPool.submit(
+                new Sender(chatMessage, Client.connectionManager.getSendStream())
+        );
         chatField.setText("");
     }
 
     public void updateChat(Message message) {
-        chatView.append(" [" + message.getMessageSender() + "]: " + message.getMessageContent() + "\n");
+        chatView.append(" [" + message.getMessageSender().getName() + "]: " +
+                MessageManager.convertXML("content", message.getMessageContent()) + "\n"
+        );
     }
 }

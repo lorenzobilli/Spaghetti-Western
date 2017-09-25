@@ -22,6 +22,9 @@ public abstract class EventHandler implements Callable<Message> {
             case SESSION:
                 result = handleSession();
                 break;
+            case TIME:
+                result = handleTime();
+                break;
             case CHAT:
                 try {
                     result = handleChat();
@@ -30,6 +33,9 @@ public abstract class EventHandler implements Callable<Message> {
                     e.getCause();
                     e.printStackTrace();
                 }
+                break;
+            case SCENERY:
+                result = handleScenery();
                 break;
             default:
                 result = null;
@@ -40,6 +46,10 @@ public abstract class EventHandler implements Callable<Message> {
 
     protected abstract Message handleSession();
 
+    protected abstract Message handleTime();
+
     protected abstract Message handleChat() throws Exception;
+
+    protected abstract Message handleScenery();
 
 }

@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Future;
 
 /**
@@ -13,6 +14,8 @@ public class ServerConnectionManager implements Runnable {
     private ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
     private ArrayList<Thread> clientThreads = new ArrayList<>();
     private volatile boolean keepServerAlive = true;
+    private static boolean sessionRunning = false;
+    private static SceneryManager sessionScenery;
 
     @Override
     public void run() {
@@ -24,6 +27,14 @@ public class ServerConnectionManager implements Runnable {
             e.printStackTrace();
         }
         acceptIncomingConnections();
+    }
+
+    public boolean isSessionRunning() {
+        return sessionRunning;
+    }
+
+    public void setSessionRunning(boolean running) {
+        sessionRunning = running;
     }
 
     private void acceptIncomingConnections() {
@@ -41,14 +52,77 @@ public class ServerConnectionManager implements Runnable {
         }
     }
 
-    public boolean sendMessage(String client, Message message) {
-        for (ClientHandler connectedClient : clientHandlers) {
-            if (connectedClient.getConnectedUser().equals(client)) {
-                Future send = Server.globalThreadPool.submit(new Sender(message, connectedClient.getSendStream()));
+    public boolean sendMessageToPlayer(Player player, Message message) {
+        for (ClientHandler connectedPlayer : clientHandlers) {
+            if (connectedPlayer.getConnectedPlayer().getName().equals(player.getName())) {
+                Future send = Server.globalThreadPool.submit(new Sender(message, connectedPlayer.getSendStream()));
                 return true;
             }
         }
         return false;
+    }
+
+    public void sendMessageToTeam(Player player, Message message) {
+        for (ClientHandler connectedPlayer : clientHandlers) {
+            if (connectedPlayer.getConnectedPlayer().getTeam().equals(player.getTeam())) {
+                // Avoid sending message also to the original sender
+                if (!connectedPlayer.getConnectedPlayer().getName().equals(player.getName())) {
+                    Future send = Server.globalThreadPool.submit(new Sender(message, connectedPlayer.getSendStream()));
+                }
+            }
+        }
+    }
+
+    public void broadcastMessage(Message message) {
+        for (ClientHandler connectedClient : clientHandlers) {
+            Future send = Server.globalThreadPool.submit(new Sender(message, connectedClient.getSendStream()));
+        }
+    }
+
+    public void chooseScenery() {
+        if (PlayerManager.getConnectedUsersNumber() <= 10) {
+            sessionScenery = new SceneryManager(new SmallScenery());
+            Server.connectionManager.broadcastMessage(new Message(
+                    MessageType.SCENERY,
+                    new Player("SERVER", Player.Team.SERVER),
+                    MessageManager.createXML(
+                            new ArrayList<>(Arrays.asList(
+                                    "header", "content"
+                            )),
+                            new ArrayList<>(Arrays.asList(
+                                    "CHOOSEN_SCENERY", "SmallScenery"
+                            ))
+                    )
+            ));
+        } else if (PlayerManager.getConnectedUsersNumber() > 10 && PlayerManager.getConnectedUsersNumber() <= 20) {
+            sessionScenery = new SceneryManager(new MediumScenery());
+            Server.connectionManager.broadcastMessage(new Message(
+                    MessageType.SCENERY,
+                    new Player("SERVER", Player.Team.SERVER),
+                    MessageManager.createXML(
+                            new ArrayList<>(Arrays.asList(
+                                    "header", "content"
+                            )),
+                            new ArrayList<>(Arrays.asList(
+                                    "CHOOSEN_SCENERY", "MediumScenery"
+                            ))
+                    )
+            ));
+        } else if (PlayerManager.getConnectedUsersNumber() > 20 && PlayerManager.getConnectedUsersNumber() <= 30) {
+            sessionScenery = new SceneryManager(new LargeScenery());
+            Server.connectionManager.broadcastMessage(new Message(
+                    MessageType.SCENERY,
+                    new Player("SERVER", Player.Team.SERVER),
+                    MessageManager.createXML(
+                            new ArrayList<>(Arrays.asList(
+                                    "header", "content"
+                            )),
+                            new ArrayList<>(Arrays.asList(
+                                    "CHOOSEN_SCENERY", "LargeScenery"
+                            ))
+                    )
+            ));
+        }
     }
 
     public void shutdown() {

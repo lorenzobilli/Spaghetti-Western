@@ -1,3 +1,5 @@
+import java.security.InvalidParameterException;
+
 /**
  * ClientEventHandler
  */
@@ -9,14 +11,27 @@ public class ClientEventHandler extends EventHandler {
 
     @Override
     protected Message handleSession() {
-        if (message.getMessageContent().equals("ACCEPTED")) {
-            return new Message(
-                    MessageType.SESSION,
-                    message.getMessageSender(),
-                    "Confirmed"
-            );
-        } else if (message.getMessageContent().equals("REFUSED")) {
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("ACCEPTED") ||
+                MessageManager.convertXML("header", message.getMessageContent()).equals("ALREADY_CONNECTED") ||
+                MessageManager.convertXML("header", message.getMessageContent()).equals("MAX_NUM_REACHED") ||
+                MessageManager.convertXML("header", message.getMessageContent()).equals("SESSION_RUNNING")) {
+            return message;
+        } else {
             return null;
+        }
+    }
+
+    @Override
+    protected Message handleTime() {
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_REMAINING")) {
+            int secondsRemaining = Integer.parseInt(
+                    MessageManager.convertXML("content", message.getMessageContent())
+            );
+            Client.clientWindow.updateWaitingCountdown((secondsRemaining / 60) + 1);   // +1 to avoid round down
+        }
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_TIMEOUT")) {
+            Client.chatWindow = new ChatWindow();   // Spawning chat window
+            Client.clientWindow.prepareSceneryLoad();
         }
         return null;
     }
@@ -24,6 +39,23 @@ public class ClientEventHandler extends EventHandler {
     @Override
     protected Message handleChat() {
         Client.chatWindow.updateChat(message);
+        return null;
+    }
+
+    @Override
+    protected Message handleScenery() {
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("CHOOSEN_SCENERY")) {
+            String choosenScenery = MessageManager.convertXML("content", message.getMessageContent());
+            if (choosenScenery.equals("SmallScenery")) {
+                Client.connectionManager.setScenery(new SmallScenery());
+            } else if (choosenScenery.equals("MediumScenery")) {
+                Client.connectionManager.setScenery(new MediumScenery());
+            } else if (choosenScenery.equals("LargeScenery")) {
+                Client.connectionManager.setScenery(new LargeScenery());
+            } else {
+                throw new InvalidParameterException("Unrecognized scenery found");
+            }
+        }
         return null;
     }
 }

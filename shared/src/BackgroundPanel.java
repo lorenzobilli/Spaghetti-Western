@@ -15,6 +15,10 @@ public class BackgroundPanel extends JPanel {
         panelBackground = ImageIO.read(new File(backgroundImage));
     }
 
+    public void updateBackground(String backgroundImage) throws IOException {
+        panelBackground = ImageIO.read(new File(backgroundImage));
+    }
+
     public void paintComponent(Graphics graph) {
         super.paintComponent(graph);
         graph.drawImage(panelBackground, 0, 0, this);
