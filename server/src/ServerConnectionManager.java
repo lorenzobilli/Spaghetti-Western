@@ -81,9 +81,7 @@ public class ServerConnectionManager implements Runnable {
 
     public void chooseScenery() {
         if (PlayerManager.getConnectedUsersNumber() <= 10) {
-            sessionScenery = new SceneryManager(new DefaultScenery(
-                    "shared/assets/default_scenery.jpg"
-            ));  //FIXME: DefaultScenery() is temporary!
+            sessionScenery = new SceneryManager(new SmallScenery());
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),
@@ -92,14 +90,12 @@ public class ServerConnectionManager implements Runnable {
                                     "header", "content"
                             )),
                             new ArrayList<>(Arrays.asList(
-                                    "CHOOSEN_SCENERY", "DefaultScenery" //FIXME: DefaultScenery value is temporary!
+                                    "CHOOSEN_SCENERY", "SmallScenery"
                             ))
                     )
             ));
         } else if (PlayerManager.getConnectedUsersNumber() > 10 && PlayerManager.getConnectedUsersNumber() <= 20) {
-            sessionScenery = new SceneryManager(new DefaultScenery(
-                    "shared/assets/default_scenery.jpg"
-            ));  //FIXME: DefaultScenery() is temporary!
+            sessionScenery = new SceneryManager(new MediumScenery());
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),
@@ -108,14 +104,12 @@ public class ServerConnectionManager implements Runnable {
                                     "header", "content"
                             )),
                             new ArrayList<>(Arrays.asList(
-                                    "CHOOSEN_SCENERY", "DefaultScenery" //FIXME: DefaultScenery value is temporary!
+                                    "CHOOSEN_SCENERY", "MediumScenery"
                             ))
                     )
             ));
         } else if (PlayerManager.getConnectedUsersNumber() > 20 && PlayerManager.getConnectedUsersNumber() <= 30) {
-            sessionScenery = new SceneryManager(new DefaultScenery(
-                    "shared/assets/default_scenery.jpg"
-            ));  //FIXME: DefaultScenery() is temporary!
+            sessionScenery = new SceneryManager(new LargeScenery());
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),
@@ -124,7 +118,7 @@ public class ServerConnectionManager implements Runnable {
                                     "header", "content"
                             )),
                             new ArrayList<>(Arrays.asList(
-                                    "CHOOSEN_SCENERY", "DefaultScenery" //FIXME: DefaultScenery value is temporary!
+                                    "CHOOSEN_SCENERY", "LargeScenery"
                             ))
                     )
             ));

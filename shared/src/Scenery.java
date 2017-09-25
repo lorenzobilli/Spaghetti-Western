@@ -17,15 +17,15 @@ public abstract class Scenery {
         DESTINATION_BUSY
     }
 
-    public Scenery(String sceneryBackground) {
+    public String getSceneryBackground() {
+        return sceneryBackground;
+    }
+
+    public void setSceneryBackground(String sceneryBackground) {
         if (sceneryBackground == null) {
             throw new InvalidParameterException("Scenery background cannot be null");
         }
         this.sceneryBackground = sceneryBackground;
-    }
-
-    public String getSceneryBackground() {
-        return sceneryBackground;
     }
 
     public SceneryEvents movePlayer(Player player, Place origin, Place destination) {

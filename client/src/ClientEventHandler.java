@@ -46,8 +46,12 @@ public class ClientEventHandler extends EventHandler {
     protected Message handleScenery() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("CHOOSEN_SCENERY")) {
             String choosenScenery = MessageManager.convertXML("content", message.getMessageContent());
-            if (choosenScenery.equals("DefaultScenery")) {
-                Client.connectionManager.setScenery(new DefaultScenery("shared/assets/default_scenery.jpg"));  //FIXME: DefaultScenery is temporary!
+            if (choosenScenery.equals("SmallScenery")) {
+                Client.connectionManager.setScenery(new SmallScenery());
+            } else if (choosenScenery.equals("MediumScenery")) {
+                Client.connectionManager.setScenery(new MediumScenery());
+            } else if (choosenScenery.equals("LargeScenery")) {
+                Client.connectionManager.setScenery(new LargeScenery());
             } else {
                 throw new InvalidParameterException("Unrecognized scenery found");
             }
