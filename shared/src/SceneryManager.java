@@ -14,4 +14,8 @@ public class SceneryManager {
         this.scenery = scenery;
     }
 
+    public Scenery getScenery() {
+        return scenery;
+    }
+
 }

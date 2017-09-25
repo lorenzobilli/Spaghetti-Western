@@ -8,12 +8,24 @@ import java.security.InvalidParameterException;
  */
 public abstract class Scenery {
 
+    private String sceneryBackground;
     protected Graph<Place, Path> sceneryGraph = new SimpleWeightedGraph<>(Path.class);
 
     private enum SceneryEvents {
         PLAYER_MOVED,
         PLAYER_NOT_FOUND,
         DESTINATION_BUSY
+    }
+
+    public Scenery(String sceneryBackground) {
+        if (sceneryBackground == null) {
+            throw new InvalidParameterException("Scenery background cannot be null");
+        }
+        this.sceneryBackground = sceneryBackground;
+    }
+
+    public String getSceneryBackground() {
+        return sceneryBackground;
     }
 
     public SceneryEvents movePlayer(Player player, Place origin, Place destination) {

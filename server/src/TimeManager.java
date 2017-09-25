@@ -47,6 +47,10 @@ public class TimeManager implements Callable<Boolean> {
                             new Player("SERVER", Player.Team.SERVER),
                             MessageManager.createXML("header", "WAIT_TIMEOUT")
                     ));
+                    Server.connectionManager.setSessionRunning(true);
+                    Server.consolePrintLine("[*] Session wait timer expired");
+                    Server.consolePrintLine("[*] Starting new gaming session...");
+                    Server.connectionManager.chooseScenery();
                 }
             }
         };

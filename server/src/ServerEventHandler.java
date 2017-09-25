@@ -72,17 +72,17 @@ public class ServerEventHandler extends EventHandler {
                 Server.consolePrintLine("[*] Session wait timer started");
             }
         }
-        if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_TIMEOUT")) {
-            Server.connectionManager.setSessionRunning(true);
-            Server.consolePrintLine("[*] Session wait timer expired");
-            Server.consolePrintLine("[*] Starting new gaming session...");
-        }
         return null;
     }
 
     @Override
     protected Message handleChat() {
         Server.connectionManager.sendMessageToTeam(message.getMessageSender(), message);
+        return null;
+    }
+
+    @Override
+    protected Message handleScenery() {
         return null;
     }
 }

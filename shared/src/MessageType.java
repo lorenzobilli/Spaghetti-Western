@@ -5,4 +5,5 @@ public enum MessageType {
     SESSION,
     TIME,
     CHAT,
+    SCENERY
 }

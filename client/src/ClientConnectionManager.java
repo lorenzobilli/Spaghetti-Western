@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -18,6 +19,7 @@ public class ClientConnectionManager implements Runnable {
     private Socket socket;
     private PrintWriter sendStream;
     private BufferedReader receiveStream;
+    private SceneryManager sessionScenery;
 
     @Override
     public void run() {
@@ -120,7 +122,6 @@ public class ClientConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
-        Client.chatWindow = new ChatWindow();   // Spawning chat window
         Future send = Client.globalThreadPool.submit(new Sender(new Message(
                 MessageType.TIME,
                 Client.getPlayer(),
@@ -147,6 +148,18 @@ public class ClientConnectionManager implements Runnable {
             }
         }
         //shutdownClient();
+    }
+
+    public SceneryManager getSceneryManager() {
+        return sessionScenery;
+    }
+
+    public void setScenery(Scenery scenery) {
+        if (scenery == null) {
+            throw new InvalidParameterException("Scenery cannot be null");
+        }
+        sessionScenery = new SceneryManager(scenery);
+        Client.clientWindow.loadScenery(scenery);
     }
 
     private void shutdownClient() {

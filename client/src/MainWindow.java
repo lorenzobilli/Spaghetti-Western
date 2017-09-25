@@ -82,4 +82,16 @@ public class MainWindow {
         glass.updateUI();
         remainingAdvice.setText("Get ready!");
     }
+
+    public void loadScenery(Scenery scenery) {
+        try {
+            background.updateBackground(scenery.getSceneryBackground());
+            glass.removeAll();
+            glass.updateUI();
+        } catch (IOException e) {
+            e.getMessage();
+            e.getCause();
+            e.printStackTrace();
+        }
+    }
 }

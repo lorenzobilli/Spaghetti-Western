@@ -6,7 +6,9 @@ public class DefaultScenery extends Scenery {
     /*
     This is only for testing purposes. Actual sceneries are still missing from the source tree
      */
-    public DefaultScenery() {
+    public DefaultScenery(String sceneryBackgroundImage) {
+
+        super(sceneryBackgroundImage);
 
         Place tucson = new Place("Tucson");
         Place jefferson = new Place("Jefferson");
@@ -14,6 +16,13 @@ public class DefaultScenery extends Scenery {
         Place calico = new Place("Calico");
         Place bodie = new Place("Bodie");
         Place canyondiablo = new Place("Canyon Diablo");
+
+        sceneryGraph.addVertex(tucson);
+        sceneryGraph.addVertex(jefferson);
+        sceneryGraph.addVertex(elpaso);
+        sceneryGraph.addVertex(calico);
+        sceneryGraph.addVertex(bodie);
+        sceneryGraph.addVertex(canyondiablo);
 
         sceneryGraph.addEdge(tucson, canyondiablo);
         sceneryGraph.addEdge(canyondiablo, bodie);

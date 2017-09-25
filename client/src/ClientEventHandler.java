@@ -1,3 +1,5 @@
+import java.security.InvalidParameterException;
+
 /**
  * ClientEventHandler
  */
@@ -28,6 +30,7 @@ public class ClientEventHandler extends EventHandler {
             Client.clientWindow.updateWaitingCountdown((secondsRemaining / 60) + 1);   // +1 to avoid round down
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_TIMEOUT")) {
+            Client.chatWindow = new ChatWindow();   // Spawning chat window
             Client.clientWindow.prepareSceneryLoad();
         }
         return null;
@@ -36,6 +39,19 @@ public class ClientEventHandler extends EventHandler {
     @Override
     protected Message handleChat() {
         Client.chatWindow.updateChat(message);
+        return null;
+    }
+
+    @Override
+    protected Message handleScenery() {
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("CHOOSEN_SCENERY")) {
+            String choosenScenery = MessageManager.convertXML("content", message.getMessageContent());
+            if (choosenScenery.equals("DefaultScenery")) {
+                Client.connectionManager.setScenery(new DefaultScenery("shared/assets/default_scenery.jpg"));  //FIXME: DefaultScenery is temporary!
+            } else {
+                throw new InvalidParameterException("Unrecognized scenery found");
+            }
+        }
         return null;
     }
 }

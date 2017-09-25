@@ -8,7 +8,8 @@ import java.util.concurrent.Executors;
 public class Server {
 
     public final static int MAX_PLAYERS = 30;
-    public final static Duration WAIT_TIME = Duration.ofMinutes(5);
+    //public final static Duration WAIT_TIME = Duration.ofMinutes(5);
+    public final static Duration WAIT_TIME = Duration.ofSeconds(10);    //FIXME: Temporary value for testing purposes only
     public final static Duration PLAY_TIME = Duration.ofMinutes(10);
 
     private static MainWindow serverWindow;

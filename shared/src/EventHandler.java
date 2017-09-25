@@ -34,6 +34,9 @@ public abstract class EventHandler implements Callable<Message> {
                     e.printStackTrace();
                 }
                 break;
+            case SCENERY:
+                result = handleScenery();
+                break;
             default:
                 result = null;
                 break;
@@ -46,5 +49,7 @@ public abstract class EventHandler implements Callable<Message> {
     protected abstract Message handleTime();
 
     protected abstract Message handleChat() throws Exception;
+
+    protected abstract Message handleScenery();
 
 }
