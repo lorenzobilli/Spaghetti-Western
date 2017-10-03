@@ -16,6 +16,7 @@ public class MainWindow {
     private Container content;
 
     public MainWindow(String title) {
+
         final String backgroundImagePath = "shared/assets/far_west.jpg";
 
         if (title == null) {
@@ -24,7 +25,19 @@ public class MainWindow {
 
         // Window settings
         window = new JFrame(title);
-        window.setSize(1280, 800);
+        switch (Client.clientResolution) {
+			case HD:
+				window.setSize(1366, 768);
+				break;
+			case FULLHD:
+				window.setSize(1920, 1080);
+				break;
+			case QUADHD:
+				window.setSize(3840, 2160);
+				break;
+			default:
+				throw new InvalidParameterException("Unrecognized screen resolution");
+		}
 
         // Setting JFrame main layout manager
         content = window.getContentPane();
