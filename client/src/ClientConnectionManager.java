@@ -19,7 +19,6 @@ public class ClientConnectionManager implements Runnable {
     private Socket socket;
     private PrintWriter sendStream;
     private BufferedReader receiveStream;
-    private SceneryManager sessionScenery;
 
     @Override
     public void run() {
@@ -148,18 +147,6 @@ public class ClientConnectionManager implements Runnable {
             }
         }
         //shutdownClient();
-    }
-
-    public SceneryManager getSceneryManager() {
-        return sessionScenery;
-    }
-
-    public void setScenery(Scenery scenery) {
-        if (scenery == null) {
-            throw new InvalidParameterException("Scenery cannot be null");
-        }
-        sessionScenery = new SceneryManager(scenery);
-        Client.clientWindow.loadScenery(scenery);
     }
 
     private void shutdownClient() {

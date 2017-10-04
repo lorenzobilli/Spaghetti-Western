@@ -17,6 +17,8 @@ public class Client {
     public static ClientConnectionManager connectionManager;
     public static Thread connectionThread;
     private static Player player;   //TODO: Handle refactoring of this field
+    private static Place currentPosition;
+    private static Scenery currentScenery;
 
     public static ExecutorService globalThreadPool;
 
@@ -43,4 +45,27 @@ public class Client {
         }
         Client.player = player;
     }
+
+    public static Place getCurrentPosition() {
+    	return currentPosition;
+	}
+
+	public static void setCurrentPosition(Place position) {
+    	if (position == null) {
+    		throw new InvalidParameterException("Current position cannot be null");
+		}
+		currentPosition = position;
+	}
+
+	public static Scenery getCurrentScenery() {
+    	return currentScenery;
+	}
+
+	public static void setCurrentScenery(Scenery scenery) {
+    	if (scenery == null) {
+    		throw new InvalidParameterException("Scenery cannot be null");
+		}
+		currentScenery = scenery;
+		clientWindow.loadScenery(scenery);	//TODO: Is it convenient to load graphics here?
+	}
 }

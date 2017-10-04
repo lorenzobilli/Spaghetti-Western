@@ -7,8 +7,12 @@ public class MediumScenery extends Scenery {
 
     	final String background = "shared/assets/medium_scenery.jpg";
     	setSceneryBackground(background);
+		setPlacesAndPaths();
+    }
 
-    	// Defined scenery places
+	@Override
+	protected void setPlacesAndPaths() {
+		// Defined scenery places
 		Place santaFe = new Place("Santa Fe");
 		Place sanRafael = new Place("San Rafael");
 		Place valverde = new Place("Valverde");
@@ -18,6 +22,17 @@ public class MediumScenery extends Scenery {
 		Place phoenix = new Place("Phoenix");
 		Place tucson = new Place("Tucson");
 		Place elPaso = new Place("El Paso");
+
+		// Adding defined places to scenery hashmap
+		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
+		sceneryPlaces.put(sanRafael.getPlaceName(), sanRafael);
+		sceneryPlaces.put(valverde.getPlaceName(), valverde);
+		sceneryPlaces.put(watermill.getPlaceName(), watermill);
+		sceneryPlaces.put(desert.getPlaceName(), desert);
+		sceneryPlaces.put(canyonDiablo.getPlaceName(), canyonDiablo);
+		sceneryPlaces.put(phoenix.getPlaceName(), phoenix);
+		sceneryPlaces.put(tucson.getPlaceName(), tucson);
+		sceneryPlaces.put(elPaso.getPlaceName(), elPaso);
 
 		// Adding defined places to scenery graph
 		sceneryGraph.addVertex(santaFe);
@@ -75,6 +90,5 @@ public class MediumScenery extends Scenery {
 		sceneryGraph.addEdge(tucson, desert, tucsonDesert);
 		sceneryGraph.addEdge(tucson, elPaso, tucsonElPaso);
 		sceneryGraph.addEdge(elPaso, desert, elPasoDesert);
-
-    }
+	}
 }

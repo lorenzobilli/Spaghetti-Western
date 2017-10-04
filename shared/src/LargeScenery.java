@@ -7,8 +7,12 @@ public class LargeScenery extends Scenery {
 
     	final String background = "shared/assets/large_scenery.jpg";
     	setSceneryBackground(background);
+		setPlacesAndPaths();
+    }
 
-    	// Defined scenery places
+	@Override
+	protected void setPlacesAndPaths() {
+		// Defined scenery places
 		Place santaFe = new Place("Santa Fe");
 		Place sanRafael = new Place("San Rafael");
 		Place valverde = new Place("Valverde");
@@ -24,6 +28,23 @@ public class LargeScenery extends Scenery {
 		Place confederatePrison = new Place("Confederate prison");
 		Place unionPrison = new Place("Union prison");
 		Place saintAnthonyMission = new Place("Saint Anthony mission");
+
+		// Adding defined places to scenery hashmap
+		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
+		sceneryPlaces.put(sanRafael.getPlaceName(), sanRafael);
+		sceneryPlaces.put(valverde.getPlaceName(), valverde);
+		sceneryPlaces.put(watermill.getPlaceName(), watermill);
+		sceneryPlaces.put(desert.getPlaceName(), desert);
+		sceneryPlaces.put(canyonDiablo.getPlaceName(), canyonDiablo);
+		sceneryPlaces.put(phoenix.getPlaceName(), phoenix);
+		sceneryPlaces.put(tucson.getPlaceName(), tucson);
+		sceneryPlaces.put(elPaso.getPlaceName(), elPaso);
+		sceneryPlaces.put(santaAna.getPlaceName(), santaAna);
+		sceneryPlaces.put(langstoneBridge.getPlaceName(), langstoneBridge);
+		sceneryPlaces.put(sadHillGraveyard.getPlaceName(), sadHillGraveyard);
+		sceneryPlaces.put(confederatePrison.getPlaceName(), confederatePrison);
+		sceneryPlaces.put(unionPrison.getPlaceName(), unionPrison);
+		sceneryPlaces.put(saintAnthonyMission.getPlaceName(), saintAnthonyMission);
 
 		// Adding defined places to scenery graph
 		sceneryGraph.addVertex(santaFe);
@@ -105,6 +126,5 @@ public class LargeScenery extends Scenery {
 		sceneryGraph.addEdge(desert, confederatePrison, desertConfederatePrison);
 		sceneryGraph.addEdge(unionPrison, confederatePrison, unionPrisonConfederatePrison);
 		sceneryGraph.addEdge(confederatePrison, saintAnthonyMission, confederatePrisonSaintAnthonyMission);
-
-    }
+	}
 }

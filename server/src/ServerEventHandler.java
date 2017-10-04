@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Future;
 
 /**
@@ -83,6 +85,35 @@ public class ServerEventHandler extends EventHandler {
 
     @Override
     protected Message handleScenery() {
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("TRY_PLAYER_MOVE")) {
+            Place origin = Server.connectionManager.getHandlerReference(
+            		message.getMessageSender()).getCurrentPlayerPosition();
+            Place destination = Server.getCurrentScenery().getSceneryPlaces().get(
+            		MessageManager.convertXML("content", message.getMessageContent()));
+            Scenery.SceneryEvents result = Server.getCurrentScenery().movePlayer(message.getMessageSender(), origin, destination);
+            switch (result) {
+				case PLAYER_MOVED:
+					Server.connectionManager.broadcastMessage(new Message(
+							MessageType.SCENERY,
+							new Player("SERVER", Player.Team.SERVER),
+							MessageManager.createXML(
+									new ArrayList<>(Arrays.asList(
+											"header", "position"
+									)),
+									new ArrayList<>(Arrays.asList(
+											"PLAYER_MOVED", destination.getPlaceName()
+									))
+							)
+					));
+					return null;
+				case DESTINATION_BUSY:
+					return new Message(
+							MessageType.SCENERY,
+							new Player("SERVER", Player.Team.SERVER),
+							MessageManager.createXML("header", "PLAYER_NOT_MOVED")
+					);
+			}
+        }
         return null;
     }
 }

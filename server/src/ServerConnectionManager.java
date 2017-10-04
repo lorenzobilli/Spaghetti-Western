@@ -1,7 +1,9 @@
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Future;
 
 /**
@@ -15,7 +17,6 @@ public class ServerConnectionManager implements Runnable {
     private ArrayList<Thread> clientThreads = new ArrayList<>();
     private volatile boolean keepServerAlive = true;
     private static boolean sessionRunning = false;
-    private static SceneryManager sessionScenery;
 
     @Override
     public void run() {
@@ -52,6 +53,18 @@ public class ServerConnectionManager implements Runnable {
         }
     }
 
+    public ClientHandler getHandlerReference(Player correspondingPlayer) {
+    	if (correspondingPlayer == null) {
+    		throw new InvalidParameterException("A player is needed to obtain a handle");
+		}
+		for (ClientHandler reference : clientHandlers) {
+    		if (reference.getConnectedPlayer().equals(correspondingPlayer)) {
+    			return reference;
+			}
+		}
+		throw new NoSuchElementException("Referenced player is not connected");
+	}
+
     public boolean sendMessageToPlayer(Player player, Message message) {
         for (ClientHandler connectedPlayer : clientHandlers) {
             if (connectedPlayer.getConnectedPlayer().getName().equals(player.getName())) {
@@ -81,7 +94,7 @@ public class ServerConnectionManager implements Runnable {
 
     public void chooseScenery() {
         if (PlayerManager.getConnectedUsersNumber() <= 10) {
-            sessionScenery = new SceneryManager(new SmallScenery());
+            Server.setCurrentScenery(new SmallScenery());
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),
@@ -95,7 +108,7 @@ public class ServerConnectionManager implements Runnable {
                     )
             ));
         } else if (PlayerManager.getConnectedUsersNumber() > 10 && PlayerManager.getConnectedUsersNumber() <= 20) {
-            sessionScenery = new SceneryManager(new MediumScenery());
+			Server.setCurrentScenery(new MediumScenery());
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),
@@ -109,7 +122,7 @@ public class ServerConnectionManager implements Runnable {
                     )
             ));
         } else if (PlayerManager.getConnectedUsersNumber() > 20 && PlayerManager.getConnectedUsersNumber() <= 30) {
-            sessionScenery = new SceneryManager(new LargeScenery());
+			Server.setCurrentScenery(new LargeScenery());
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),

@@ -47,15 +47,25 @@ public class ClientEventHandler extends EventHandler {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("CHOOSEN_SCENERY")) {
             String choosenScenery = MessageManager.convertXML("content", message.getMessageContent());
             if (choosenScenery.equals("SmallScenery")) {
-                Client.connectionManager.setScenery(new SmallScenery());
+                Client.setCurrentScenery(new SmallScenery());
             } else if (choosenScenery.equals("MediumScenery")) {
-                Client.connectionManager.setScenery(new MediumScenery());
+                Client.setCurrentScenery(new MediumScenery());
             } else if (choosenScenery.equals("LargeScenery")) {
-                Client.connectionManager.setScenery(new LargeScenery());
+                Client.setCurrentScenery(new LargeScenery());
             } else {
                 throw new InvalidParameterException("Unrecognized scenery found");
             }
         }
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
+			Place origin = Client.getCurrentPosition();
+			Place destination = Client.getCurrentScenery().getSceneryPlaces().get(
+					MessageManager.convertXML("position", message.getMessageContent())
+			);
+			Client.getCurrentScenery().movePlayer(Client.getPlayer(), origin, destination);
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_NOT_MOVED")) {
+        	//TODO: Implement this
+		}
         return null;
     }
 }

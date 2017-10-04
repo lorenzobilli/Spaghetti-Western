@@ -1,3 +1,4 @@
+import java.security.InvalidParameterException;
 import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,4 +52,15 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+	public static Scenery getCurrentScenery() {
+		return currentScenery;
+	}
+
+	public static void setCurrentScenery(Scenery scenery) {
+    	if (scenery == null) {
+    		throw new InvalidParameterException("Scenery cannot be null");
+		}
+		currentScenery = scenery;
+	}
 }

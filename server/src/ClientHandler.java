@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -15,6 +16,7 @@ public class ClientHandler implements Runnable {
     private PrintWriter sendStream;
     private BufferedReader receiveStream;
     private Player connectedPlayer;
+    private Place currentPlayerPosition;
     private volatile boolean keepAlive = true;
 
     public ClientHandler(Socket connection) {
@@ -39,6 +41,17 @@ public class ClientHandler implements Runnable {
     public synchronized Player getConnectedPlayer() {
         return connectedPlayer;
     }
+
+    public Place getCurrentPlayerPosition() {
+    	return currentPlayerPosition;
+	}
+
+	public void setCurrentPlayerPosition(Place currentPlayerPosition) {
+    	if (currentPlayerPosition == null) {
+    		throw new InvalidParameterException("Current player position cannot be null");
+		}
+		this.currentPlayerPosition = currentPlayerPosition;
+	}
 
     public synchronized PrintWriter getSendStream() {
         return sendStream;

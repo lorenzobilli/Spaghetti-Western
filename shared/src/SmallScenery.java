@@ -7,13 +7,24 @@ public class SmallScenery extends Scenery {
 
 		final String background = "shared/assets/small_scenery.jpg";
 		setSceneryBackground(background);
+		setPlacesAndPaths();
+    }
 
+	@Override
+	protected void setPlacesAndPaths() {
 		// Defined scenery places
 		Place santaFe = new Place("Santa Fe");
 		Place sanRafael = new Place("San Rafael");
 		Place valverde = new Place("Valverde");
 		Place watermill = new Place("Watermill");
 		Place desert = new Place("Desert");
+
+		// Adding defined places to scenery hashmap
+		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
+		sceneryPlaces.put(sanRafael.getPlaceName(), sanRafael);
+		sceneryPlaces.put(valverde.getPlaceName(), valverde);
+		sceneryPlaces.put(watermill.getPlaceName(), watermill);
+		sceneryPlaces.put(desert.getPlaceName(), desert);
 
 		// Adding defined places to scenery graph
 		sceneryGraph.addVertex(santaFe);
@@ -41,6 +52,5 @@ public class SmallScenery extends Scenery {
 		sceneryGraph.addEdge(sanRafael, valverde, sanRafaelValverde);
 		sceneryGraph.addEdge(sanRafael, desert, sanRafaelDesert);
 		sceneryGraph.addEdge(valverde, desert, valverdeDesert);
-
-    }
+	}
 }
