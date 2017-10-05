@@ -70,8 +70,8 @@ public class ServerEventHandler extends EventHandler {
     protected Message handleTime() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_START_REQUEST")) {
             if (PlayerManager.getConnectedUsersNumber() == 1) {
-                Future<Boolean> runWaitTime = Server.globalThreadPool.submit(Server.remainingWaitTime);
-                Server.consolePrintLine("[*] Session wait timer started");
+            	Server.timeManager = new TimeManager();
+                Future<Boolean> enableTimeManager = Server.globalThreadPool.submit(Server.timeManager);
             }
         }
         return null;

@@ -1,5 +1,4 @@
 import java.security.InvalidParameterException;
-import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -9,16 +8,12 @@ import java.util.concurrent.Executors;
 public class Server {
 
     public final static int MAX_PLAYERS = 30;
-    //public final static Duration WAIT_TIME = Duration.ofMinutes(5);
-    public final static Duration WAIT_TIME = Duration.ofSeconds(10);    //FIXME: Temporary value for testing purposes only
-    public final static Duration PLAY_TIME = Duration.ofMinutes(10);
 
     private static MainWindow serverWindow;
     public static ServerConnectionManager connectionManager;
     private static Thread connectionThread;
     public static ExecutorService globalThreadPool;
-    public static TimeManager remainingWaitTime;
-    public static TimeManager remainingPlayTime;
+    public static TimeManager timeManager;
     private static Scenery currentScenery;
 
     public static void main(String[] args) {
@@ -26,8 +21,6 @@ public class Server {
         connectionManager = new ServerConnectionManager();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
-        remainingWaitTime = new TimeManager(WAIT_TIME);
-        remainingPlayTime = new TimeManager(PLAY_TIME);
     }
 
     public static void consolePrint(String message) {
