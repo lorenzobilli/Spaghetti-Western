@@ -138,6 +138,34 @@ public class ServerConnectionManager implements Runnable {
         }
     }
 
+    public void putPlayers() {
+    	int totalPlayersNumber = PlayerManager.getConnectedUsersNumber();
+    	int servedPlayersNumber = 0;
+    	while (servedPlayersNumber != totalPlayersNumber) {
+			int randomPlace = Randomizer.getRandomInteger(Server.getCurrentScenery().getPlacesNumber());
+			Player servedPlayer = PlayerManager.getPlayer(servedPlayersNumber);
+			Scenery.SceneryEvents result = Server.getCurrentScenery().insertPlayer(servedPlayer, randomPlace);
+			if (result == Scenery.SceneryEvents.PLAYER_INSERTED) {
+				servedPlayersNumber++;
+				Server.connectionManager.broadcastMessage(new Message(
+						MessageType.SCENERY,
+						new Player("SERVER", Player.Team.SERVER),
+						MessageManager.createXML(
+								new ArrayList<>(Arrays.asList(
+										"header", "player_name", "player_team", "position"
+								)),
+								new ArrayList<>(Arrays.asList(
+										"PLAYER_INSERTED",
+										servedPlayer.getName(),
+										servedPlayer.getTeamAsString(),
+										String.valueOf(randomPlace)
+								))
+						)
+				));
+			}
+		}
+	}
+
     public void shutdown() {
         keepServerAlive = false;
         executeServerShutdown();

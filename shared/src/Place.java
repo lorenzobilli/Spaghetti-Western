@@ -11,18 +11,23 @@ public class Place {
     private final int MAX_BAD_PLAYERS = 3;
 
     private String placeName;
+    private int placeId;
     private List<Player> goodPlayers;
     private List<Player> badPlayers;
     private boolean clashEnabled = false;
 
-    public Place(String placeName) {
+    public Place(String placeName, int placeId) {
         if (placeName == null) {
             throw new InvalidParameterException("Place name cannot be null");
         }
+        if (placeId <= 0) {
+        	throw new InvalidParameterException("Place id cannot be zero or negative");
+		}
         if (placeName.equals("")) {
             throw new InvalidParameterException("Place name cannot be empty");
         }
         this.placeName = placeName;
+        this.placeId = placeId;
         goodPlayers = new ArrayList<>();
         badPlayers = new ArrayList<>();
     }
@@ -30,6 +35,10 @@ public class Place {
     public String getPlaceName() {
         return placeName;
     }
+
+    public int getPlaceId() {
+    	return placeId;
+	}
 
     public boolean addPlayer(Player player) {
         if (player == null) {

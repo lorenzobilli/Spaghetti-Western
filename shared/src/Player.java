@@ -26,6 +26,30 @@ public class Player {
         this.team = team;
     }
 
+    public Player(String name, String team) {
+    	if (name == null) {
+    		throw new InvalidParameterException("Player name cannot be null");
+		}
+		if (team == null) {
+    		throw new InvalidParameterException("Player team cannot be null");
+		}
+		if (team.equals("SERVER")) {
+    		this.name = name;
+    		this.team = Team.SERVER;
+		} else if (team.equals("GOOD")) {
+    		this.name = name;
+    		this.team = Team.GOOD;
+		} else if (team.equals("BAD")) {
+    		this.name = name;
+    		this.team = Team.BAD;
+		} else if (team.equals("UGLY")) {
+    		this.name = name;
+    		this.team = Team.UGLY;
+		} else {
+    		throw new InvalidParameterException("Unrecognized team string");
+		}
+	}
+
     public String getName() {
         return name;
     }
@@ -33,4 +57,19 @@ public class Player {
     public Team getTeam() {
         return team;
     }
+
+    //TODO: Is there a better way?
+    public String getTeamAsString() {
+    	switch (team) {
+			case SERVER:
+				return "SERVER";
+			case GOOD:
+				return "GOOD";
+			case BAD:
+				return "BAD";
+			case UGLY:
+				return "UGLY";
+		}
+		return null;
+	}
 }

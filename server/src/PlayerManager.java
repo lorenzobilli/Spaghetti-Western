@@ -43,6 +43,13 @@ public class PlayerManager {
         return false;
     }
 
+    public static Player getPlayer(int index) {
+    	if (index < 0 || index > connectedPlayers.size()) {
+    		throw new ArrayIndexOutOfBoundsException("Invalid index given");
+		}
+    	return connectedPlayers.get(index);
+	}
+
     private static boolean isUserConnected(Player player) {
         for (Player checkPlayer : connectedPlayers) {
             if (checkPlayer.equals(player)) {

@@ -13,21 +13,21 @@ public class LargeScenery extends Scenery {
 	@Override
 	protected void setPlacesAndPaths() {
 		// Defined scenery places
-		Place santaFe = new Place("Santa Fe");
-		Place sanRafael = new Place("San Rafael");
-		Place valverde = new Place("Valverde");
-		Place watermill = new Place("Watermill");
-		Place desert = new Place("Desert");
-		Place canyonDiablo = new Place("Canyon Diablo");
-		Place phoenix = new Place("Phoenix");
-		Place tucson = new Place("Tucson");
-		Place elPaso = new Place("El Paso");
-		Place santaAna = new Place("Santa Ana");
-		Place langstoneBridge = new Place("Langstone bridge");
-		Place sadHillGraveyard = new Place("Sad Hill graveyard");
-		Place confederatePrison = new Place("Confederate prison");
-		Place unionPrison = new Place("Union prison");
-		Place saintAnthonyMission = new Place("Saint Anthony mission");
+		Place santaFe = new Place("Santa Fe", 1);
+		Place sanRafael = new Place("San Rafael", 2);
+		Place valverde = new Place("Valverde", 3);
+		Place watermill = new Place("Watermill", 4);
+		Place desert = new Place("Desert", 5);
+		Place canyonDiablo = new Place("Canyon Diablo", 6);
+		Place phoenix = new Place("Phoenix", 7);
+		Place tucson = new Place("Tucson", 8);
+		Place elPaso = new Place("El Paso", 9);
+		Place santaAna = new Place("Santa Ana", 10);
+		Place langstoneBridge = new Place("Langstone bridge", 11);
+		Place sadHillGraveyard = new Place("Sad Hill graveyard", 12);
+		Place confederatePrison = new Place("Confederate prison", 13);
+		Place unionPrison = new Place("Union prison", 14);
+		Place saintAnthonyMission = new Place("Saint Anthony mission", 15);
 
 		// Adding defined places to scenery hashmap
 		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
