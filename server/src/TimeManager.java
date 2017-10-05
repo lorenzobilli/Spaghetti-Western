@@ -51,6 +51,7 @@ public class TimeManager implements Callable<Boolean> {
                     Server.consolePrintLine("[*] Session wait timer expired");
                     Server.consolePrintLine("[*] Starting new gaming session...");
                     Server.connectionManager.chooseScenery();
+                    Server.connectionManager.putPlayers();
                 }
             }
         };

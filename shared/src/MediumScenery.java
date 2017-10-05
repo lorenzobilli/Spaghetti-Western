@@ -8,20 +8,21 @@ public class MediumScenery extends Scenery {
     	final String background = "shared/assets/medium_scenery.jpg";
     	setSceneryBackground(background);
 		setPlacesAndPaths();
+		//TODO: One Place missing from map. To be added later (map below will need some mods).
     }
 
 	@Override
 	protected void setPlacesAndPaths() {
 		// Defined scenery places
-		Place santaFe = new Place("Santa Fe");
-		Place sanRafael = new Place("San Rafael");
-		Place valverde = new Place("Valverde");
-		Place watermill = new Place("Watermill");
-		Place desert = new Place("Desert");
-		Place canyonDiablo = new Place("Canyon Diablo");
-		Place phoenix = new Place("Phoenix");
-		Place tucson = new Place("Tucson");
-		Place elPaso = new Place("El Paso");
+		Place santaFe = new Place("Santa Fe", 1);
+		Place sanRafael = new Place("San Rafael", 2);
+		Place valverde = new Place("Valverde", 3);
+		Place watermill = new Place("Watermill", 4);
+		Place desert = new Place("Desert", 5);
+		Place canyonDiablo = new Place("Canyon Diablo", 6);
+		Place phoenix = new Place("Phoenix", 7);
+		Place tucson = new Place("Tucson", 8);
+		Place elPaso = new Place("El Paso", 9);
 
 		// Adding defined places to scenery hashmap
 		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);

@@ -56,6 +56,15 @@ public class ClientEventHandler extends EventHandler {
                 throw new InvalidParameterException("Unrecognized scenery found");
             }
         }
+        if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_INSERTED")) {
+        	Client.getCurrentScenery().insertPlayer(
+        			new Player(
+        					MessageManager.convertXML("player_name", message.getMessageContent()),
+							MessageManager.convertXML("player_team", message.getMessageContent())
+					),
+					Integer.valueOf(MessageManager.convertXML("position", message.getMessageContent()))
+			);
+		}
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
 			Place origin = Client.getCurrentPosition();
 			Place destination = Client.getCurrentScenery().getSceneryPlaces().get(

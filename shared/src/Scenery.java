@@ -14,6 +14,7 @@ public abstract class Scenery {
     protected HashMap<String, Place> sceneryPlaces = new HashMap<>();
 
     public enum SceneryEvents {
+    	PLAYER_INSERTED,
         PLAYER_MOVED,
         DESTINATION_BUSY
     }
@@ -33,6 +34,30 @@ public abstract class Scenery {
 
 	public HashMap<String, Place> getSceneryPlaces() {
 		return sceneryPlaces;
+	}
+
+	public int getPlacesNumber() {
+		return sceneryPlaces.size();
+	}
+
+	public SceneryEvents insertPlayer(Player player, int placeId) {
+		for (Place place : sceneryPlaces.values()) {
+			if (place.getPlaceId() == placeId) {
+				return insertPlayer(player, place);
+			}
+		}
+		return SceneryEvents.DESTINATION_BUSY;
+	}
+
+	public SceneryEvents insertPlayer(Player player, Place place) {
+		if (!sceneryGraph.containsVertex(place)) {
+			throw new InvalidParameterException("Specified place doesn't exist inside scenery");
+		}
+		if (place.addPlayer(player)) {
+			return SceneryEvents.PLAYER_INSERTED;
+		} else {
+			return SceneryEvents.DESTINATION_BUSY;
+		}
 	}
 
 	public SceneryEvents movePlayer(Player player, Place origin, Place destination) {

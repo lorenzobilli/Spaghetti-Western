@@ -13,11 +13,11 @@ public class SmallScenery extends Scenery {
 	@Override
 	protected void setPlacesAndPaths() {
 		// Defined scenery places
-		Place santaFe = new Place("Santa Fe");
-		Place sanRafael = new Place("San Rafael");
-		Place valverde = new Place("Valverde");
-		Place watermill = new Place("Watermill");
-		Place desert = new Place("Desert");
+		Place santaFe = new Place("Santa Fe", 1);
+		Place sanRafael = new Place("San Rafael", 2);
+		Place valverde = new Place("Valverde", 3);
+		Place watermill = new Place("Watermill", 4);
+		Place desert = new Place("Desert", 5);
 
 		// Adding defined places to scenery hashmap
 		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
