@@ -66,6 +66,5 @@ public class Client {
     		throw new InvalidParameterException("Scenery cannot be null");
 		}
 		currentScenery = scenery;
-		clientWindow.loadScenery(scenery);	//TODO: Is it convenient to load graphics here?
 	}
 }

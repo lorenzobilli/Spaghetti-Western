@@ -36,7 +36,7 @@ public class TimeManager implements Callable<Boolean> {
                                        "header", "content"
                                 )),
                                 new ArrayList<>(Arrays.asList(
-                                        "WAIT_REMAINING", String.valueOf(duration.getSeconds())
+                                		"WAIT_REMAINING", String.valueOf(duration.getSeconds())
                                 ))
                         )
                 ));
@@ -49,9 +49,16 @@ public class TimeManager implements Callable<Boolean> {
                     ));
                     Server.connectionManager.setSessionRunning(true);
                     Server.consolePrintLine("[*] Session wait timer expired");
-                    Server.consolePrintLine("[*] Starting new gaming session...");
+                    Server.consolePrintLine("[*] Choosing new scenery based on connected players...");
                     Server.connectionManager.chooseScenery();
+                    Server.consolePrintLine("[*] Spawning players inside scenery graph...");
                     Server.connectionManager.putPlayers();
+                    Server.consolePrintLine("[*] Starting new gaming session...");
+                    Server.connectionManager.broadcastMessage(new Message(
+                    		MessageType.TIME,
+							new Player("SERVER", Player.Team.SERVER),
+							MessageManager.createXML("header", "PLAY_SESSION_START")
+					));
                 }
             }
         };

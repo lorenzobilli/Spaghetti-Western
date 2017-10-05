@@ -95,6 +95,7 @@ public class ServerConnectionManager implements Runnable {
     public void chooseScenery() {
         if (PlayerManager.getConnectedUsersNumber() <= 10) {
             Server.setCurrentScenery(new SmallScenery());
+			Server.consolePrintLine("[*] Scenery selected: SmallScenery");
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),
@@ -109,6 +110,7 @@ public class ServerConnectionManager implements Runnable {
             ));
         } else if (PlayerManager.getConnectedUsersNumber() > 10 && PlayerManager.getConnectedUsersNumber() <= 20) {
 			Server.setCurrentScenery(new MediumScenery());
+			Server.consolePrintLine("[*] Scenery selected: MediumScenery");
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),
@@ -123,6 +125,7 @@ public class ServerConnectionManager implements Runnable {
             ));
         } else if (PlayerManager.getConnectedUsersNumber() > 20 && PlayerManager.getConnectedUsersNumber() <= 30) {
 			Server.setCurrentScenery(new LargeScenery());
+			Server.consolePrintLine("[*] Scenery selected: LargeScenery");
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
                     new Player("SERVER", Player.Team.SERVER),
