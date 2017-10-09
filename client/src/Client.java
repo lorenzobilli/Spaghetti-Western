@@ -8,6 +8,8 @@ import java.util.concurrent.Executors;
  */
 public class Client {
 
+	public final static String gameName = "Spaghetti Western";
+
     public final static Duration waitTime = Duration.ofMinutes(5);
     public final static Duration playTime = Duration.ofMinutes(10);
 

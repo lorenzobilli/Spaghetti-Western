@@ -16,7 +16,7 @@ public class MainWindow {
 		final Point position = new Point(0, 0);
 		final String imagePath = "shared/assets/splashscreen.jpg";
 
-		frame = new JFrame();
+		frame = new JFrame(Client.gameName);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setSize(size);
 		frame.setLayout(new BorderLayout());

@@ -13,7 +13,7 @@ public class MapWindow {
 		final Dimension size = new Dimension(1366, 768);
 		final Point position = new Point(0, 0);
 
-		frame = new JFrame();
+		frame = new JFrame(Client.gameName);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setSize(size);
 		frame.setLayout(new BorderLayout());
