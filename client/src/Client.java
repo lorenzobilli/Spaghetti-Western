@@ -11,9 +11,8 @@ public class Client {
     public final static Duration waitTime = Duration.ofMinutes(5);
     public final static Duration playTime = Duration.ofMinutes(10);
 
-    public static MainWindow clientWindow;
+	public static MainWindow clientWindow;
     public static ChatWindow chatWindow;
-    public static Resolution clientResolution;
     public static ClientConnectionManager connectionManager;
     public static Thread connectionThread;
     private static Player player;   //TODO: Handle refactoring of this field
@@ -23,8 +22,7 @@ public class Client {
     public static ExecutorService globalThreadPool;
 
     public static void main(String[] args) {
-        clientResolution = Resolution.HD;	//TODO: Consider a user setting for this value
-        clientWindow = new MainWindow("Spaghetti Western");
+        clientWindow = new MainWindow();
         connectionManager = new ClientConnectionManager();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();

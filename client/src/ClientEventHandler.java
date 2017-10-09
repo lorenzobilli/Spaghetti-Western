@@ -30,10 +30,11 @@ public class ClientEventHandler extends EventHandler {
             Client.clientWindow.updateWaitingCountdown((secondsRemaining / 60) + 1);   // +1 to avoid round down
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_TIMEOUT")) {
-            Client.clientWindow.prepareSceneryLoad();
+            Client.clientWindow.showSessionReadyAdvice();
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAY_SESSION_START")) {
-        	Client.clientWindow.loadScenery(Client.getCurrentScenery());	// Loading scenery inside main window
+        	//Client.clientWindow.loadScenery(Client.getCurrentScenery());	// Loading scenery inside main window
+			//TODO: Call here the corresponding Scenery window
         	Client.chatWindow = new ChatWindow();	// Spawning chat window
 		}
         return null;
