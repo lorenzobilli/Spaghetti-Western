@@ -13,6 +13,7 @@ public class Client {
 
 	public static MainWindow clientWindow;
     public static ChatWindow chatWindow;
+    public static MapWindow mapWindow;
     public static ClientConnectionManager connectionManager;
     public static Thread connectionThread;
     private static Player player;   //TODO: Handle refactoring of this field
