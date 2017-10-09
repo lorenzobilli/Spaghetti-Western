@@ -40,4 +40,9 @@ public class LargeMap extends Map {
 		saintAnthonyMissionButton.addActionListener(e -> sendPlayerMove("Saint Anthony mission"));
 
 	}
+
+	@Override
+	protected void populate(MapWindow map) {
+
+	}
 }

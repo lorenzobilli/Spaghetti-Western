@@ -29,4 +29,8 @@ public class MediumMap extends Map {
 
 	}
 
+	@Override
+	protected void populate(MapWindow map) {
+
+	}
 }

@@ -14,9 +14,6 @@ public class MapWindow {
 		final Point position = new Point(0, 0);
 
 		frame = new JFrame(Client.gameName);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setSize(size);
-		frame.setLayout(new BorderLayout());
 
 		background = new JLabel();
 		background.setIcon(new ImageIcon(imagePath));
@@ -25,6 +22,10 @@ public class MapWindow {
 		background.setLayout(null);
 		frame.add(background);
 
+		frame.setSize(size);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 
@@ -32,5 +33,9 @@ public class MapWindow {
 		background.add(component);
 		Insets insets = background.getInsets();
 		component.setBounds(location.x + insets.left, location.y + insets.top, size.width, size.height);
+	}
+
+	public void dispose() {
+		frame.dispose();
 	}
 }

@@ -22,4 +22,6 @@ public abstract class Map {
 		), Client.connectionManager.getSendStream()));
 	}
 
+	protected abstract void populate(MapWindow map);
+
 }

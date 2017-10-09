@@ -20,4 +20,8 @@ public class SmallMap extends Map {
 		desertButton.addActionListener(e -> sendPlayerMove("Desert"));
 	}
 
+	@Override
+	protected void populate(MapWindow map) {
+
+	}
 }

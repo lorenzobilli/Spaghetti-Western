@@ -17,9 +17,6 @@ public class MainWindow {
 		final String imagePath = "shared/assets/splashscreen.jpg";
 
 		frame = new JFrame(Client.gameName);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setSize(size);
-		frame.setLayout(new BorderLayout());
 
 		background = new JLabel();
 		background.setIcon(new ImageIcon(imagePath));
@@ -28,6 +25,10 @@ public class MainWindow {
 		background.setLayout(new GridBagLayout());
 		frame.add(background);
 
+		frame.setSize(size);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 
@@ -61,5 +62,13 @@ public class MainWindow {
 	public void showSessionReadyAdvice() {
 		frame.remove(countdown);
 		advice.setText("Get ready!");
+	}
+
+	public void show() {
+		frame.setVisible(true);
+	}
+
+	public void hide() {
+		frame.setVisible(false);
 	}
 }
