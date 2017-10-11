@@ -83,6 +83,7 @@ public class ClientEventHandler extends EventHandler {
 					MessageManager.convertXML("position", message.getMessageContent())
 			);
 			Client.getCurrentScenery().movePlayer(Client.getPlayer(), origin, destination);
+			Client.getCurrentMap().updateMap(Client.getPlayer(), origin, destination);
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_NOT_MOVED")) {
         	//TODO: Implement this

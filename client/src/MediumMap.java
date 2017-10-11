@@ -62,17 +62,29 @@ public class MediumMap extends Map {
 
 	public MediumMap() {
 
+		// Declaring used positions
+		final String santaFePosition = "Santa Fe";
+		final String sanRafaelPosition = "San Rafael";
+		final String valverdePosition = "Valverde";
+		final String watermillPosition = "Watermill";
+		final String desertPosition = "Desert";
+		final String canyonDiabloPosition = "Canyon Diablo";
+		final String phoenixPosition = "Phoenix";
+		final String tucsonPosition = "Tucson";
+		final String elPasoPosition = "El Paso";
+		final String unionPrisonPosition = "Union prison";
+
 		// Configuring buttons
-		configureButton(santaFeButton, "Santa Fe");
-		configureButton(sanRafaelButton, "San Rafael");
-		configureButton(valverdeButton, "Valverde");
-		configureButton(watermillButton, "Watermill");
-		configureButton(desertButton, "Desert");
-		configureButton(canyonDiabloButton, "Canyon Diablo");
-		configureButton(phoenixButton, "Phoenix");
-		configureButton(tucsonButton, "Tucson");
-		configureButton(elPasoButton, "El Paso");
-		configureButton(unionPrisonButton, "Union prison");
+		configureButton(santaFeButton, santaFePosition);
+		configureButton(sanRafaelButton, sanRafaelPosition);
+		configureButton(valverdeButton, valverdePosition);
+		configureButton(watermillButton, watermillPosition);
+		configureButton(desertButton, desertPosition);
+		configureButton(canyonDiabloButton, canyonDiabloPosition);
+		configureButton(phoenixButton, phoenixPosition);
+		configureButton(tucsonButton, tucsonPosition);
+		configureButton(elPasoButton, elPasoPosition);
+		configureButton(unionPrisonButton, unionPrisonPosition);
 
 		// Initiating label arrays
 		for (short label = 0; label < labelClusterSize; label++) {
@@ -109,6 +121,42 @@ public class MediumMap extends Map {
 		configureLabels(tucsonPlayerLabel, tucsonGoodLabels, tucsonBadLabels);
 		configureLabels(elPasoPlayerLabel, elPasoGoodLabels, elPasoBadLabels);
 		configureLabels(unionPrisonPlayerLabel, unionPrisonGoodLabels, unionPrisonBadLabels);
+
+		// Populating internal playerLabels hashmap
+		playerLabels.put(santaFePosition, santaFePlayerLabel);
+		playerLabels.put(sanRafaelPosition, sanRafaelPlayerLabel);
+		playerLabels.put(valverdePosition, valverdePlayerLabel);
+		playerLabels.put(watermillPosition, watermillPlayerLabel);
+		playerLabels.put(desertPosition, desertPlayerLabel);
+		playerLabels.put(canyonDiabloPosition, canyonDiabloPlayerLabel);
+		playerLabels.put(phoenixPosition, phoenixPlayerLabel);
+		playerLabels.put(tucsonPosition, tucsonPlayerLabel);
+		playerLabels.put(elPasoPosition, elPasoPlayerLabel);
+		playerLabels.put(unionPrisonPosition, unionPrisonPlayerLabel);
+
+		// Populating internal goodLabels hashmap
+		goodLabels.put(santaFePosition, santaFeGoodLabels);
+		goodLabels.put(sanRafaelPosition, sanRafaelGoodLabels);
+		goodLabels.put(valverdePosition, valverdeGoodLabels);
+		goodLabels.put(watermillPosition, watermillGoodLabels);
+		goodLabels.put(desertPosition, desertGoodLabels);
+		goodLabels.put(canyonDiabloPosition, canyonDiabloGoodLabels);
+		goodLabels.put(phoenixPosition, phoenixGoodLabels);
+		goodLabels.put(tucsonPosition, tucsonGoodLabels);
+		goodLabels.put(elPasoPosition, elPasoGoodLabels);
+		goodLabels.put(unionPrisonPosition, unionPrisonGoodLabels);
+
+		// Populating internal badLabels hashmap
+		badLabels.put(santaFePosition, santaFeBadLabels);
+		badLabels.put(sanRafaelPosition, sanRafaelBadLabels);
+		badLabels.put(valverdePosition, valverdeBadLabels);
+		badLabels.put(watermillPosition, watermillBadLabels);
+		badLabels.put(desertPosition, desertBadLabels);
+		badLabels.put(canyonDiabloPosition, canyonDiabloBadLabels);
+		badLabels.put(phoenixPosition, phoenixBadLabels);
+		badLabels.put(tucsonPosition, tucsonBadLabels);
+		badLabels.put(elPasoPosition, elPasoBadLabels);
+		badLabels.put(unionPrisonPosition, unionPrisonBadLabels);
 	}
 
 	@Override

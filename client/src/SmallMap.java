@@ -42,12 +42,19 @@ public class SmallMap extends Map {
 
 	public SmallMap() {
 
+		// Declaring used positions
+		final String santaFePosition = "Santa Fe";
+		final String sanRafaelPosition = "San Rafael";
+		final String valverdePosition = "Valverde";
+		final String watermillPosition = "Watermill";
+		final String desertPosition = "Desert";
+
 		// Configuring buttons
-		configureButton(santaFeButton, "Santa Fe");
-		configureButton(sanRafaelButton, "San Rafael");
-		configureButton(valverdeButton, "Valverde");
-		configureButton(watermillButton, "Watermill");
-		configureButton(desertButton, "Desert");
+		configureButton(santaFeButton, santaFePosition);
+		configureButton(sanRafaelButton, sanRafaelPosition);
+		configureButton(valverdeButton, valverdePosition);
+		configureButton(watermillButton, watermillPosition);
+		configureButton(desertButton, desertPosition);
 
 		// Initiating label arrays
 		for (short label = 0; label < labelClusterSize; label++) {
@@ -69,6 +76,27 @@ public class SmallMap extends Map {
 		configureLabels(valverdePlayerLabel, valverdeGoodLabels, valverdeBadLabels);
 		configureLabels(watermillPlayerLabel, watermillGoodLabels, watermillBadLabels);
 		configureLabels(desertPlayerLabel, desertGoodLabels, desertBadLabels);
+
+		// Populating internal playerLabels hashmap
+		playerLabels.put(santaFePosition, santaFePlayerLabel);
+		playerLabels.put(sanRafaelPosition, sanRafaelPlayerLabel);
+		playerLabels.put(valverdePosition, valverdePlayerLabel);
+		playerLabels.put(watermillPosition, watermillPlayerLabel);
+		playerLabels.put(desertPosition, desertPlayerLabel);
+
+		// Populating internal goodLabels hashmap
+		goodLabels.put(santaFePosition, santaFeGoodLabels);
+		goodLabels.put(sanRafaelPosition, sanRafaelGoodLabels);
+		goodLabels.put(valverdePosition, valverdeGoodLabels);
+		goodLabels.put(watermillPosition, watermillGoodLabels);
+		goodLabels.put(desertPosition, desertGoodLabels);
+
+		// Populating internal badLabels hashmap
+		badLabels.put(santaFePosition, santaFeBadLabels);
+		badLabels.put(sanRafaelPosition, sanRafaelBadLabels);
+		badLabels.put(valverdePosition, valverdeBadLabels);
+		badLabels.put(watermillPosition, watermillBadLabels);
+		badLabels.put(desertPosition, desertBadLabels);
 	}
 
 	@Override

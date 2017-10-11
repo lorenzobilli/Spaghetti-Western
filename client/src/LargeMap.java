@@ -82,22 +82,39 @@ public class LargeMap extends Map {
 
 	public LargeMap() {
 
+		// Declaring used positions
+		final String santaFePosition = "Santa Fe";
+		final String sanRafaelPosition = "San Rafael";
+		final String valverdePosition = "Valverde";
+		final String watermillPosition = "Watermill";
+		final String desertPosition = "Desert";
+		final String canyonDiabloPosition = "Canyon Diablo";
+		final String phoenixPosition = "Phoenix";
+		final String tucsonPosition = "Tucson";
+		final String elPasoPosition = "El Paso";
+		final String santaAnaPosition = "Santa Ana";
+		final String langstoneBridgePosition = "Langstone bridge";
+		final String sadHillGraveyardPosition = "Sad hill graveyard";
+		final String confederatePrisonPosition = "Confederate prison";
+		final String unionPrisonPosition = "Union prison";
+		final String saintAnthonyMissionPosition = "Saint Anthony mission";
+
 		// Configuring buttons
-		configureButton(santaFeButton, "Santa Fe");
-		configureButton(sanRafaelButton, "San Rafael");
-		configureButton(valverdeButton, "Valverde");
-		configureButton(watermillButton, "Watermill");
-		configureButton(desertButton, "Desert");
-		configureButton(canyonDiabloButton, "Canyon Diablo");
-		configureButton(phoenixButton, "Phoenix");
-		configureButton(tucsonButton, "Tucson");
-		configureButton(elPasoButton, "El Paso");
-		configureButton(santaAnaButton, "Santa Ana");
-		configureButton(langstoneBridgeButton, "Langstone bridge");
-		configureButton(sadHillGraveyardButton, "Sad Hill graveyard");
-		configureButton(confederatePrisonButton, "Confederate prison");
-		configureButton(unionPrisonButton, "Union prison");
-		configureButton(saintAnthonyMissionButton, "Saint Anthony mission");
+		configureButton(santaFeButton, santaFePosition);
+		configureButton(sanRafaelButton, sanRafaelPosition);
+		configureButton(valverdeButton, valverdePosition);
+		configureButton(watermillButton, watermillPosition);
+		configureButton(desertButton, desertPosition);
+		configureButton(canyonDiabloButton, canyonDiabloPosition);
+		configureButton(phoenixButton, phoenixPosition);
+		configureButton(tucsonButton, tucsonPosition);
+		configureButton(elPasoButton, elPasoPosition);
+		configureButton(santaAnaButton, santaAnaPosition);
+		configureButton(langstoneBridgeButton, langstoneBridgePosition);
+		configureButton(sadHillGraveyardButton, sadHillGraveyardPosition);
+		configureButton(confederatePrisonButton, confederatePrisonPosition);
+		configureButton(unionPrisonButton, unionPrisonPosition);
+		configureButton(saintAnthonyMissionButton, saintAnthonyMissionPosition);
 
 		// Initiating label arrays
 		for (short label = 0; label < labelClusterSize; label++) {
@@ -149,6 +166,57 @@ public class LargeMap extends Map {
 		configureLabels(confederatePrisonPlayerLabel, confederatePrisonGoodLabels, confederatePrisonBadLabels);
 		configureLabels(unionPrisonPlayerLabel, unionPrisonGoodLabels, unionPrisonBadLabels);
 		configureLabels(saintAnthonyMissionPlayerLabel, saintAnthonyMissionGoodLabels, saintAnthonyMissionBadLabels);
+
+		// Populating internal playerLabels hashmap
+		playerLabels.put(santaFePosition, santaFePlayerLabel);
+		playerLabels.put(sanRafaelPosition, sanRafaelPlayerLabel);
+		playerLabels.put(valverdePosition, valverdePlayerLabel);
+		playerLabels.put(watermillPosition, watermillPlayerLabel);
+		playerLabels.put(desertPosition, desertPlayerLabel);
+		playerLabels.put(canyonDiabloPosition, canyonDiabloPlayerLabel);
+		playerLabels.put(phoenixPosition, phoenixPlayerLabel);
+		playerLabels.put(tucsonPosition, tucsonPlayerLabel);
+		playerLabels.put(elPasoPosition, elPasoPlayerLabel);
+		playerLabels.put(santaAnaPosition, santaAnaPlayerLabel);
+		playerLabels.put(langstoneBridgePosition, langstoneBridgePlayerLabel);
+		playerLabels.put(sadHillGraveyardPosition, sadHillGraveyardPlayerLabel);
+		playerLabels.put(confederatePrisonPosition, confederatePrisonPlayerLabel);
+		playerLabels.put(unionPrisonPosition, unionPrisonPlayerLabel);
+		playerLabels.put(saintAnthonyMissionPosition, saintAnthonyMissionPlayerLabel);
+
+		// Populating internal goodLabels hashmap
+		goodLabels.put(santaFePosition, santaFeGoodLabels);
+		goodLabels.put(sanRafaelPosition, sanRafaelGoodLabels);
+		goodLabels.put(valverdePosition, valverdeGoodLabels);
+		goodLabels.put(watermillPosition, watermillGoodLabels);
+		goodLabels.put(desertPosition, desertGoodLabels);
+		goodLabels.put(canyonDiabloPosition, canyonDiabloGoodLabels);
+		goodLabels.put(phoenixPosition, phoenixGoodLabels);
+		goodLabels.put(tucsonPosition, tucsonGoodLabels);
+		goodLabels.put(elPasoPosition, elPasoGoodLabels);
+		goodLabels.put(santaAnaPosition, santaAnaGoodLabels);
+		goodLabels.put(langstoneBridgePosition, langstoneBridgeGoodLabels);
+		goodLabels.put(sadHillGraveyardPosition, sadHillGraveyardGoodLabels);
+		goodLabels.put(confederatePrisonPosition, confederatePrisonGoodLabels);
+		goodLabels.put(unionPrisonPosition, unionPrisonGoodLabels);
+		goodLabels.put(saintAnthonyMissionPosition, saintAnthonyMissionGoodLabels);
+
+		// Populating internal badLabels hashmap
+		badLabels.put(santaFePosition, santaFeBadLabels);
+		badLabels.put(sanRafaelPosition, sanRafaelBadLabels);
+		badLabels.put(valverdePosition, valverdeBadLabels);
+		badLabels.put(watermillPosition, watermillBadLabels);
+		badLabels.put(desertPosition, desertBadLabels);
+		badLabels.put(canyonDiabloPosition, canyonDiabloBadLabels);
+		badLabels.put(phoenixPosition, phoenixBadLabels);
+		badLabels.put(tucsonPosition, tucsonBadLabels);
+		badLabels.put(elPasoPosition, elPasoBadLabels);
+		badLabels.put(santaAnaPosition, santaAnaBadLabels);
+		badLabels.put(langstoneBridgePosition, langstoneBridgeBadLabels);
+		badLabels.put(sadHillGraveyardPosition, sadHillGraveyardBadLabels);
+		badLabels.put(confederatePrisonPosition, confederatePrisonBadLabels);
+		badLabels.put(unionPrisonPosition, unionPrisonBadLabels);
+		badLabels.put(saintAnthonyMissionPosition, saintAnthonyMissionBadLabels);
 	}
 
 	@Override

@@ -72,4 +72,15 @@ public class Player {
 		}
 		return null;
 	}
+
+	@Override
+	public final boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof Player)) {
+			return false;
+		}
+		return (name.equals(((Player) object).name) && team.equals(((Player) object).team));
+	}
 }
