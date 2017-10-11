@@ -16,6 +16,7 @@ public class LargeMap extends Map {
 		super.yLabelMargin = 1; //TODO: Check this value
 	}
 
+	// Buttons declaration
 	private JButton santaFeButton = new JButton();
 	private JButton sanRafaelButton = new JButton();
 	private JButton valverdeButton = new JButton();
@@ -32,67 +33,55 @@ public class LargeMap extends Map {
 	private JButton unionPrisonButton = new JButton();
 	private JButton saintAnthonyMissionButton = new JButton();
 
+	// Labels declaration and arrays initialization
 	private JLabel santaFePlayerLabel = new JLabel();
 	private JLabel[] santaFeGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] santaFeBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel sanRafaelPlayerLabel = new JLabel();
 	private JLabel[] sanRafaelGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] sanRafaelBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel valverdePlayerLabel = new JLabel();
 	private JLabel[] valverdeGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] valverdeBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel watermillPlayerLabel = new JLabel();
 	private JLabel[] watermillGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] watermillBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel desertPlayerLabel = new JLabel();
 	private JLabel[] desertGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] desertBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel canyonDiabloPlayerLabel = new JLabel();
 	private JLabel[] canyonDiabloGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] canyonDiabloBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel phoenixPlayerLabel = new JLabel();
 	private JLabel[] phoenixGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] phoenixBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel tucsonPlayerLabel = new JLabel();
 	private JLabel[] tucsonGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] tucsonBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel elPasoPlayerLabel = new JLabel();
 	private JLabel[] elPasoGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] elPasoBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel santaAnaPlayerLabel = new JLabel();
 	private JLabel[] santaAnaGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] santaAnaBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel langstoneBridgePlayerLabel = new JLabel();
 	private JLabel[] langstoneBridgeGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] langstoneBridgeBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel sadHillGraveyardPlayerLabel = new JLabel();
 	private JLabel[] sadHillGraveyardGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] sadHillGraveyardBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel confederatePrisonPlayerLabel = new JLabel();
 	private JLabel[] confederatePrisonGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] confederatePrisonBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel unionPrisonPlayerLabel = new JLabel();
 	private JLabel[] unionPrisonGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] unionPrisonBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel saintAnthonyMissionPlayerLabel = new JLabel();
 	private JLabel[] saintAnthonyMissionGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] saintAnthonyMissionBadLabels = new JLabel[labelClusterSize];
 
 	public LargeMap() {
+
 		// Configuring buttons
 		configureButton(santaFeButton, "Santa Fe");
 		configureButton(sanRafaelButton, "San Rafael");
@@ -200,21 +189,81 @@ public class LargeMap extends Map {
 		map.add(saintAnthonyMissionButton, buttonDimension, saintAnthonyMissionButtonPosition);
 
 		// Adding single labels
-		map.add(santaFePlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(santaFeButtonPosition)));
-		map.add(sanRafaelPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(sanRafaelButtonPosition)));
-		map.add(valverdePlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(valverdeButtonPosition)));
-		map.add(watermillPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(watermillButtonPosition)));
-		map.add(desertPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(desertButtonPosition)));
-		map.add(canyonDiabloPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(canyonDiabloButtonPosition)));
-		map.add(phoenixPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(phoenixButtonPosition)));
-		map.add(tucsonPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(tucsonButtonPosition)));
-		map.add(elPasoPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(elPasoButtonPosition)));
-		map.add(santaAnaPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(santaAnaButtonPosition)));
-		map.add(langstoneBridgePlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(langstoneBridgeButtonPosition)));
-		map.add(sadHillGraveyardPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(sadHillGraveyardButtonPosition)));
-		map.add(unionPrisonPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(unionPrisonButtonPosition)));
-		map.add(confederatePrisonPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(confederatePrisonButtonPosition)));
-		map.add(saintAnthonyMissionPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(saintAnthonyMissionButtonPosition)));
+		map.add(
+				santaFePlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(santaFeButtonPosition))
+		);
+		map.add(
+				sanRafaelPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(sanRafaelButtonPosition))
+		);
+		map.add(
+				valverdePlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(valverdeButtonPosition))
+		);
+		map.add(
+				watermillPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(watermillButtonPosition))
+		);
+		map.add(
+				desertPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(desertButtonPosition))
+		);
+		map.add(
+				canyonDiabloPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(canyonDiabloButtonPosition))
+		);
+		map.add(
+				phoenixPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(phoenixButtonPosition))
+		);
+		map.add(
+				tucsonPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(tucsonButtonPosition))
+		);
+		map.add(
+				elPasoPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(elPasoButtonPosition))
+		);
+		map.add(
+				santaAnaPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(santaAnaButtonPosition))
+		);
+		map.add(
+				langstoneBridgePlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(langstoneBridgeButtonPosition))
+		);
+		map.add(
+				sadHillGraveyardPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(sadHillGraveyardButtonPosition))
+		);
+		map.add(
+				unionPrisonPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(unionPrisonButtonPosition))
+		);
+		map.add(
+				confederatePrisonPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(confederatePrisonButtonPosition))
+		);
+		map.add(
+				saintAnthonyMissionPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(saintAnthonyMissionButtonPosition))
+		);
 
 		// Adding arrays of labels
 		for (short label = 0; label < labelClusterSize; label++) {

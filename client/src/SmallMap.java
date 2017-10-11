@@ -16,33 +16,32 @@ public class SmallMap extends Map {
 		super.yLabelMargin = 5;
 	}
 
+	// Buttons declaration
 	private JButton santaFeButton = new JButton();
 	private JButton sanRafaelButton = new JButton();
 	private JButton valverdeButton = new JButton();
 	private JButton watermillButton = new JButton();
 	private JButton desertButton = new JButton();
 
+	// Labels declaration and arrays initialization
 	private JLabel santaFePlayerLabel = new JLabel();
 	private JLabel[] santaFeGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] santaFeBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel sanRafaelPlayerLabel = new JLabel();
 	private JLabel[] sanRafaelGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] sanRafaelBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel valverdePlayerLabel = new JLabel();
 	private JLabel[] valverdeGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] valverdeBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel watermillPlayerLabel = new JLabel();
 	private JLabel[] watermillGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] watermillBadLabels = new JLabel[labelClusterSize];
-
 	private JLabel desertPlayerLabel = new JLabel();
 	private JLabel[] desertGoodLabels = new JLabel[labelClusterSize];
 	private JLabel[] desertBadLabels = new JLabel[labelClusterSize];
 
 	public SmallMap() {
+
 		// Configuring buttons
 		configureButton(santaFeButton, "Santa Fe");
 		configureButton(sanRafaelButton, "San Rafael");
@@ -90,11 +89,30 @@ public class SmallMap extends Map {
 		map.add(desertButton, buttonDimension, desertButtonPosition);
 
 		// Adding single labels
-		map.add(santaFePlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(santaFeButtonPosition)));
-		map.add(sanRafaelPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(sanRafaelButtonPosition)));
-		map.add(valverdePlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(valverdeButtonPosition)));
-		map.add(watermillPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(watermillButtonPosition)));
-		map.add(desertPlayerLabel, labelDimension, new Point(calculatePlayerLabelPosition(desertButtonPosition)));
+		map.add(
+				santaFePlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(santaFeButtonPosition))
+		);
+		map.add(
+				sanRafaelPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(sanRafaelButtonPosition))
+		);
+		map.add(
+				valverdePlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(valverdeButtonPosition))
+		);
+		map.add(watermillPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(watermillButtonPosition))
+		);
+		map.add(
+				desertPlayerLabel,
+				labelDimension,
+				new Point(calculatePlayerLabelPosition(desertButtonPosition))
+		);
 
 		// Adding arrays of labels
 		for (short label = 0; label < labelClusterSize; label++) {
