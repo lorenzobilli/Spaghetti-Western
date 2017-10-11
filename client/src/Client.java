@@ -1,5 +1,4 @@
 import java.security.InvalidParameterException;
-import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -8,23 +7,21 @@ import java.util.concurrent.Executors;
  */
 public class Client {
 
-    public final static Duration waitTime = Duration.ofMinutes(5);
-    public final static Duration playTime = Duration.ofMinutes(10);
-
-    public static MainWindow clientWindow;
+	public final static String gameName = "Spaghetti Western";
+	public static MainWindow clientWindow;
     public static ChatWindow chatWindow;
-    public static Resolution clientResolution;
+    public static MapWindow mapWindow;
     public static ClientConnectionManager connectionManager;
     public static Thread connectionThread;
     private static Player player;   //TODO: Handle refactoring of this field
     private static Place currentPosition;
     private static Scenery currentScenery;
+    private static Map currentMap;
 
     public static ExecutorService globalThreadPool;
 
     public static void main(String[] args) {
-        clientResolution = Resolution.HD;	//TODO: Consider a user setting for this value
-        clientWindow = new MainWindow("Spaghetti Western");
+        clientWindow = new MainWindow();
         connectionManager = new ClientConnectionManager();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
@@ -66,5 +63,16 @@ public class Client {
     		throw new InvalidParameterException("Scenery cannot be null");
 		}
 		currentScenery = scenery;
+	}
+
+	public static Map getCurrentMap() {
+    	return currentMap;
+	}
+
+	public static void setCurrentMap(Map map) {
+    	if (map == null) {
+    		throw new InvalidParameterException("Map cannot be null");
+		}
+		currentMap = map;
 	}
 }

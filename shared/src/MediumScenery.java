@@ -8,7 +8,6 @@ public class MediumScenery extends Scenery {
     	final String background = "shared/assets/medium_scenery.jpg";
     	setSceneryBackground(background);
 		setPlacesAndPaths();
-		//TODO: One Place missing from map. To be added later (map below will need some mods).
     }
 
 	@Override
@@ -23,6 +22,7 @@ public class MediumScenery extends Scenery {
 		Place phoenix = new Place("Phoenix", 7);
 		Place tucson = new Place("Tucson", 8);
 		Place elPaso = new Place("El Paso", 9);
+		Place unionPrison = new Place("Union prison", 10);
 
 		// Adding defined places to scenery hashmap
 		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
@@ -34,6 +34,7 @@ public class MediumScenery extends Scenery {
 		sceneryPlaces.put(phoenix.getPlaceName(), phoenix);
 		sceneryPlaces.put(tucson.getPlaceName(), tucson);
 		sceneryPlaces.put(elPaso.getPlaceName(), elPaso);
+		sceneryPlaces.put(unionPrison.getPlaceName(), unionPrison);
 
 		// Adding defined places to scenery graph
 		sceneryGraph.addVertex(santaFe);
@@ -45,6 +46,7 @@ public class MediumScenery extends Scenery {
 		sceneryGraph.addVertex(phoenix);
 		sceneryGraph.addVertex(tucson);
 		sceneryGraph.addVertex(elPaso);
+		sceneryGraph.addVertex(unionPrison);
 
 		// Defined scenery paths
 		Path santaFeWatermill = new Path();
@@ -54,6 +56,7 @@ public class MediumScenery extends Scenery {
 		Path santaFeElPaso = new Path();
 		Path santaFeTucson = new Path();
 		Path watermillValverde = new Path();
+		Path watermillUnionPrison = new Path();
 		Path sanRafaelValverde = new Path();
 		Path sanRafaelDesert = new Path();
 		Path sanRafaelCanyonDiablo = new Path();
@@ -63,11 +66,13 @@ public class MediumScenery extends Scenery {
 		Path valverdeDesertLong = new Path();
 		Path valverdeTucson = new Path();
 		Path valverdeElPaso = new Path();
+		Path valverdeUnionPrison = new Path();
 		Path canyonDiabloPhoenix = new Path();
 		Path phoenixTucson = new Path();
 		Path tucsonDesert = new Path();
 		Path tucsonElPaso = new Path();
 		Path elPasoDesert = new Path();
+		Path desertUnionPrison = new Path();
 
 		// Adding defined paths to scenery graph
 		sceneryGraph.addEdge(santaFe, watermill, santaFeWatermill);
@@ -77,6 +82,7 @@ public class MediumScenery extends Scenery {
 		sceneryGraph.addEdge(santaFe, elPaso, santaFeElPaso);
 		sceneryGraph.addEdge(santaFe, tucson, santaFeTucson);
 		sceneryGraph.addEdge(watermill, valverde, watermillValverde);
+		sceneryGraph.addEdge(watermill, unionPrison, watermillUnionPrison);
 		sceneryGraph.addEdge(sanRafael, valverde, sanRafaelValverde);
 		sceneryGraph.addEdge(sanRafael, desert, sanRafaelDesert);
 		sceneryGraph.addEdge(sanRafael, canyonDiablo, sanRafaelCanyonDiablo);
@@ -86,10 +92,12 @@ public class MediumScenery extends Scenery {
 		sceneryGraph.addEdge(valverde, desert, valverdeDesertLong);
 		sceneryGraph.addEdge(valverde, tucson, valverdeTucson);
 		sceneryGraph.addEdge(valverde, elPaso, valverdeElPaso);
+		sceneryGraph.addEdge(valverde, unionPrison, valverdeUnionPrison);
 		sceneryGraph.addEdge(canyonDiablo, phoenix, canyonDiabloPhoenix);
 		sceneryGraph.addEdge(phoenix, tucson, phoenixTucson);
 		sceneryGraph.addEdge(tucson, desert, tucsonDesert);
 		sceneryGraph.addEdge(tucson, elPaso, tucsonElPaso);
 		sceneryGraph.addEdge(elPaso, desert, elPasoDesert);
+		sceneryGraph.addEdge(desert, unionPrison, desertUnionPrison);
 	}
 }

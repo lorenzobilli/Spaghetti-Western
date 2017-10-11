@@ -11,7 +11,7 @@ import java.util.concurrent.Callable;
 public class TimeManager implements Callable<Boolean> {
 
 	//public final static Duration WAIT_TIME = Duration.ofMinutes(5);
-	private final static Duration WAIT_TIME = Duration.ofSeconds(10);    //FIXME: Temporary value for testing purposes only
+	private final static Duration WAIT_TIME = Duration.ofSeconds(1);    //FIXME: Temporary value for testing purposes only
 	private final static Duration PLAY_TIME = Duration.ofMinutes(10);
 	private final static Duration TURN_TIME = Duration.ofSeconds(15);	//FIXME: Exact value T.B.D.
 

@@ -30,10 +30,12 @@ public class ClientEventHandler extends EventHandler {
             Client.clientWindow.updateWaitingCountdown((secondsRemaining / 60) + 1);   // +1 to avoid round down
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_TIMEOUT")) {
-            Client.clientWindow.prepareSceneryLoad();
+            Client.clientWindow.showSessionReadyAdvice();
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAY_SESSION_START")) {
-        	Client.clientWindow.loadScenery(Client.getCurrentScenery());	// Loading scenery inside main window
+        	Client.clientWindow.hide();
+			Client.mapWindow = new MapWindow(Client.getCurrentScenery().getSceneryBackground());	// Loading map
+			Client.getCurrentMap().populate(Client.mapWindow);
         	Client.chatWindow = new ChatWindow();	// Spawning chat window
 		}
         return null;
@@ -49,15 +51,22 @@ public class ClientEventHandler extends EventHandler {
     protected Message handleScenery() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("CHOOSEN_SCENERY")) {
             String choosenScenery = MessageManager.convertXML("content", message.getMessageContent());
-            if (choosenScenery.equals("SmallScenery")) {
-                Client.setCurrentScenery(new SmallScenery());
-            } else if (choosenScenery.equals("MediumScenery")) {
-                Client.setCurrentScenery(new MediumScenery());
-            } else if (choosenScenery.equals("LargeScenery")) {
-                Client.setCurrentScenery(new LargeScenery());
-            } else {
-                throw new InvalidParameterException("Unrecognized scenery found");
-            }
+			switch (choosenScenery) {
+				case "SmallScenery":
+					Client.setCurrentScenery(new SmallScenery());
+					Client.setCurrentMap(new SmallMap());
+					break;
+				case "MediumScenery":
+					Client.setCurrentScenery(new MediumScenery());
+					Client.setCurrentMap(new MediumMap());
+					break;
+				case "LargeScenery":
+					Client.setCurrentScenery(new LargeScenery());
+					Client.setCurrentMap(new LargeMap());
+					break;
+				default:
+					throw new InvalidParameterException("Unrecognized scenery found");
+			}
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_INSERTED")) {
         	Client.getCurrentScenery().insertPlayer(
