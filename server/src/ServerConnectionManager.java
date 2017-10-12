@@ -145,8 +145,9 @@ public class ServerConnectionManager implements Runnable {
     	int totalPlayersNumber = PlayerManager.getConnectedUsersNumber();
     	int servedPlayersNumber = 0;
     	while (servedPlayersNumber != totalPlayersNumber) {
-			int randomPlace = Randomizer.getRandomInteger(Server.getCurrentScenery().getPlacesNumber());
+			int randomId = Randomizer.getRandomInteger(Server.getCurrentScenery().getPlacesNumber());
 			Player servedPlayer = PlayerManager.getPlayer(servedPlayersNumber);
+			Place randomPlace = Server.getCurrentScenery().getIdPlaces().get(randomId);
 			Scenery.SceneryEvents result = Server.getCurrentScenery().insertPlayer(servedPlayer, randomPlace);
 			if (result == Scenery.SceneryEvents.PLAYER_INSERTED) {
 				servedPlayersNumber++;
@@ -161,7 +162,7 @@ public class ServerConnectionManager implements Runnable {
 										"PLAYER_INSERTED",
 										servedPlayer.getName(),
 										servedPlayer.getTeamAsString(),
-										String.valueOf(randomPlace)
+										randomPlace.getPlaceName()
 								))
 						)
 				));

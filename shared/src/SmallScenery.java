@@ -19,12 +19,19 @@ public class SmallScenery extends Scenery {
 		Place watermill = new Place("Watermill", 4);
 		Place desert = new Place("Desert", 5);
 
-		// Adding defined places to scenery hashmap
-		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
-		sceneryPlaces.put(sanRafael.getPlaceName(), sanRafael);
-		sceneryPlaces.put(valverde.getPlaceName(), valverde);
-		sceneryPlaces.put(watermill.getPlaceName(), watermill);
-		sceneryPlaces.put(desert.getPlaceName(), desert);
+		// Adding defined places to corresponding hashmap
+		namePlaces.put(santaFe.getPlaceName(), santaFe);
+		namePlaces.put(sanRafael.getPlaceName(), sanRafael);
+		namePlaces.put(valverde.getPlaceName(), valverde);
+		namePlaces.put(watermill.getPlaceName(), watermill);
+		namePlaces.put(desert.getPlaceName(), desert);
+
+		// Adding defined ids to corresponding hashmap
+		idPlaces.put(santaFe.getPlaceId(), santaFe);
+		idPlaces.put(sanRafael.getPlaceId(), sanRafael);
+		idPlaces.put(valverde.getPlaceId(), valverde);
+		idPlaces.put(watermill.getPlaceId(), watermill);
+		idPlaces.put(desert.getPlaceId(), desert);
 
 		// Adding defined places to scenery graph
 		sceneryGraph.addVertex(santaFe);

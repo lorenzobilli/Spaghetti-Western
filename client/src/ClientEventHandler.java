@@ -69,17 +69,21 @@ public class ClientEventHandler extends EventHandler {
 			}
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_INSERTED")) {
-        	Client.getCurrentScenery().insertPlayer(
-        			new Player(
-        					MessageManager.convertXML("player_name", message.getMessageContent()),
-							MessageManager.convertXML("player_team", message.getMessageContent())
-					),
-					Integer.valueOf(MessageManager.convertXML("position", message.getMessageContent()))
+        	Player player = new Player(
+					MessageManager.convertXML("player_name", message.getMessageContent()),
+					MessageManager.convertXML("player_team", message.getMessageContent())
 			);
+        	Place position = Client.getCurrentScenery().getNamePlaces().get(
+        			MessageManager.convertXML("position", message.getMessageContent())
+			);
+        	Client.getCurrentScenery().insertPlayer(
+        			player, position
+			);
+			Client.getCurrentMap().updateMap(player, position);
 		}
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
 			Place origin = Client.getCurrentPosition();
-			Place destination = Client.getCurrentScenery().getSceneryPlaces().get(
+			Place destination = Client.getCurrentScenery().getNamePlaces().get(
 					MessageManager.convertXML("position", message.getMessageContent())
 			);
 			Client.getCurrentScenery().movePlayer(Client.getPlayer(), origin, destination);

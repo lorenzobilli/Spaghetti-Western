@@ -24,17 +24,29 @@ public class MediumScenery extends Scenery {
 		Place elPaso = new Place("El Paso", 9);
 		Place unionPrison = new Place("Union prison", 10);
 
-		// Adding defined places to scenery hashmap
-		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
-		sceneryPlaces.put(sanRafael.getPlaceName(), sanRafael);
-		sceneryPlaces.put(valverde.getPlaceName(), valverde);
-		sceneryPlaces.put(watermill.getPlaceName(), watermill);
-		sceneryPlaces.put(desert.getPlaceName(), desert);
-		sceneryPlaces.put(canyonDiablo.getPlaceName(), canyonDiablo);
-		sceneryPlaces.put(phoenix.getPlaceName(), phoenix);
-		sceneryPlaces.put(tucson.getPlaceName(), tucson);
-		sceneryPlaces.put(elPaso.getPlaceName(), elPaso);
-		sceneryPlaces.put(unionPrison.getPlaceName(), unionPrison);
+		// Adding defined places to corresponding hashmap
+		namePlaces.put(santaFe.getPlaceName(), santaFe);
+		namePlaces.put(sanRafael.getPlaceName(), sanRafael);
+		namePlaces.put(valverde.getPlaceName(), valverde);
+		namePlaces.put(watermill.getPlaceName(), watermill);
+		namePlaces.put(desert.getPlaceName(), desert);
+		namePlaces.put(canyonDiablo.getPlaceName(), canyonDiablo);
+		namePlaces.put(phoenix.getPlaceName(), phoenix);
+		namePlaces.put(tucson.getPlaceName(), tucson);
+		namePlaces.put(elPaso.getPlaceName(), elPaso);
+		namePlaces.put(unionPrison.getPlaceName(), unionPrison);
+
+		// Adding defined ids to corresponding hashmap
+		idPlaces.put(santaFe.getPlaceId(), santaFe);
+		idPlaces.put(sanRafael.getPlaceId(), sanRafael);
+		idPlaces.put(valverde.getPlaceId(), valverde);
+		idPlaces.put(watermill.getPlaceId(), watermill);
+		idPlaces.put(desert.getPlaceId(), desert);
+		idPlaces.put(canyonDiablo.getPlaceId(), canyonDiablo);
+		idPlaces.put(phoenix.getPlaceId(), phoenix);
+		idPlaces.put(tucson.getPlaceId(), tucson);
+		idPlaces.put(elPaso.getPlaceId(), elPaso);
+		idPlaces.put(unionPrison.getPlaceId(), unionPrison);
 
 		// Adding defined places to scenery graph
 		sceneryGraph.addVertex(santaFe);

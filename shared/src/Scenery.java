@@ -11,7 +11,8 @@ public abstract class Scenery {
 
     private String sceneryBackground;
     protected Graph<Place, Path> sceneryGraph = new SimpleWeightedGraph<>(Path.class);
-    protected HashMap<String, Place> sceneryPlaces = new HashMap<>();
+    protected HashMap<String, Place> namePlaces = new HashMap<>();
+    protected HashMap<Integer, Place> idPlaces = new HashMap<>();
 
     public enum SceneryEvents {
     	PLAYER_INSERTED,
@@ -32,16 +33,20 @@ public abstract class Scenery {
 
     protected abstract void setPlacesAndPaths();
 
-	public HashMap<String, Place> getSceneryPlaces() {
-		return sceneryPlaces;
+	public HashMap<String, Place> getNamePlaces() {
+		return namePlaces;
+	}
+
+	public HashMap<Integer, Place> getIdPlaces() {
+		return idPlaces;
 	}
 
 	public int getPlacesNumber() {
-		return sceneryPlaces.size();
+		return namePlaces.size();
 	}
 
 	public SceneryEvents insertPlayer(Player player, int placeId) {
-		for (Place place : sceneryPlaces.values()) {
+		for (Place place : namePlaces.values()) {
 			if (place.getPlaceId() == placeId) {
 				return insertPlayer(player, place);
 			}

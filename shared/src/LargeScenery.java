@@ -29,22 +29,39 @@ public class LargeScenery extends Scenery {
 		Place unionPrison = new Place("Union prison", 14);
 		Place saintAnthonyMission = new Place("Saint Anthony mission", 15);
 
-		// Adding defined places to scenery hashmap
-		sceneryPlaces.put(santaFe.getPlaceName(), santaFe);
-		sceneryPlaces.put(sanRafael.getPlaceName(), sanRafael);
-		sceneryPlaces.put(valverde.getPlaceName(), valverde);
-		sceneryPlaces.put(watermill.getPlaceName(), watermill);
-		sceneryPlaces.put(desert.getPlaceName(), desert);
-		sceneryPlaces.put(canyonDiablo.getPlaceName(), canyonDiablo);
-		sceneryPlaces.put(phoenix.getPlaceName(), phoenix);
-		sceneryPlaces.put(tucson.getPlaceName(), tucson);
-		sceneryPlaces.put(elPaso.getPlaceName(), elPaso);
-		sceneryPlaces.put(santaAna.getPlaceName(), santaAna);
-		sceneryPlaces.put(langstoneBridge.getPlaceName(), langstoneBridge);
-		sceneryPlaces.put(sadHillGraveyard.getPlaceName(), sadHillGraveyard);
-		sceneryPlaces.put(confederatePrison.getPlaceName(), confederatePrison);
-		sceneryPlaces.put(unionPrison.getPlaceName(), unionPrison);
-		sceneryPlaces.put(saintAnthonyMission.getPlaceName(), saintAnthonyMission);
+		// Adding defined places to corresponding hashmap
+		namePlaces.put(santaFe.getPlaceName(), santaFe);
+		namePlaces.put(sanRafael.getPlaceName(), sanRafael);
+		namePlaces.put(valverde.getPlaceName(), valverde);
+		namePlaces.put(watermill.getPlaceName(), watermill);
+		namePlaces.put(desert.getPlaceName(), desert);
+		namePlaces.put(canyonDiablo.getPlaceName(), canyonDiablo);
+		namePlaces.put(phoenix.getPlaceName(), phoenix);
+		namePlaces.put(tucson.getPlaceName(), tucson);
+		namePlaces.put(elPaso.getPlaceName(), elPaso);
+		namePlaces.put(santaAna.getPlaceName(), santaAna);
+		namePlaces.put(langstoneBridge.getPlaceName(), langstoneBridge);
+		namePlaces.put(sadHillGraveyard.getPlaceName(), sadHillGraveyard);
+		namePlaces.put(confederatePrison.getPlaceName(), confederatePrison);
+		namePlaces.put(unionPrison.getPlaceName(), unionPrison);
+		namePlaces.put(saintAnthonyMission.getPlaceName(), saintAnthonyMission);
+
+		// Adding defined ids to corresponding hashmap
+		idPlaces.put(santaFe.getPlaceId(), santaFe);
+		idPlaces.put(sanRafael.getPlaceId(), sanRafael);
+		idPlaces.put(valverde.getPlaceId(), valverde);
+		idPlaces.put(watermill.getPlaceId(), watermill);
+		idPlaces.put(desert.getPlaceId(), desert);
+		idPlaces.put(canyonDiablo.getPlaceId(), canyonDiablo);
+		idPlaces.put(phoenix.getPlaceId(), phoenix);
+		idPlaces.put(tucson.getPlaceId(), tucson);
+		idPlaces.put(elPaso.getPlaceId(), elPaso);
+		idPlaces.put(santaAna.getPlaceId(), santaAna);
+		idPlaces.put(langstoneBridge.getPlaceId(), langstoneBridge);
+		idPlaces.put(sadHillGraveyard.getPlaceId(), sadHillGraveyard);
+		idPlaces.put(confederatePrison.getPlaceId(), confederatePrison);
+		idPlaces.put(unionPrison.getPlaceId(), unionPrison);
+		idPlaces.put(saintAnthonyMission.getPlaceId(), saintAnthonyMission);
 
 		// Adding defined places to scenery graph
 		sceneryGraph.addVertex(santaFe);

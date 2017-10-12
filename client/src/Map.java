@@ -119,6 +119,16 @@ public abstract class Map {
 
 	protected abstract void populate(MapWindow map);
 
+	protected void updateMap(Player player, Place place) {
+		if (player.equals(Client.getPlayer())) {
+			populatePlayerLabel(place);
+		} else if (player.getTeam().equals(Player.Team.GOOD)) {
+			populateGoodLabel(place);
+		} else if (player.getTeam().equals(Player.Team.BAD)) {
+			populateBadLabel(place);
+		}
+	}
+
 	protected void updateMap(Player movingPlayer, Place origin, Place destination) {
 		if (movingPlayer.equals(Client.getPlayer())) {
 			updatePlayerLabels(origin, destination);
@@ -126,6 +136,31 @@ public abstract class Map {
 			updateGoodLabels(origin, destination);
 		} else if (movingPlayer.getTeam().equals(Player.Team.BAD)) {
 			updateBadLabels(origin, destination);
+		}
+	}
+
+	private void populatePlayerLabel(Place place) {
+		JLabel label = playerLabels.get(place.getPlaceName());
+		if (!label.isVisible()) {
+			label.setVisible(true);
+		}
+	}
+
+	private void populateGoodLabel(Place place) {
+		JLabel labels[] = goodLabels.get(place.getPlaceName());
+		for (short index = 0; index < labelClusterSize; index++) {
+			if (!labels[index].isVisible()) {
+				labels[index].setVisible(true);
+			}
+		}
+	}
+
+	private void populateBadLabel(Place place) {
+		JLabel labels[] = badLabels.get(place.getPlaceName());
+		for (short index = 0; index < labelClusterSize; index++) {
+			if (!labels[index].isVisible()) {
+				labels[index].setVisible(true);
+			}
 		}
 	}
 
