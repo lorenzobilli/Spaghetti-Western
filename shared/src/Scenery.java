@@ -45,15 +45,6 @@ public abstract class Scenery {
 		return namePlaces.size();
 	}
 
-	public SceneryEvents insertPlayer(Player player, int placeId) {
-		for (Place place : namePlaces.values()) {
-			if (place.getPlaceId() == placeId) {
-				return insertPlayer(player, place);
-			}
-		}
-		return SceneryEvents.DESTINATION_BUSY;
-	}
-
 	public SceneryEvents insertPlayer(Player player, Place place) {
 		if (!sceneryGraph.containsVertex(place)) {
 			throw new InvalidParameterException("Specified place doesn't exist inside scenery");

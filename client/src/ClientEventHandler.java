@@ -76,6 +76,7 @@ public class ClientEventHandler extends EventHandler {
         	Place position = Client.getCurrentScenery().getNamePlaces().get(
         			MessageManager.convertXML("position", message.getMessageContent())
 			);
+        	Client.setCurrentPosition(position);
         	Client.getCurrentScenery().insertPlayer(
         			player, position
 			);
@@ -86,6 +87,7 @@ public class ClientEventHandler extends EventHandler {
 			Place destination = Client.getCurrentScenery().getNamePlaces().get(
 					MessageManager.convertXML("position", message.getMessageContent())
 			);
+			Client.setCurrentPosition(destination);
 			Client.getCurrentScenery().movePlayer(Client.getPlayer(), origin, destination);
 			Client.getCurrentMap().updateMap(Client.getPlayer(), origin, destination);
 		}

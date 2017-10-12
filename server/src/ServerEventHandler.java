@@ -93,6 +93,7 @@ public class ServerEventHandler extends EventHandler {
             Scenery.SceneryEvents result = Server.getCurrentScenery().movePlayer(message.getMessageSender(), origin, destination);
             switch (result) {
 				case PLAYER_MOVED:
+					Server.connectionManager.getHandlerReference(message.getMessageSender()).setCurrentPlayerPosition(destination);
 					Server.connectionManager.broadcastMessage(new Message(
 							MessageType.SCENERY,
 							new Player("SERVER", Player.Team.SERVER),

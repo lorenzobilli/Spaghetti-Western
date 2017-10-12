@@ -150,6 +150,7 @@ public class ServerConnectionManager implements Runnable {
 			Place randomPlace = Server.getCurrentScenery().getIdPlaces().get(randomId);
 			Scenery.SceneryEvents result = Server.getCurrentScenery().insertPlayer(servedPlayer, randomPlace);
 			if (result == Scenery.SceneryEvents.PLAYER_INSERTED) {
+				getHandlerReference(servedPlayer).setCurrentPlayerPosition(randomPlace);
 				servedPlayersNumber++;
 				Server.connectionManager.broadcastMessage(new Message(
 						MessageType.SCENERY,
