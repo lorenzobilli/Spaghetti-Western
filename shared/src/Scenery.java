@@ -17,7 +17,8 @@ public abstract class Scenery {
     public enum SceneryEvents {
     	PLAYER_INSERTED,
         PLAYER_MOVED,
-        DESTINATION_BUSY
+        DESTINATION_BUSY,
+		DESTINATION_UNREACHABLE
     }
 
     public String getSceneryBackground() {
@@ -67,6 +68,9 @@ public abstract class Scenery {
         	throw new InvalidParameterException("Specified player is not present inside scenery");
         }
 
+        if (!sceneryGraph.containsEdge(origin, destination)) {
+        	return SceneryEvents.DESTINATION_UNREACHABLE;
+		}
         if (destination.addPlayer(player)) {
             origin.removePlayer(player);
             return SceneryEvents.PLAYER_MOVED;

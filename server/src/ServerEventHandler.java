@@ -108,6 +108,7 @@ public class ServerEventHandler extends EventHandler {
 					));
 					return null;
 				case DESTINATION_BUSY:
+				case DESTINATION_UNREACHABLE:
 					return new Message(
 							MessageType.SCENERY,
 							new Player("SERVER", Player.Team.SERVER),
