@@ -114,6 +114,8 @@ public class ClientEventHandler extends EventHandler {
 			Client.setCurrentPosition(destination);
 			Client.getCurrentScenery().movePlayer(Client.getPlayer(), origin, destination);
 			Client.getCurrentMap().updateMap(Client.getPlayer(), origin, destination);
+			Client.setCurrentBullets(destination.pickBullets());
+			Client.getCurrentMap().updateBulletLabel(Client.mapWindow, Client.getCurrentBullets());
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_NOT_MOVED")) {
 			//TODO: Implement this

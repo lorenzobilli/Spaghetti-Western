@@ -17,6 +17,7 @@ public class Client {
     private static Place currentPosition;
     private static Scenery currentScenery;
     private static Map currentMap;
+    private static int currentBullets = 0;
 
     public static ExecutorService globalThreadPool;
 
@@ -74,5 +75,13 @@ public class Client {
     		throw new InvalidParameterException("Map cannot be null");
 		}
 		currentMap = map;
+	}
+
+	public static int getCurrentBullets() {
+    	return currentBullets;
+	}
+
+	public static void setCurrentBullets(int bullets) {
+    	currentBullets += bullets;
 	}
 }

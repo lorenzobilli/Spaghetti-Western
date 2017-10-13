@@ -9,12 +9,14 @@ public class Place {
 
     private final int MAX_GOOD_PLAYERS = 3;
     private final int MAX_BAD_PLAYERS = 3;
+    private final int MAX_BULLETS = 50;
 
     private String placeName;
     private int placeId;
     private List<Player> goodPlayers;
     private List<Player> badPlayers;
-    private boolean clashEnabled = false;
+    private boolean clashEnabled;
+    private int bullets;
 
     public Place(String placeName, int placeId) {
         if (placeName == null) {
@@ -30,6 +32,8 @@ public class Place {
         this.placeId = placeId;
         goodPlayers = new ArrayList<>();
         badPlayers = new ArrayList<>();
+        clashEnabled = false;
+        bullets = Randomizer.getRandomInteger(MAX_BULLETS);
     }
 
     public String getPlaceName() {
@@ -38,6 +42,12 @@ public class Place {
 
     public int getPlaceId() {
     	return placeId;
+	}
+
+	public int pickBullets() {
+    	int takenBullets = bullets;
+    	bullets = 0;
+    	return takenBullets;
 	}
 
     public boolean addPlayer(Player player) {

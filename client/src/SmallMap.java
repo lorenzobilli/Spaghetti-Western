@@ -102,6 +102,9 @@ public class SmallMap extends Map {
 	@Override
 	protected void populate(MapWindow map) {
 
+		// Adding global labels
+		super.configureBulletLabel(map);
+
 		// Configuring button positions
 		Point santaFeButtonPosition = new Point(650, 71 - borderSize);
 		Point sanRafaelButtonPosition = new Point(225, 145 - borderSize);

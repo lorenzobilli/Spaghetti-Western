@@ -15,6 +15,8 @@ public class Server {
     public static ExecutorService globalThreadPool;
     public static TimeManager timeManager;
     private static Scenery currentScenery;
+    private static int goodTeamBullets = 0;
+    private static int badTeamBullets = 0;
 
     public static void main(String[] args) {
         serverWindow = new MainWindow("Spaghetti Western server");
@@ -55,5 +57,21 @@ public class Server {
     		throw new InvalidParameterException("Scenery cannot be null");
 		}
 		currentScenery = scenery;
+	}
+
+	public static int getGoodTeamBullets() {
+    	return goodTeamBullets;
+	}
+
+	public static void setGoodTeamBullets(int bullets) {
+    	goodTeamBullets += bullets;
+	}
+
+	public static int getBadTeamBullets() {
+    	return badTeamBullets;
+	}
+
+	public static void setBadTeamBullets(int bullets) {
+    	badTeamBullets += bullets;
 	}
 }
