@@ -58,14 +58,14 @@ public abstract class Scenery {
 	}
 
 	public SceneryEvents movePlayer(Player player, Place origin, Place destination) {
+		if (!origin.isPlayerPresent(player)) {
+			throw new InvalidParameterException("Specified player is not present inside scenery");
+		}
         if (!sceneryGraph.containsVertex(origin)) {
             throw new InvalidParameterException("Specified origin doesn't exist inside scenery");
         }
         if (!sceneryGraph.containsVertex(destination)) {
             throw new InvalidParameterException("Specified destination doesn't exist inside scenery");
-        }
-        if (!origin.isPlayerPresent(player)) {
-        	throw new InvalidParameterException("Specified player is not present inside scenery");
         }
 
         if (!sceneryGraph.containsEdge(origin, destination)) {

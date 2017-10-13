@@ -85,13 +85,18 @@ public class ServerEventHandler extends EventHandler {
 
     @Override
     protected Message handleScenery() {
-        if (MessageManager.convertXML("header", message.getMessageContent()).equals("TRY_PLAYER_MOVE")) {
-            Place origin = Server.connectionManager.getHandlerReference(
-            		message.getMessageSender()).getCurrentPlayerPosition();
-            Place destination = Server.getCurrentScenery().getNamePlaces().get(
-            		MessageManager.convertXML("content", message.getMessageContent()));
-            Scenery.SceneryEvents result = Server.getCurrentScenery().movePlayer(message.getMessageSender(), origin, destination);
-            switch (result) {
+        return null;
+    }
+
+	@Override
+	protected Message handleMove() {
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("TRY_PLAYER_MOVE")) {
+			Place origin = Server.connectionManager.getHandlerReference(
+					message.getMessageSender()).getCurrentPlayerPosition();
+			Place destination = Server.getCurrentScenery().getNamePlaces().get(
+					MessageManager.convertXML("content", message.getMessageContent()));
+			Scenery.SceneryEvents result = Server.getCurrentScenery().movePlayer(message.getMessageSender(), origin, destination);
+			switch (result) {
 				case PLAYER_MOVED:
 					Server.connectionManager.getHandlerReference(message.getMessageSender()).setCurrentPlayerPosition(destination);
 					Server.connectionManager.broadcastMessage(new Message(
@@ -99,23 +104,42 @@ public class ServerEventHandler extends EventHandler {
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML(
 									new ArrayList<>(Arrays.asList(
-											"header", "position"
+											"header",
+											"player_name",
+											"player_team",
+											"origin",
+											"destination"
 									)),
 									new ArrayList<>(Arrays.asList(
-											"PLAYER_MOVED", destination.getPlaceName()
+											"PLAYER_MOVED",
+											message.getMessageSender().getName(),
+											message.getMessageSender().getTeamAsString(),
+											origin.getPlaceName(),
+											destination.getPlaceName()
 									))
 							)
 					));
-					return null;
+					return new Message(
+							MessageType.MOVE,
+							new Player("SERVER", Player.Team.SERVER),
+							MessageManager.createXML(
+									new ArrayList<>(Arrays.asList(
+											"header", "origin", "destination"
+									)),
+									new ArrayList<>(Arrays.asList(
+											"PLAYER_MOVED", origin.getPlaceName(), destination.getPlaceName()
+									))
+							)
+					);
 				case DESTINATION_BUSY:
 				case DESTINATION_UNREACHABLE:
 					return new Message(
-							MessageType.SCENERY,
+							MessageType.MOVE,
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML("header", "PLAYER_NOT_MOVED")
 					);
 			}
-        }
-        return null;
-    }
+		}
+		return null;
+	}
 }

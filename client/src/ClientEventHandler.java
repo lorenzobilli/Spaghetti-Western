@@ -82,18 +82,42 @@ public class ClientEventHandler extends EventHandler {
 			);
 			Client.getCurrentMap().updateMap(player, position);
 		}
-        if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
-			Place origin = Client.getCurrentPosition();
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
+        	Player player = new Player(
+        			MessageManager.convertXML("player_name", message.getMessageContent()),
+					MessageManager.convertXML("player_team", message.getMessageContent())
+			);
+        	if (player.equals(Client.getPlayer())) {
+        		return null;
+			}
+        	Place origin = Client.getCurrentScenery().getNamePlaces().get(
+        			MessageManager.convertXML("origin", message.getMessageContent())
+			);
+        	Place destination = Client.getCurrentScenery().getNamePlaces().get(
+        			MessageManager.convertXML("destination", message.getMessageContent())
+			);
+        	Client.getCurrentScenery().movePlayer(player, origin, destination);
+        	Client.getCurrentMap().updateMap(player, origin, destination);
+		}
+        return null;
+    }
+
+	@Override
+	protected Message handleMove() {
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
+			Place origin = Client.getCurrentScenery().getNamePlaces().get(
+					MessageManager.convertXML("origin", message.getMessageContent())
+			);
 			Place destination = Client.getCurrentScenery().getNamePlaces().get(
-					MessageManager.convertXML("position", message.getMessageContent())
+					MessageManager.convertXML("destination", message.getMessageContent())
 			);
 			Client.setCurrentPosition(destination);
 			Client.getCurrentScenery().movePlayer(Client.getPlayer(), origin, destination);
 			Client.getCurrentMap().updateMap(Client.getPlayer(), origin, destination);
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_NOT_MOVED")) {
-        	//TODO: Implement this
+			//TODO: Implement this
 		}
-        return null;
-    }
+		return null;
+	}
 }

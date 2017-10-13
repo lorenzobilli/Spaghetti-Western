@@ -28,7 +28,7 @@ public abstract class Map {
 
 	protected void sendPlayerMove(String destination) {
 		Future send = Client.globalThreadPool.submit(new Sender(new Message(
-				MessageType.SCENERY,
+				MessageType.MOVE,
 				Client.getPlayer(),
 				MessageManager.createXML(
 						new ArrayList<>(Arrays.asList(
@@ -179,7 +179,7 @@ public abstract class Map {
 
 	private void updateGoodLabels(Place origin, Place destination) {
 		JLabel oldPlace[] = goodLabels.get(origin.getPlaceName());
-		for (short index = labelClusterSize; index > 0; index--) {
+		for (short index = labelClusterSize - 1; index >= 0; index--) {
 			if (oldPlace[index].isVisible()) {
 				oldPlace[index].setVisible(false);
 				break;
@@ -196,7 +196,7 @@ public abstract class Map {
 
 	private void updateBadLabels(Place origin, Place destination) {
 		JLabel oldPlace[] = badLabels.get(origin.getPlaceName());
-		for (short index = labelClusterSize; index > 0; index--) {
+		for (short index = labelClusterSize - 1; index >= 0; index--) {
 			if (oldPlace[index].isVisible()) {
 				oldPlace[index].setVisible(false);
 				break;
