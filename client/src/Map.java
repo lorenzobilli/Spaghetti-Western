@@ -151,6 +151,7 @@ public abstract class Map {
 		for (short index = 0; index < labelClusterSize; index++) {
 			if (!labels[index].isVisible()) {
 				labels[index].setVisible(true);
+				break;
 			}
 		}
 	}
@@ -160,6 +161,7 @@ public abstract class Map {
 		for (short index = 0; index < labelClusterSize; index++) {
 			if (!labels[index].isVisible()) {
 				labels[index].setVisible(true);
+				break;
 			}
 		}
 	}
@@ -180,12 +182,14 @@ public abstract class Map {
 		for (short index = labelClusterSize; index > 0; index--) {
 			if (oldPlace[index].isVisible()) {
 				oldPlace[index].setVisible(false);
+				break;
 			}
 		}
 		JLabel newPlace[] = goodLabels.get(destination.getPlaceName());
 		for (short index = 0; index < labelClusterSize; index++) {
 			if (!newPlace[index].isVisible()) {
 				newPlace[index].setVisible(true);
+				break;
 			}
 		}
 	}
@@ -195,12 +199,14 @@ public abstract class Map {
 		for (short index = labelClusterSize; index > 0; index--) {
 			if (oldPlace[index].isVisible()) {
 				oldPlace[index].setVisible(false);
+				break;
 			}
 		}
 		JLabel newPlace[] = badLabels.get(destination.getPlaceName());
 		for (short index = 0; index < labelClusterSize; index++) {
 			if (!newPlace[index].isVisible()) {
 				newPlace[index].setVisible(true);
+				break;
 			}
 		}
 	}
