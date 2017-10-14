@@ -45,8 +45,14 @@ public class Place {
 	}
 
 	public int pickBullets() {
-    	int takenBullets = bullets;
-    	bullets = 0;
+    	if (bullets == 0) {
+    		return 0;
+		}
+    	if (bullets % 2 != 0) {
+    		bullets--;
+		}
+		int takenBullets = bullets / 2;
+    	bullets /= 2;
     	return takenBullets;
 	}
 
