@@ -17,6 +17,7 @@ public class ClientHandler implements Runnable {
     private BufferedReader receiveStream;
     private Player connectedPlayer;
     private Place currentPlayerPosition;
+    private int currentBullets;
     private volatile boolean keepAlive = true;
 
     public ClientHandler(Socket connection) {
@@ -51,6 +52,14 @@ public class ClientHandler implements Runnable {
     		throw new InvalidParameterException("Current player position cannot be null");
 		}
 		this.currentPlayerPosition = currentPlayerPosition;
+	}
+
+	public int getCurrentBullets() {
+    	return currentBullets;
+	}
+
+	public void setCurrentBullets(int bullets) {
+    	currentBullets += bullets;
 	}
 
     public synchronized PrintWriter getSendStream() {

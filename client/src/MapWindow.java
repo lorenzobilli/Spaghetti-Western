@@ -6,11 +6,13 @@ import java.awt.*;
  */
 public class MapWindow {
 
+	public final Dimension size = new Dimension(1366, 768);
+	public final Dimension margins = new Dimension(10, 35);
+
 	private JFrame frame;
 	private JLabel background;
 
 	public MapWindow(String imagePath) {
-		final Dimension size = new Dimension(1366, 768);
 		final Point position = new Point(0, 0);
 
 		frame = new JFrame(Client.gameName);
@@ -32,6 +34,12 @@ public class MapWindow {
 	public void add(Component component, Dimension size, Point location) {
 		background.add(component);
 		Insets insets = background.getInsets();
+		component.setBounds(location.x + insets.left, location.y + insets.top, size.width, size.height);
+	}
+
+	public void update(Component component, Dimension size) {
+		Insets insets = background.getInsets();
+		Point location = component.getLocation();
 		component.setBounds(location.x + insets.left, location.y + insets.top, size.width, size.height);
 	}
 

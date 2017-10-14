@@ -7,6 +7,7 @@ public class Player {
 
     private String name;
     private Team team;
+    private int bullets;
 
     public enum Team {
         SERVER,
@@ -24,6 +25,7 @@ public class Player {
         }
         this.name = name;
         this.team = team;
+        bullets = 0;
     }
 
     public Player(String name, String team) {
@@ -36,15 +38,19 @@ public class Player {
 		if (team.equals("SERVER")) {
     		this.name = name;
     		this.team = Team.SERVER;
+    		bullets = 0;
 		} else if (team.equals("GOOD")) {
     		this.name = name;
     		this.team = Team.GOOD;
+    		bullets = 0;
 		} else if (team.equals("BAD")) {
     		this.name = name;
     		this.team = Team.BAD;
+    		bullets = 0;
 		} else if (team.equals("UGLY")) {
     		this.name = name;
     		this.team = Team.UGLY;
+    		bullets = 0;
 		} else {
     		throw new InvalidParameterException("Unrecognized team string");
 		}
@@ -71,6 +77,10 @@ public class Player {
 				return "UGLY";
 		}
 		return null;
+	}
+
+	public void takeBullets(Place place) {
+    	bullets = place.pickBullets();
 	}
 
 	@Override

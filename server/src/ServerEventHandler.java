@@ -119,6 +119,13 @@ public class ServerEventHandler extends EventHandler {
 									))
 							)
 					));
+					int takenBullets = destination.pickBullets();
+					if (message.getMessageSender().getTeam() == Player.Team.GOOD) {
+						Server.setGoodTeamBullets(takenBullets);
+					} else if (message.getMessageSender().getTeam() == Player.Team.BAD) {
+						Server.setBadTeamBullets(takenBullets);
+					}
+					Server.connectionManager.getHandlerReference(message.getMessageSender()).setCurrentBullets(takenBullets);
 					return new Message(
 							MessageType.MOVE,
 							new Player("SERVER", Player.Team.SERVER),

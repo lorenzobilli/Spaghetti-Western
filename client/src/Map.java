@@ -15,6 +15,7 @@ public abstract class Map {
 	protected final int borderSize = 15;
 	protected final int labelClusterSize = 3;
 
+	private JLabel bulletLabel;
 	protected HashMap<String, JLabel> playerLabels = new HashMap<>();
 	protected HashMap<String, JLabel[]> goodLabels = new HashMap<>();
 	protected HashMap<String, JLabel[]> badLabels = new HashMap<>();
@@ -67,6 +68,19 @@ public abstract class Map {
 				label.setVisible(false);
 			}
 		}
+	}
+
+	protected void configureBulletLabel(MapWindow map) {
+		bulletLabel = new JLabel("Bullets: " + String.valueOf(0));
+		Dimension bulletLabelDimension = bulletLabel.getPreferredSize();
+		map.add(bulletLabel, bulletLabelDimension, new Point(
+				map.margins.width, map.size.height - map.margins.height - bulletLabelDimension.height)
+		);
+	}
+
+	protected void updateBulletLabel(MapWindow map, int bullets) {
+		bulletLabel.setText("Bullets: " + String.valueOf(bullets));
+		map.update(bulletLabel, bulletLabel.getPreferredSize());
 	}
 
 	protected Point calculatePlayerLabelPosition(Point buttonPosition) {

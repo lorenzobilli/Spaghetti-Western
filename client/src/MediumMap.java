@@ -162,6 +162,9 @@ public class MediumMap extends Map {
 	@Override
 	protected void populate(MapWindow map) {
 
+		// Adding global labels
+		super.configureBulletLabel(map);
+
 		// Configuring button positions
 		Point santaFeButtonPosition = new Point(947, 42 - borderSize);
 		Point sanRafaelButtonPosition = new Point(654, 93 - borderSize);
