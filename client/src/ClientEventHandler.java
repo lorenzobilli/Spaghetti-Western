@@ -116,10 +116,13 @@ public class ClientEventHandler extends EventHandler {
 			Client.getCurrentMap().updateMap(Client.getPlayer(), origin, destination);
 			Client.setCurrentBullets(destination.pickBullets());
 			Client.getCurrentMap().updateBulletLabel(Client.mapWindow, Client.getCurrentBullets());
+			//TODO: Insert here clash button
 		}
-		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_NOT_MOVED")) {
-			//TODO: Implement this
-		}
+		return null;
+	}
+
+	@Override
+	protected Message handleClash() {
 		return null;
 	}
 }

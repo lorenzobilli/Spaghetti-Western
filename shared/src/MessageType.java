@@ -6,5 +6,6 @@ public enum MessageType {
     TIME,
     CHAT,
     SCENERY,
-    MOVE
+    MOVE,
+    CLASH
 }

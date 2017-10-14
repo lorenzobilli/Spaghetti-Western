@@ -149,4 +149,9 @@ public class ServerEventHandler extends EventHandler {
 		}
 		return null;
 	}
+
+	@Override
+	protected Message handleClash() {
+		return null;
+	}
 }
