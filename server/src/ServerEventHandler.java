@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Future;
 
 /**
@@ -152,6 +153,27 @@ public class ServerEventHandler extends EventHandler {
 
 	@Override
 	protected Message handleClash() {
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
+			Place clashLocation = Server.connectionManager.getHandlerReference(
+					message.getMessageSender()).getCurrentPlayerPosition();
+			List<Player> receivers = null;
+			switch (message.getMessageSender().getTeam()) {
+				case GOOD:
+					receivers = clashLocation.getBadPlayers();
+					break;
+				case BAD:
+					receivers = clashLocation.getGoodPlayers();
+					break;
+			}
+			assert receivers != null;
+			for (Player receiver : receivers) {
+				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
+						MessageType.CLASH,
+						message.getMessageSender(),
+						MessageManager.createXML("header", "CLASH_REQUEST")
+				));
+			}
+		}
 		return null;
 	}
 }

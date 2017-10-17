@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.security.InvalidParameterException;
 
 /**
@@ -81,6 +82,9 @@ public class ClientEventHandler extends EventHandler {
         			player, position
 			);
 			Client.getCurrentMap().updateMap(player, position);
+			if (Client.getCurrentPosition().getClashStatus()) {
+				Client.getCurrentMap().toggleClashButton();		//TODO: Add here turn-checking
+			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
         	Player player = new Player(
@@ -116,13 +120,23 @@ public class ClientEventHandler extends EventHandler {
 			Client.getCurrentMap().updateMap(Client.getPlayer(), origin, destination);
 			Client.setCurrentBullets(destination.pickBullets());
 			Client.getCurrentMap().updateBulletLabel(Client.mapWindow, Client.getCurrentBullets());
-			//TODO: Insert here clash button
+			if (Client.getCurrentPosition().getClashStatus()) {
+				Client.getCurrentMap().toggleClashButton();
+			}
 		}
 		return null;
 	}
 
 	@Override
 	protected Message handleClash() {
+    	if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
+			JOptionPane.showConfirmDialog(
+					Client.mapWindow.getFrame(),
+					"Hey " + Client.getPlayer().getName() + "! " +
+							message.getMessageSender().getName() + " has sent a clash request! Accept request?",
+					"Clash request",
+					JOptionPane.YES_NO_OPTION);
+		}
 		return null;
 	}
 }

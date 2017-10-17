@@ -87,11 +87,25 @@ public abstract class Map {
 	protected void configureClashButton(MapWindow map) {
 		clashButton = new JButton("CLASH!");
 		clashButton.setForeground(Color.RED);
+		clashButton.setVisible(false);
+		clashButton.addActionListener(e -> {
+			Future send = Client.globalThreadPool.submit(new Sender(
+					new Message(
+							MessageType.CLASH,
+							Client.getPlayer(),
+							MessageManager.createXML("header", "CLASH_REQUEST")
+					), Client.connectionManager.getSendStream()
+			));
+		});
 		Dimension clashButtonDimension = clashButton.getPreferredSize();
 		map.add(clashButton, clashButtonDimension, new Point(
 				map.size.width - map.margins.width - clashButtonDimension.width,
 				map.size.height - map.margins.height - clashButtonDimension.height
 		));
+	}
+
+	protected void toggleClashButton() {
+		clashButton.setVisible(!clashButton.isVisible());
 	}
 
 	protected Point calculatePlayerLabelPosition(Point buttonPosition) {

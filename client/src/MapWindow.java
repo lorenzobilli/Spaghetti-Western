@@ -31,6 +31,10 @@ public class MapWindow {
 		frame.setVisible(true);
 	}
 
+	public Component getFrame() {
+		return frame;
+	}
+
 	public void add(Component component, Dimension size, Point location) {
 		background.add(component);
 		Insets insets = background.getInsets();

@@ -125,6 +125,14 @@ public class Place {
         return playerFound;
     }
 
+    public List<Player> getGoodPlayers() {
+    	return goodPlayers;
+	}
+
+	public List<Player> getBadPlayers() {
+    	return badPlayers;
+	}
+
     public boolean getClashStatus() {
         return clashEnabled;
     }
