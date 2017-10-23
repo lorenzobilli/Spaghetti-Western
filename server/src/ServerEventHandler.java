@@ -1,12 +1,16 @@
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Future;
 
 /**
  * ServerEventHandler class
  */
 public class ServerEventHandler extends EventHandler {
+
+	private final Object monitor = new Object();
 
     protected ServerEventHandler(Message message) {
         super(message);
@@ -151,27 +155,70 @@ public class ServerEventHandler extends EventHandler {
 		return null;
 	}
 
+	private List<Player> getOppositeClashers(Player player, Place position) {
+    	if (player == null) {
+    		throw new InvalidParameterException("Player cannot be null");
+		}
+		if (position == null) {
+    		throw new InvalidParameterException("Position cannot be null");
+		}
+		switch (player.getTeam()) {
+			case GOOD:
+				return position.getBadPlayers();
+			case BAD:
+				return position.getGoodPlayers();
+			default:
+				throw new NoSuchElementException("Requested player list cannot be found");
+		}
+	}
+
 	@Override
 	protected Message handleClash() {
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
+			Server.connectionManager.acceptClashResponses();	// Make sure that requests are unlocked for future uses
 			Place clashLocation = Server.connectionManager.getHandlerReference(
 					message.getMessageSender()).getCurrentPlayerPosition();
-			List<Player> receivers = null;
-			switch (message.getMessageSender().getTeam()) {
-				case GOOD:
-					receivers = clashLocation.getBadPlayers();
-					break;
-				case BAD:
-					receivers = clashLocation.getGoodPlayers();
-					break;
-			}
-			assert receivers != null;
+			List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
 			for (Player receiver : receivers) {
 				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 						MessageType.CLASH,
 						message.getMessageSender(),
 						MessageManager.createXML("header", "CLASH_REQUEST")
 				));
+			}
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
+			if (Server.connectionManager.areClashResponsesAccepted()) {
+				Server.connectionManager.denyClashResponses();
+				Place clashLocation = Server.connectionManager.getHandlerReference(
+						message.getMessageSender()).getCurrentPlayerPosition();
+				List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
+				for (Player receiver : receivers) {
+					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
+							MessageType.CLASH,
+							message.getMessageSender(),
+							MessageManager.createXML("header", "CLASH_ACCEPTED")
+					));
+				}
+			} else {
+				return null;
+			}
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
+			if (Server.connectionManager.areClashResponsesAccepted()) {
+				Server.connectionManager.denyClashResponses();
+				Place clashLocation = Server.connectionManager.getHandlerReference(
+						message.getMessageSender()).getCurrentPlayerPosition();
+				List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
+				for (Player receiver : receivers) {
+					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
+							MessageType.CLASH,
+							message.getMessageSender(),
+							MessageManager.createXML("header", "CLASH_REJECTED")
+					));
+				}
+			} else {
+				return null;
 			}
 		}
 		return null;

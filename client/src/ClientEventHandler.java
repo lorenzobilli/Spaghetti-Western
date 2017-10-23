@@ -130,12 +130,44 @@ public class ClientEventHandler extends EventHandler {
 	@Override
 	protected Message handleClash() {
     	if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
-			JOptionPane.showConfirmDialog(
+    		Object[] options = {"Accept", "Reject"};
+			int selected = JOptionPane.showOptionDialog(
 					Client.mapWindow.getFrame(),
 					"Hey " + Client.getPlayer().getName() + "! " +
 							message.getMessageSender().getName() + " has sent a clash request! Accept request?",
 					"Clash request",
-					JOptionPane.YES_NO_OPTION);
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[1]);
+			switch (selected) {
+				case JOptionPane.YES_OPTION:	// "Accept" selected
+					return new Message(
+							MessageType.CLASH,
+							Client.getPlayer(),
+							MessageManager.createXML("header", "CLASH_ACCEPTED")
+					);
+				case JOptionPane.NO_OPTION:
+				case JOptionPane.CLOSED_OPTION:
+					return new Message(
+							MessageType.CLASH,
+							Client.getPlayer(),
+							MessageManager.createXML("header", "CLASH_REJECTED")
+					);
+			}
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
+			JOptionPane.showMessageDialog(
+					null, message.getMessageSender().getName() + " has accepted the clash!",
+					"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
+			);
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
+			JOptionPane.showMessageDialog(
+					null, message.getMessageSender().getName() + " has rejected the clash!",
+					"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
+			);
 		}
 		return null;
 	}
