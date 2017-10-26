@@ -188,6 +188,7 @@ public class ServerEventHandler extends EventHandler {
 			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
+			Server.connectionManager.acceptAttackResponses();	// Make sure that requests are unlocked for future uses
 			if (Server.connectionManager.areClashResponsesAccepted()) {
 				Server.connectionManager.denyClashResponses();
 				Place clashLocation = Server.connectionManager.getHandlerReference(
@@ -213,12 +214,97 @@ public class ServerEventHandler extends EventHandler {
 				for (Player receiver : receivers) {
 					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 							MessageType.CLASH,
-							message.getMessageSender(),
+							receiver,
 							MessageManager.createXML("header", "CLASH_REJECTED")
 					));
 				}
 			} else {
 				return null;
+			}
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("START_CLASH")) {
+			ClashManager currentClash = new ClashManager();
+			Place clashLocation = Server.connectionManager.getHandlerReference(
+					message.getMessageSender()).getCurrentPlayerPosition();
+			List<Player> attackers = null;
+			List<Player> defenders = null;
+			if (message.getMessageSender().getTeam().equals(Player.Team.GOOD)) {
+				attackers = clashLocation.getGoodPlayers();
+				defenders = clashLocation.getBadPlayers();
+			} else if (message.getMessageSender().getTeam().equals(Player.Team.BAD)) {
+				attackers = clashLocation.getBadPlayers();
+				defenders = clashLocation.getGoodPlayers();
+			}
+			assert attackers != null;
+			assert defenders != null;
+			ClashManager.Winners winners = currentClash.clash(attackers, defenders);
+			StringBuilder attackResults = new StringBuilder();
+			for (Integer result : currentClash.getAttackResult()) {
+				attackResults.append(String.valueOf(result));
+			}
+			StringBuilder defenseResult = new StringBuilder();
+			for (Integer result : currentClash.getDefenseResult()) {
+				defenseResult.append(String.valueOf(result));
+			}
+			if (winners.equals(ClashManager.Winners.ATTACK)) {
+				for (Player winner : attackers) {
+					Server.connectionManager.sendMessageToPlayer(winner, new Message(
+							MessageType.CLASH,
+							winner,
+							MessageManager.createXML(
+									new ArrayList<>(Arrays.asList(
+											"header", "attack", "defense"
+									)),
+									new ArrayList<>(Arrays.asList(
+											"CLASH_WON", attackResults.toString(), defenseResult.toString()
+									))
+							)
+					));
+				}
+				for (Player looser : defenders) {
+					Server.connectionManager.sendMessageToPlayer(looser, new Message(
+						MessageType.CLASH,
+						looser,
+						MessageManager.createXML(
+								new ArrayList<>(Arrays.asList(
+										"header", "attack",	"defense"
+								)),
+								new ArrayList<>(Arrays.asList(
+										"CLASH_LOST", attackResults.toString(), defenseResult.toString()
+								))
+						)
+					));
+				}
+			}
+			else if (winners.equals(ClashManager.Winners.DEFENSE)) {
+				for (Player looser : defenders) {
+					Server.connectionManager.sendMessageToPlayer(looser, new Message(
+							MessageType.CLASH,
+							looser,
+							MessageManager.createXML(
+									new ArrayList<>(Arrays.asList(
+											"header", "attack", "defense"
+									)),
+									new ArrayList<>(Arrays.asList(
+											"CLASH_LOST", attackResults.toString(), defenseResult.toString()
+									))
+							)
+					));
+				}
+				for (Player winner : attackers) {
+					Server.connectionManager.sendMessageToPlayer(winner, new Message(
+							MessageType.CLASH,
+							winner,
+							MessageManager.createXML(
+									new ArrayList<>(Arrays.asList(
+											"header", "attack", "defense"
+									)),
+									new ArrayList<>(Arrays.asList(
+											"CLASH_WON", attackResults.toString(), defenseResult.toString()
+									))
+							)
+					));
+				}
 			}
 		}
 		return null;

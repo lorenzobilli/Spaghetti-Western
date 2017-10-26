@@ -161,6 +161,11 @@ public class ClientEventHandler extends EventHandler {
 			JOptionPane.showMessageDialog(
 					null, message.getMessageSender().getName() + " has accepted the clash!",
 					"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
+			);	//TODO: Consider auto closeable message option
+			return new Message(
+					MessageType.CLASH,
+					Client.getPlayer(),
+					MessageManager.createXML("header", "START_CLASH")
 			);
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
@@ -168,6 +173,27 @@ public class ClientEventHandler extends EventHandler {
 					null, message.getMessageSender().getName() + " has rejected the clash!",
 					"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
 			);
+			return null;
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_WON")) {
+			String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
+			String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
+			JOptionPane.showMessageDialog(
+					null,
+					"Attack: " + attackResult + " - " +
+							"Defense: " + defenseResult,
+					"YOU WON!", JOptionPane.INFORMATION_MESSAGE
+			);	//TODO: Consider auto closeable message option
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_LOST")) {
+			String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
+			String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
+			JOptionPane.showMessageDialog(
+					null,
+					"Attack: " + attackResult + " - " +
+							"Defense: " + defenseResult,
+					"YOU LOOSE!", JOptionPane.INFORMATION_MESSAGE
+			);	//TODO: Consider auto closeable message option
 		}
 		return null;
 	}
