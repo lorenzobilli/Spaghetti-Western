@@ -7,7 +7,7 @@ import java.awt.*;
 public class MapWindow {
 
 	public final Dimension size = new Dimension(1366, 768);
-	public final Dimension margins = new Dimension(10, 35);
+	public final Dimension margins = new Dimension(20, 45);
 
 	private JFrame frame;
 	private JLabel background;
