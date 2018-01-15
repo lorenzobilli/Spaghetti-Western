@@ -64,6 +64,18 @@ public class Player {
         return team;
     }
 
+    public int getBullets() {
+    	return bullets;
+	}
+
+	public void addBullets(int bullets) {
+    	this.bullets += bullets;
+	}
+
+	public void removeBullets() {
+    	bullets = 0;
+	}
+
     //TODO: Is there a better way?
     public String getTeamAsString() {
     	switch (team) {

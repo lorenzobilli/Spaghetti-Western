@@ -253,10 +253,16 @@ public class ServerEventHandler extends EventHandler {
 							winner,
 							MessageManager.createXML(
 									new ArrayList<>(Arrays.asList(
-											"header", "attack", "defense"
+											"header",
+											"attack",
+											"defense",
+											"prize"
 									)),
 									new ArrayList<>(Arrays.asList(
-											"CLASH_WON", attackResults.toString(), defenseResult.toString()
+											"CLASH_WON",
+											attackResults.toString(),
+											defenseResult.toString(),
+											String.valueOf(PointsManager.getPrize(defenders))
 									))
 							)
 					));
@@ -267,40 +273,54 @@ public class ServerEventHandler extends EventHandler {
 						looser,
 						MessageManager.createXML(
 								new ArrayList<>(Arrays.asList(
-										"header", "attack",	"defense"
+										"header",
+										"attack",
+										"defense"
 								)),
 								new ArrayList<>(Arrays.asList(
-										"CLASH_LOST", attackResults.toString(), defenseResult.toString()
+										"CLASH_LOST",
+										attackResults.toString(),
+										defenseResult.toString()
 								))
 						)
 					));
 				}
 			}
 			else if (winners.equals(ClashManager.Winners.DEFENSE)) {
-				for (Player looser : defenders) {
-					Server.connectionManager.sendMessageToPlayer(looser, new Message(
-							MessageType.CLASH,
-							looser,
-							MessageManager.createXML(
-									new ArrayList<>(Arrays.asList(
-											"header", "attack", "defense"
-									)),
-									new ArrayList<>(Arrays.asList(
-											"CLASH_LOST", attackResults.toString(), defenseResult.toString()
-									))
-							)
-					));
-				}
-				for (Player winner : attackers) {
+				for (Player winner : defenders) {
 					Server.connectionManager.sendMessageToPlayer(winner, new Message(
 							MessageType.CLASH,
 							winner,
 							MessageManager.createXML(
 									new ArrayList<>(Arrays.asList(
-											"header", "attack", "defense"
+											"header",
+											"attack",
+											"defense"
 									)),
 									new ArrayList<>(Arrays.asList(
-											"CLASH_WON", attackResults.toString(), defenseResult.toString()
+											"CLASH_LOST",
+											attackResults.toString(),
+											defenseResult.toString()
+									))
+							)
+					));
+				}
+				for (Player looser : attackers) {
+					Server.connectionManager.sendMessageToPlayer(looser, new Message(
+							MessageType.CLASH,
+							looser,
+							MessageManager.createXML(
+									new ArrayList<>(Arrays.asList(
+											"header",
+											"attack",
+											"defense",
+											"prize"
+									)),
+									new ArrayList<>(Arrays.asList(
+											"CLASH_WON",
+											attackResults.toString(),
+											defenseResult.toString(),
+											String.valueOf(PointsManager.getPrize(attackers))
 									))
 							)
 					));

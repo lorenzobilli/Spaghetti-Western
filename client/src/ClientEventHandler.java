@@ -159,7 +159,8 @@ public class ClientEventHandler extends EventHandler {
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
 			JOptionPane.showMessageDialog(
-					null, message.getMessageSender().getName() + " has accepted the clash!",
+					Client.mapWindow.getFrame(),
+					message.getMessageSender().getName() + " has accepted the clash!",
 					"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
 			);	//TODO: Consider auto closeable message option
 			return new Message(
@@ -170,30 +171,38 @@ public class ClientEventHandler extends EventHandler {
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
 			JOptionPane.showMessageDialog(
-					null, message.getMessageSender().getName() + " has rejected the clash!",
+					Client.mapWindow.getFrame(),
+					message.getMessageSender().getName() + " has rejected the clash!",
 					"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
-			);
+			);	//TODO: Consider auto closeable message option
 			return null;
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_WON")) {
 			String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
 			String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
 			JOptionPane.showMessageDialog(
-					null,
+					Client.mapWindow.getFrame(),
 					"Attack: " + attackResult + " - " +
 							"Defense: " + defenseResult,
 					"YOU WON!", JOptionPane.INFORMATION_MESSAGE
 			);	//TODO: Consider auto closeable message option
+			// Get prize and add corresponding points to the current user, since he has won
+			int prize = Integer.parseInt(MessageManager.convertXML("prize", message.getMessageContent()));
+			Client.getPlayer().addBullets(prize);
+			System.err.println("Added " + prize + " bullets to current player!");
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_LOST")) {
 			String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
 			String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
 			JOptionPane.showMessageDialog(
-					null,
+					Client.mapWindow.getFrame(),
 					"Attack: " + attackResult + " - " +
 							"Defense: " + defenseResult,
 					"YOU LOOSE!", JOptionPane.INFORMATION_MESSAGE
 			);	//TODO: Consider auto closeable message option
+			// Remove points from current user, since he has lost
+			Client.getPlayer().removeBullets();
+			System.err.println("Removed present bullets from current player!");
 		}
 		return null;
 	}
