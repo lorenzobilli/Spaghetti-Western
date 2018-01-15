@@ -9,16 +9,16 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
-      <library name="com.google.code.gson:gson:2.8.0" type="repository">
-        <properties maven-id="com.google.code.gson:gson:2.8.0" />
+      <library name="com.google.code.gson:gson:2.8.2" type="repository">
+        <properties maven-id="com.google.code.gson:gson:2.8.2" />
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/gson-2.8.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/gson-2.8.2.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/lib/gson-2.8.0-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/gson-2.8.2-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/gson-2.8.0-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/gson-2.8.2-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
