@@ -6,6 +6,10 @@
 .idea/**/tasks.xml
 .idea/dictionaries
 
+# Project code styles:
+.idea/codeStyles/codeStyleConfig.xml
+.idea/codeStyles/Project.xml
+
 # Sensitive or high-churn files:
 .idea/**/dataSources/
 .idea/**/dataSources.ids
