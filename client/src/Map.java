@@ -16,6 +16,7 @@ public abstract class Map {
 	protected final int labelClusterSize = 3;
 
 	private JLabel bulletLabel;
+	private JButton clashButton;
 	protected HashMap<String, JLabel> playerLabels = new HashMap<>();
 	protected HashMap<String, JLabel[]> goodLabels = new HashMap<>();
 	protected HashMap<String, JLabel[]> badLabels = new HashMap<>();
@@ -74,13 +75,37 @@ public abstract class Map {
 		bulletLabel = new JLabel("Bullets: " + String.valueOf(0));
 		Dimension bulletLabelDimension = bulletLabel.getPreferredSize();
 		map.add(bulletLabel, bulletLabelDimension, new Point(
-				map.margins.width, map.size.height - map.margins.height - bulletLabelDimension.height)
-		);
+				map.margins.width, map.size.height - map.margins.height - bulletLabelDimension.height
+		));
 	}
 
 	protected void updateBulletLabel(MapWindow map, int bullets) {
 		bulletLabel.setText("Bullets: " + String.valueOf(bullets));
 		map.update(bulletLabel, bulletLabel.getPreferredSize());
+	}
+
+	protected void configureClashButton(MapWindow map) {
+		clashButton = new JButton("CLASH!");
+		clashButton.setForeground(Color.RED);
+		clashButton.setVisible(false);
+		clashButton.addActionListener(e -> {
+			Future send = Client.globalThreadPool.submit(new Sender(
+					new Message(
+							MessageType.CLASH,
+							Client.getPlayer(),
+							MessageManager.createXML("header", "CLASH_REQUEST")
+					), Client.connectionManager.getSendStream()
+			));
+		});
+		Dimension clashButtonDimension = clashButton.getPreferredSize();
+		map.add(clashButton, clashButtonDimension, new Point(
+				map.size.width - map.margins.width - clashButtonDimension.width,
+				map.size.height - map.margins.height - clashButtonDimension.height
+		));
+	}
+
+	protected void toggleClashButton() {
+		clashButton.setVisible(!clashButton.isVisible());
 	}
 
 	protected Point calculatePlayerLabelPosition(Point buttonPosition) {

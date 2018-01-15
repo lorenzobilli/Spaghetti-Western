@@ -40,6 +40,9 @@ public abstract class EventHandler implements Callable<Message> {
 			case MOVE:
 				result = handleMove();
 				break;
+			case CLASH:
+				result = handleClash();
+				break;
             default:
                 result = null;
                 break;
@@ -56,5 +59,7 @@ public abstract class EventHandler implements Callable<Message> {
     protected abstract Message handleScenery();
 
     protected abstract Message handleMove();
+
+    protected abstract Message handleClash();
 
 }

@@ -17,6 +17,8 @@ public class ServerConnectionManager implements Runnable {
     private ArrayList<Thread> clientThreads = new ArrayList<>();
     private volatile boolean keepServerAlive = true;
     private static boolean sessionRunning = false;
+    private boolean acceptClashRequest;
+	private boolean acceptAttackRequest;
 
     @Override
     public void run() {
@@ -169,6 +171,30 @@ public class ServerConnectionManager implements Runnable {
 				));
 			}
 		}
+	}
+
+	public synchronized void acceptClashResponses() {
+    	acceptClashRequest = true;
+	}
+
+	public synchronized void denyClashResponses() {
+    	acceptClashRequest = false;
+	}
+
+	public synchronized boolean areClashResponsesAccepted() {
+    	return acceptClashRequest;
+	}
+
+	public synchronized void acceptAttackResponses() {
+    	acceptAttackRequest = true;
+	}
+
+	public synchronized void denyAttackResponses() {
+    	acceptAttackRequest = false;
+	}
+
+	public synchronized boolean areAttackResponsesAccepted() {
+    	return acceptAttackRequest;
 	}
 
     public void shutdown() {

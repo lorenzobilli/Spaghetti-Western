@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.security.InvalidParameterException;
 
 /**
@@ -81,6 +82,9 @@ public class ClientEventHandler extends EventHandler {
         			player, position
 			);
 			Client.getCurrentMap().updateMap(player, position);
+			if (Client.getCurrentPosition().getClashStatus()) {
+				Client.getCurrentMap().toggleClashButton();		//TODO: Add here turn-checking
+			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
         	Player player = new Player(
@@ -116,9 +120,89 @@ public class ClientEventHandler extends EventHandler {
 			Client.getCurrentMap().updateMap(Client.getPlayer(), origin, destination);
 			Client.setCurrentBullets(destination.pickBullets());
 			Client.getCurrentMap().updateBulletLabel(Client.mapWindow, Client.getCurrentBullets());
+			if (Client.getCurrentPosition().getClashStatus()) {
+				Client.getCurrentMap().toggleClashButton();
+			}
 		}
-		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_NOT_MOVED")) {
-			//TODO: Implement this
+		return null;
+	}
+
+	@Override
+	protected Message handleClash() {
+    	if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
+    		Object[] options = {"Accept", "Reject"};
+			int selected = JOptionPane.showOptionDialog(
+					Client.mapWindow.getFrame(),
+					"Hey " + Client.getPlayer().getName() + "! " +
+							message.getMessageSender().getName() + " has sent a clash request! Accept request?",
+					"Clash request",
+					JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					options,
+					options[1]);
+			switch (selected) {
+				case JOptionPane.YES_OPTION:	// "Accept" selected
+					return new Message(
+							MessageType.CLASH,
+							Client.getPlayer(),
+							MessageManager.createXML("header", "CLASH_ACCEPTED")
+					);
+				case JOptionPane.NO_OPTION:
+				case JOptionPane.CLOSED_OPTION:
+					return new Message(
+							MessageType.CLASH,
+							Client.getPlayer(),
+							MessageManager.createXML("header", "CLASH_REJECTED")
+					);
+			}
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
+			JOptionPane.showMessageDialog(
+					Client.mapWindow.getFrame(),
+					message.getMessageSender().getName() + " has accepted the clash!",
+					"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
+			);	//TODO: Consider auto closeable message option
+			return new Message(
+					MessageType.CLASH,
+					Client.getPlayer(),
+					MessageManager.createXML("header", "START_CLASH")
+			);
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
+			JOptionPane.showMessageDialog(
+					Client.mapWindow.getFrame(),
+					message.getMessageSender().getName() + " has rejected the clash!",
+					"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
+			);	//TODO: Consider auto closeable message option
+			return null;
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_WON")) {
+			String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
+			String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
+			JOptionPane.showMessageDialog(
+					Client.mapWindow.getFrame(),
+					"Attack: " + attackResult + " - " +
+							"Defense: " + defenseResult,
+					"YOU WON!", JOptionPane.INFORMATION_MESSAGE
+			);	//TODO: Consider auto closeable message option
+			// Get prize and add corresponding points to the current user, since he has won
+			int prize = Integer.parseInt(MessageManager.convertXML("prize", message.getMessageContent()));
+			Client.getPlayer().addBullets(prize);
+			System.err.println("Added " + prize + " bullets to current player!");
+		}
+		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_LOST")) {
+			String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
+			String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
+			JOptionPane.showMessageDialog(
+					Client.mapWindow.getFrame(),
+					"Attack: " + attackResult + " - " +
+							"Defense: " + defenseResult,
+					"YOU LOOSE!", JOptionPane.INFORMATION_MESSAGE
+			);	//TODO: Consider auto closeable message option
+			// Remove points from current user, since he has lost
+			Client.getPlayer().removeBullets();
+			System.err.println("Removed present bullets from current player!");
 		}
 		return null;
 	}
