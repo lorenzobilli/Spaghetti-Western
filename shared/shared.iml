@@ -23,34 +23,48 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.jgrapht:jgrapht-core:1.0.1" type="repository">
-        <properties maven-id="org.jgrapht:jgrapht-core:1.0.1" />
+      <library name="org.jgrapht:jgrapht-core:1.1.0" type="repository">
+        <properties maven-id="org.jgrapht:jgrapht-core:1.1.0" />
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.0.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.1.0.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.0.1-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.1.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.0.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.1.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.jgrapht:jgrapht-ext:1.0.1" type="repository">
-        <properties maven-id="org.jgrapht:jgrapht-ext:1.0.1" />
+      <library name="org.jgrapht:jgrapht-ext:1.1.0" type="repository">
+        <properties maven-id="org.jgrapht:jgrapht-ext:1.1.0" />
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jgrapht-ext-1.0.1.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.0.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-ext-1.1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-io-1.1.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/antlr4-runtime-4.6.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-lang3-3.5.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/jgraphx-2.0.0.1.jar!/" />
           <root url="jar://$MODULE_DIR$/lib/jgraph-5.13.0.0.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/antlr4-runtime-4.5.3.jar!/" />
         </CLASSES>
         <JAVADOC>
-          <root url="jar://$MODULE_DIR$/lib/jgrapht-ext-1.0.1-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-ext-1.1.0-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.1.0-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-io-1.1.0-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/antlr4-runtime-4.6-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-lang3-3.5-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgraphx-2.0.0.1-javadoc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgraph-5.13.0.0-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/jgrapht-ext-1.0.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-ext-1.1.0-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-core-1.1.0-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgrapht-io-1.1.0-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/antlr4-runtime-4.6-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/commons-lang3-3.5-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgraphx-2.0.0.1-sources.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jgraph-5.13.0.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
