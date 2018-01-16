@@ -96,7 +96,7 @@ public class ServerConnectionManager implements Runnable {
 
     public void chooseScenery() {
         if (PlayerManager.getConnectedUsersNumber() <= 10) {
-            Server.setCurrentScenery(new SmallScenery());
+            Server.setScenery(new SmallScenery());
 			Server.consolePrintLine("[*] Scenery selected: SmallScenery");
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
@@ -111,7 +111,7 @@ public class ServerConnectionManager implements Runnable {
                     )
             ));
         } else if (PlayerManager.getConnectedUsersNumber() > 10 && PlayerManager.getConnectedUsersNumber() <= 20) {
-			Server.setCurrentScenery(new MediumScenery());
+			Server.setScenery(new MediumScenery());
 			Server.consolePrintLine("[*] Scenery selected: MediumScenery");
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
@@ -126,7 +126,7 @@ public class ServerConnectionManager implements Runnable {
                     )
             ));
         } else if (PlayerManager.getConnectedUsersNumber() > 20 && PlayerManager.getConnectedUsersNumber() <= 30) {
-			Server.setCurrentScenery(new LargeScenery());
+			Server.setScenery(new LargeScenery());
 			Server.consolePrintLine("[*] Scenery selected: LargeScenery");
             Server.connectionManager.broadcastMessage(new Message(
                     MessageType.SCENERY,
@@ -147,10 +147,10 @@ public class ServerConnectionManager implements Runnable {
     	int totalPlayersNumber = PlayerManager.getConnectedUsersNumber();
     	int servedPlayersNumber = 0;
     	while (servedPlayersNumber != totalPlayersNumber) {
-			int randomId = Randomizer.getRandomInteger(Server.getCurrentScenery().getPlacesNumber());
+			int randomId = Randomizer.getRandomInteger(Server.getScenery().getPlacesNumber());
 			Player servedPlayer = PlayerManager.getPlayer(servedPlayersNumber);
-			Place randomPlace = Server.getCurrentScenery().getIdPlaces().get(randomId);
-			Scenery.SceneryEvents result = Server.getCurrentScenery().insertPlayer(servedPlayer, randomPlace);
+			Place randomPlace = Server.getScenery().getIdPlaces().get(randomId);
+			Scenery.SceneryEvents result = Server.getScenery().insertPlayer(servedPlayer, randomPlace);
 			if (result == Scenery.SceneryEvents.PLAYER_INSERTED) {
 				getHandlerReference(servedPlayer).setCurrentPlayerPosition(randomPlace);
 				servedPlayersNumber++;

@@ -15,7 +15,7 @@ public class MapWindow {
 	public MapWindow(String imagePath) {
 		final Point position = new Point(0, 0);
 
-		frame = new JFrame(Client.gameName);
+		frame = new JFrame(Client.GAME_NAME);
 
 		background = new JLabel();
 		background.setIcon(new ImageIcon(imagePath));
