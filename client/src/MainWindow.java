@@ -16,7 +16,7 @@ public class MainWindow {
 		final Point position = new Point(0, 0);
 		final String imagePath = "shared/assets/splashscreen.jpg";
 
-		frame = new JFrame(Client.gameName);
+		frame = new JFrame(Client.GAME_NAME);
 
 		background = new JLabel();
 		background.setIcon(new ImageIcon(imagePath));

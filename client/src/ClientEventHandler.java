@@ -35,8 +35,8 @@ public class ClientEventHandler extends EventHandler {
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAY_SESSION_START")) {
         	Client.clientWindow.hide();
-			Client.mapWindow = new MapWindow(Client.getCurrentScenery().getSceneryBackground());	// Loading map
-			Client.getCurrentMap().populate(Client.mapWindow);
+			Client.mapWindow = new MapWindow(Client.getScenery().getSceneryBackground());	// Loading map
+			Client.getMap().populate(Client.mapWindow);
         	Client.chatWindow = new ChatWindow();	// Spawning chat window
 		}
         return null;
@@ -54,16 +54,16 @@ public class ClientEventHandler extends EventHandler {
             String choosenScenery = MessageManager.convertXML("content", message.getMessageContent());
 			switch (choosenScenery) {
 				case "SmallScenery":
-					Client.setCurrentScenery(new SmallScenery());
-					Client.setCurrentMap(new SmallMap());
+					Client.setScenery(new SmallScenery());
+					Client.setMap(new SmallMap());
 					break;
 				case "MediumScenery":
-					Client.setCurrentScenery(new MediumScenery());
-					Client.setCurrentMap(new MediumMap());
+					Client.setScenery(new MediumScenery());
+					Client.setMap(new MediumMap());
 					break;
 				case "LargeScenery":
-					Client.setCurrentScenery(new LargeScenery());
-					Client.setCurrentMap(new LargeMap());
+					Client.setScenery(new LargeScenery());
+					Client.setMap(new LargeMap());
 					break;
 				default:
 					throw new InvalidParameterException("Unrecognized scenery found");
@@ -74,16 +74,16 @@ public class ClientEventHandler extends EventHandler {
 					MessageManager.convertXML("player_name", message.getMessageContent()),
 					MessageManager.convertXML("player_team", message.getMessageContent())
 			);
-        	Place position = Client.getCurrentScenery().getNamePlaces().get(
+        	Place position = Client.getScenery().getNamePlaces().get(
         			MessageManager.convertXML("position", message.getMessageContent())
 			);
-        	Client.setCurrentPosition(position);
-        	Client.getCurrentScenery().insertPlayer(
+        	Client.setPosition(position);
+        	Client.getScenery().insertPlayer(
         			player, position
 			);
-			Client.getCurrentMap().updateMap(player, position);
-			if (Client.getCurrentPosition().getClashStatus()) {
-				Client.getCurrentMap().toggleClashButton();		//TODO: Add here turn-checking
+			Client.getMap().updateMap(player, position);
+			if (Client.getPosition().getClashStatus()) {
+				Client.getMap().toggleClashButton();		//TODO: Add here turn-checking
 			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
@@ -94,14 +94,14 @@ public class ClientEventHandler extends EventHandler {
         	if (player.equals(Client.getPlayer())) {
         		return null;
 			}
-        	Place origin = Client.getCurrentScenery().getNamePlaces().get(
+        	Place origin = Client.getScenery().getNamePlaces().get(
         			MessageManager.convertXML("origin", message.getMessageContent())
 			);
-        	Place destination = Client.getCurrentScenery().getNamePlaces().get(
+        	Place destination = Client.getScenery().getNamePlaces().get(
         			MessageManager.convertXML("destination", message.getMessageContent())
 			);
-        	Client.getCurrentScenery().movePlayer(player, origin, destination);
-        	Client.getCurrentMap().updateMap(player, origin, destination);
+        	Client.getScenery().movePlayer(player, origin, destination);
+        	Client.getMap().updateMap(player, origin, destination);
 		}
         return null;
     }
@@ -109,19 +109,19 @@ public class ClientEventHandler extends EventHandler {
 	@Override
 	protected Message handleMove() {
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
-			Place origin = Client.getCurrentScenery().getNamePlaces().get(
+			Place origin = Client.getScenery().getNamePlaces().get(
 					MessageManager.convertXML("origin", message.getMessageContent())
 			);
-			Place destination = Client.getCurrentScenery().getNamePlaces().get(
+			Place destination = Client.getScenery().getNamePlaces().get(
 					MessageManager.convertXML("destination", message.getMessageContent())
 			);
-			Client.setCurrentPosition(destination);
-			Client.getCurrentScenery().movePlayer(Client.getPlayer(), origin, destination);
-			Client.getCurrentMap().updateMap(Client.getPlayer(), origin, destination);
-			Client.setCurrentBullets(destination.pickBullets());
-			Client.getCurrentMap().updateBulletLabel(Client.mapWindow, Client.getCurrentBullets());
-			if (Client.getCurrentPosition().getClashStatus()) {
-				Client.getCurrentMap().toggleClashButton();
+			Client.setPosition(destination);
+			Client.getScenery().movePlayer(Client.getPlayer(), origin, destination);
+			Client.getMap().updateMap(Client.getPlayer(), origin, destination);
+			Client.setBullets(destination.pickBullets());
+			Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
+			if (Client.getPosition().getClashStatus()) {
+				Client.getMap().toggleClashButton();
 			}
 		}
 		return null;

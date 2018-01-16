@@ -3,25 +3,76 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Client class
+ * This class is the main entry point for the Client.
  */
 public class Client {
 
-	public final static String gameName = "Spaghetti Western";
-	public static MainWindow clientWindow;
-    public static ChatWindow chatWindow;
-    public static MapWindow mapWindow;
-    public static ClientConnectionManager connectionManager;
-    public static Thread connectionThread;
-    private static Player player;   //TODO: Handle refactoring of this field
-    private static Place currentPosition;
-    private static Scenery currentScenery;
-    private static Map currentMap;
-    private static int currentBullets = 0;
+	/**
+	 * Defines the name of the game.
+	 */
+	public static final String GAME_NAME = "Spaghetti Western";
 
+	/**
+	 * Main window used for waiting and login process.
+	 */
+	public static MainWindow clientWindow;
+
+	/**
+	 * Chat window for the current player.
+	 */
+    public static ChatWindow chatWindow;
+
+	/**
+	 * Main window used for the map exploration.
+	 */
+	public static MapWindow mapWindow;
+
+	/**
+	 * Internal thread used for handling connections with the server.
+	 */
+	private static Thread connectionThread;
+
+	/**
+	 * Handles all connection-related routines.
+	 */
+    public static ClientConnectionManager connectionManager;
+
+	/**
+	 * Represents the current player.
+	 */
+	private static Player player;
+
+	/**
+	 * Stores current player position in the scenery.
+	 */
+    private static Place position;
+
+	/**
+	 * Stores the corresponding loaded scenery.
+	 */
+	private static Scenery scenery;
+
+	/**
+	 * Stores the corresponding loaded map.
+	 */
+    private static Map map;
+
+	/**
+	 * Stores the current number of bullets for this player.
+	 */
+	private static int bullets = 0;
+
+	/**
+	 * Global cached thread pool used by the client for most multithreaded operations.
+	 */
     public static ExecutorService globalThreadPool;
 
-    public static void main(String[] args) {
+	/**
+	 * Main method of Client.
+	 * Handles all internal objects initialisation, then it starts the client.
+	 * @param args Main method's arguments. Not used here.
+	 */
+	public static void main(String[] args) {
         clientWindow = new MainWindow();
         connectionManager = new ClientConnectionManager();
         connectionThread = new Thread(connectionManager);
@@ -29,59 +80,102 @@ public class Client {
         startClient();
     }
 
-    public static void startClient() {
+	/**
+	 * Starts up the client by executing the internal connection thread.
+	 */
+	private static void startClient() {
         connectionThread.start();
     }
 
-    public static Player getPlayer() {
+	/**
+	 * Get the current player.
+	 * @return Current player.
+	 */
+	public static Player getPlayer() {
         return player;
     }
 
-    public static void setPlayer(Player player) {
+	/**
+	 * Set the current player.
+	 * @param player Current player to be set.
+	 */
+	public static void setPlayer(Player player) {
         if (player == null) {
             throw new InvalidParameterException("Client player cannot be null");
         }
         Client.player = player;
     }
 
-    public static Place getCurrentPosition() {
-    	return currentPosition;
+	/**
+	 * Get the current player position in the scenery.
+	 * @return Current player position.
+	 */
+	public static Place getPosition() {
+    	return position;
 	}
 
-	public static void setCurrentPosition(Place position) {
+	/**
+	 * Set the current player position in the scenery.
+	 * @param position Position to be set.
+	 */
+	public static void setPosition(Place position) {
     	if (position == null) {
     		throw new InvalidParameterException("Current position cannot be null");
 		}
-		currentPosition = position;
+		Client.position = position;
 	}
 
-	public static Scenery getCurrentScenery() {
-    	return currentScenery;
+	/**
+	 * Get the scenery used in the current session.
+	 * @return Used scenery.
+	 */
+	public static Scenery getScenery() {
+    	return scenery;
 	}
 
-	public static void setCurrentScenery(Scenery scenery) {
+	/**
+	 * Set the scenery to be used for the current session.
+	 * @param scenery Scenery to be used for the current session.
+	 */
+	public static void setScenery(Scenery scenery) {
     	if (scenery == null) {
     		throw new InvalidParameterException("Scenery cannot be null");
 		}
-		currentScenery = scenery;
+		Client.scenery = scenery;
 	}
 
-	public static Map getCurrentMap() {
-    	return currentMap;
+	/**
+	 * Get the current map object used.
+	 * @return Current map used.
+	 */
+	public static Map getMap() {
+    	return map;
 	}
 
-	public static void setCurrentMap(Map map) {
+	/**
+	 * Set the current map object to be used.
+	 * @param map Map to be used for the current session.
+	 */
+	public static void setMap(Map map) {
     	if (map == null) {
     		throw new InvalidParameterException("Map cannot be null");
 		}
-		currentMap = map;
+		Client.map = map;
 	}
 
-	public static int getCurrentBullets() {
-    	return currentBullets;
+	/**
+	 * Get current number of bullets of the player.
+	 * @return Total number of bullets.
+	 */
+	public static int getBullets() {
+    	return bullets;
 	}
 
-	public static void setCurrentBullets(int bullets) {
-    	currentBullets += bullets;
+	/**
+	 * Add to an existing number of bullets a certain amount of new bullets.
+	 * @param bullets Bullets to be added to the total bullets number.
+	 */
+	public static void setBullets(int bullets) {
+    	Client.bullets += bullets;
 	}
 }
