@@ -19,7 +19,7 @@ public class PlayerManager {
         if (player == null) {
             throw new InvalidParameterException("Invalid parameter given");
         }
-        if (Server.connectionManager.isSessionRunning()) {
+        if (Server.gameManager.getSessionState()) {
             return Status.SESSION_RUNNING;
         }
         if (connectedPlayers.isEmpty() || !isUserConnected(player)) {

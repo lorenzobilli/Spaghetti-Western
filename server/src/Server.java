@@ -32,6 +32,8 @@ public class Server {
 	 */
     public static ServerConnectionManager connectionManager;
 
+    public static GameManager gameManager;
+
 	/**
 	 * Global cached thread pool used by the server for most multithreaded operations.
 	 */
@@ -65,6 +67,7 @@ public class Server {
     public static void main(String[] args) {
         serverWindow = new MainWindow("Spaghetti Western server");
         connectionManager = new ServerConnectionManager();
+        gameManager = new GameManager();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
     }

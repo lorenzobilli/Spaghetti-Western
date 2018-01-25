@@ -84,7 +84,7 @@ public class ServerEventHandler extends EventHandler {
 
     @Override
     protected Message handleChat() {
-        Server.connectionManager.sendMessageToTeam(message.getMessageSender(), message);
+        Server.connectionManager.sendMessageToTeamMembers(message.getMessageSender(), message);
         return null;
     }
 
@@ -96,14 +96,14 @@ public class ServerEventHandler extends EventHandler {
 	@Override
 	protected Message handleMove() {
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("TRY_PLAYER_MOVE")) {
-			Place origin = Server.connectionManager.getHandlerReference(
+			Place origin = Server.connectionManager.getPlayerHandler(
 					message.getMessageSender()).getCurrentPlayerPosition();
 			Place destination = Server.getScenery().getNamePlaces().get(
 					MessageManager.convertXML("content", message.getMessageContent()));
 			Scenery.SceneryEvents result = Server.getScenery().movePlayer(message.getMessageSender(), origin, destination);
 			switch (result) {
 				case PLAYER_MOVED:
-					Server.connectionManager.getHandlerReference(message.getMessageSender()).setCurrentPlayerPosition(destination);
+					Server.connectionManager.getPlayerHandler(message.getMessageSender()).setCurrentPlayerPosition(destination);
 					Server.connectionManager.broadcastMessage(new Message(
 							MessageType.SCENERY,
 							new Player("SERVER", Player.Team.SERVER),
@@ -130,7 +130,7 @@ public class ServerEventHandler extends EventHandler {
 					} else if (message.getMessageSender().getTeam() == Player.Team.BAD) {
 						Server.setBadTeamBullets(takenBullets);
 					}
-					Server.connectionManager.getHandlerReference(message.getMessageSender()).setCurrentBullets(takenBullets);
+					Server.connectionManager.getPlayerHandler(message.getMessageSender()).setCurrentBullets(takenBullets);
 					return new Message(
 							MessageType.MOVE,
 							new Player("SERVER", Player.Team.SERVER),
@@ -175,8 +175,8 @@ public class ServerEventHandler extends EventHandler {
 	@Override
 	protected Message handleClash() {
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
-			Server.connectionManager.acceptClashResponses();	// Make sure that requests are unlocked for future uses
-			Place clashLocation = Server.connectionManager.getHandlerReference(
+			Server.gameManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
+			Place clashLocation = Server.connectionManager.getPlayerHandler(
 					message.getMessageSender()).getCurrentPlayerPosition();
 			List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
 			for (Player receiver : receivers) {
@@ -188,10 +188,10 @@ public class ServerEventHandler extends EventHandler {
 			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
-			Server.connectionManager.acceptAttackResponses();	// Make sure that requests are unlocked for future uses
-			if (Server.connectionManager.areClashResponsesAccepted()) {
-				Server.connectionManager.denyClashResponses();
-				Place clashLocation = Server.connectionManager.getHandlerReference(
+			Server.gameManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
+			if (Server.gameManager.isClashRequestAccepted()) {
+				Server.gameManager.denyClashRequests();
+				Place clashLocation = Server.connectionManager.getPlayerHandler(
 						message.getMessageSender()).getCurrentPlayerPosition();
 				List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
 				for (Player receiver : receivers) {
@@ -206,9 +206,9 @@ public class ServerEventHandler extends EventHandler {
 			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
-			if (Server.connectionManager.areClashResponsesAccepted()) {
-				Server.connectionManager.denyClashResponses();
-				Place clashLocation = Server.connectionManager.getHandlerReference(
+			if (Server.gameManager.isClashRequestAccepted()) {
+				Server.gameManager.denyClashRequests();
+				Place clashLocation = Server.connectionManager.getPlayerHandler(
 						message.getMessageSender()).getCurrentPlayerPosition();
 				List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
 				for (Player receiver : receivers) {
@@ -224,7 +224,7 @@ public class ServerEventHandler extends EventHandler {
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("START_CLASH")) {
 			ClashManager currentClash = new ClashManager();
-			Place clashLocation = Server.connectionManager.getHandlerReference(
+			Place clashLocation = Server.connectionManager.getPlayerHandler(
 					message.getMessageSender()).getCurrentPlayerPosition();
 			List<Player> attackers = null;
 			List<Player> defenders = null;

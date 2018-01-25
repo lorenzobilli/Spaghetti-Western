@@ -5,21 +5,44 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
-import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
- * ClientConnectionManager
+ * ClientConnectionManager class
  */
 public class ClientConnectionManager implements Runnable {
 
-    private final String HOSTNAME = "localhost";
-    private final int PORT_NUMBER = 10000;
-    private Socket socket;
-    private PrintWriter sendStream;
-    private BufferedReader receiveStream;
+	/**
+	 * Defines hostname on which the client will attempt to connect.
+	 */
+	private final String HOSTNAME = "localhost";
 
+	/**
+	 * Defines port number on which the client will attempt to connect.
+	 */
+    private final int PORT_NUMBER = 10000;
+
+	/**
+	 * Socket used by the client to establish connection with the server.
+	 */
+	private Socket socket;
+
+	/**
+	 * Stream used by the client to send messages.
+	 */
+    private PrintWriter sendStream;
+
+	/**
+	 * Stream used by the client to receive messages.
+	 */
+	private BufferedReader receiveStream;
+
+	/**
+	 * Initializes the internal socket and sending/receiving streams, then passes control to methods for actual
+	 * connection initialization and enters in the "big loop" (listens for messages and sends responses accordingly).
+	 * When the client exists from the loop, this method will initiate the shutdown routine.
+	 */
     @Override
     public void run() {
         try {
@@ -36,15 +59,28 @@ public class ClientConnectionManager implements Runnable {
         shutdownClient();
     }
 
-    public synchronized PrintWriter getSendStream() {
+	/**
+	 * Gets the sending stream in a thread-safe manner.
+	 * @return Reference to the send stream.
+	 */
+	public synchronized PrintWriter getSendStream() {
         return sendStream;
     }
 
-    public synchronized BufferedReader getReceiveStream() {
+	/**
+	 * Gets the receiving stream in a thread-safe manner.
+	 * @return Reference to the receiving stream.
+	 */
+	public synchronized BufferedReader getReceiveStream() {
         return receiveStream;
     }
 
-    private void initUserConnection() {
+	/**
+	 * Initiate used connection with the server. An attempt is done until a username is accepted by the server.
+	 * At the end of this function the client will be connected with the server with a unique username choosen by the
+	 * user. If the client is the first to connect to the server, it will also cause the login timer to start.
+	 */
+	private void initUserConnection() {
         while (true) {
             // Generate the login dialog for username retrieving
             try {
@@ -62,7 +98,7 @@ public class ClientConnectionManager implements Runnable {
             );
             try {
                 // Send request message to the server
-                Future send = Client.globalThreadPool.submit(new Sender(initCurrentSession, getSendStream()));
+                Client.globalThreadPool.submit(new Sender(initCurrentSession, getSendStream()));
                 Message response = null;
                 boolean sessionResponse = false;
                 do {
@@ -121,7 +157,7 @@ public class ClientConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
-        Future send = Client.globalThreadPool.submit(new Sender(new Message(
+        Client.globalThreadPool.submit(new Sender(new Message(
                 MessageType.TIME,
                 Client.getPlayer(),
                 MessageManager.createXML("header", "WAIT_START_REQUEST")
@@ -129,16 +165,21 @@ public class ClientConnectionManager implements Runnable {
         Client.clientWindow.createWaitingCountdown();
     }
 
-    private void talkWithServer() {
-        while (true) {
+	/**
+	 * Listens for messages coming from the server synchronously. When a messages comes from the server, it passes it
+	 * synchronously to an handler. Then the response message is retrieved synchronously from the handler and sended
+	 * asynchronously to the server. Finally, the client enters the listening state again, and the loop repeats.
+	 */
+	private void talkWithServer() {
+        while (true) {  //TODO: implement here loop exit for correct client shutdown
             try {
                 // Wait for a message and pass it to the handler
                 Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
                 Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
-                // Retrieve generated message from handle and send it back
+                // Retrieve generated message from handler and send it back
                 Message message = handle.get();
                 if (message != null) {
-                    Future send = Client.globalThreadPool.submit(new Sender(message, getSendStream()));
+                    Client.globalThreadPool.submit(new Sender(message, getSendStream()));
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
@@ -146,10 +187,13 @@ public class ClientConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
-        //shutdownClient();
     }
 
-    private void shutdownClient() {
+	/**
+	 * Sends a message to the server to notify that the current client will disconnect from the system, then shuts down
+	 * the socket manually if auto-closing system fails.
+	 */
+	private void shutdownClient() {
         System.out.println("[*] Terminating current client session...");
         Message terminateCurrentSession = new Message(
                 MessageType.SESSION,
