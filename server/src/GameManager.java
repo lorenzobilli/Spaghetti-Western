@@ -110,7 +110,7 @@ public class GameManager {
 			Place randomPlace = Server.getScenery().getIdPlaces().get(randomId);
 			Scenery.SceneryEvents result = Server.getScenery().insertPlayer(servedPlayer, randomPlace);
 			if (result == Scenery.SceneryEvents.PLAYER_INSERTED) {
-				Server.connectionManager.getPlayerHandler(servedPlayer).setCurrentPlayerPosition(randomPlace);
+				Server.connectionManager.getPlayerHandler(servedPlayer).getConnectedPlayer().setPosition(randomPlace);
 				servedPlayersNumber++;
 				Server.connectionManager.broadcastMessage(new Message(
 						MessageType.SCENERY,

@@ -7,6 +7,7 @@ public class Player {
 
     private String name;
     private Team team;
+    private Place position;
     private int bullets;
 
     public enum Team {
@@ -62,6 +63,18 @@ public class Player {
 
     public Team getTeam() {
         return team;
+    }
+
+    public Place getPosition()
+    {
+    	return position;
+    }
+
+    public void setPosition(Place position) {
+    	if (position == null) {
+    		throw new InvalidParameterException("Player position cannot be null");
+	    }
+	    this.position = position;
     }
 
     public int getBullets() {

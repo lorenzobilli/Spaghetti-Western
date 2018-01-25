@@ -76,8 +76,8 @@ public class ClientConnectionManager implements Runnable {
     }
 
 	/**
-	 * Initiate used connection with the server. An attempt is done until a username is accepted by the server.
-	 * At the end of this function the client will be connected with the server with a unique username choosen by the
+	 * Initiate user connection with the server. An attempt is done until a username is accepted by the server.
+	 * At the end of this method the client will be connected with the server with a unique username choosen by the
 	 * user. If the client is the first to connect to the server, it will also cause the login timer to start.
 	 */
 	private void initUserConnection() {
@@ -166,8 +166,8 @@ public class ClientConnectionManager implements Runnable {
     }
 
 	/**
-	 * Listens for messages coming from the server synchronously. When a messages comes from the server, it passes it
-	 * synchronously to an handler. Then the response message is retrieved synchronously from the handler and sended
+	 * Listens for messages coming from the server synchronously. When a message comes from the server, it passes it
+	 * synchronously to an handler. Then the response message is retrieved synchronously from the handler and sent
 	 * asynchronously to the server. Finally, the client enters the listening state again, and the loop repeats.
 	 */
 	private void talkWithServer() {

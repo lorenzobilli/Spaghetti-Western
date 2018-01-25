@@ -27,11 +27,11 @@ public class ServerConnectionManager implements Runnable {
 	/**
 	 * Handlers used by the server to manage connected clients.
 	 */
-    private ArrayList<ClientHandler> clientHandlers = new ArrayList<>();
+    private ArrayList<ConnectionHandler> connectionHandlers = new ArrayList<>();
 
 	/**
 	 * Threads used for connections with clients. Each client is associated with a separate thread. Each thread executes
-	 * the corresponding ClientHandler class.
+	 * the corresponding ConnectionHandler class.
 	 */
 	private ArrayList<Thread> clientThreads = new ArrayList<>();
 
@@ -63,8 +63,8 @@ public class ServerConnectionManager implements Runnable {
             Server.consolePrintLine("[*] Server is ready for connection requests");
         while (keepServerAlive) {
             try {
-                clientHandlers.add(new ClientHandler(socket.accept()));
-                clientThreads.add(new Thread(clientHandlers.get(clientHandlers.size() - 1)));
+                connectionHandlers.add(new ConnectionHandler(socket.accept()));
+                clientThreads.add(new Thread(connectionHandlers.get(connectionHandlers.size() - 1)));
                 clientThreads.get(clientThreads.size() - 1).start();
             } catch (IOException e) {
                 e.getMessage();
@@ -79,11 +79,11 @@ public class ServerConnectionManager implements Runnable {
 	 * @param player Player whose handler is wanted.
 	 * @return Handler associated with the given player.
 	 */
-	public ClientHandler getPlayerHandler(Player player) {
+	public ConnectionHandler getPlayerHandler(Player player) {
     	if (player == null) {
     		throw new InvalidParameterException("A player is needed to obtain a handle");
 		}
-		for (ClientHandler handler : clientHandlers) {
+		for (ConnectionHandler handler : connectionHandlers) {
     		if (handler.getConnectedPlayer().equals(player)) {
     			return handler;
 			}
@@ -103,7 +103,7 @@ public class ServerConnectionManager implements Runnable {
 		if (message == null) {
 			throw new InvalidParameterException("Cannot send a null message");
 		}
-        for (ClientHandler connectedPlayer : clientHandlers) {
+        for (ConnectionHandler connectedPlayer : connectionHandlers) {
             if (connectedPlayer.getConnectedPlayer().getName().equals(player.getName())) {
 	            Server.globalThreadPool.submit(new Sender(message, connectedPlayer.getSendStream()));
             }
@@ -122,7 +122,7 @@ public class ServerConnectionManager implements Runnable {
 	    if (message == null) {
     		throw new InvalidParameterException("Cannot send a null message");
 	    }
-        for (ClientHandler connectedPlayer : clientHandlers) {
+        for (ConnectionHandler connectedPlayer : connectionHandlers) {
             if (connectedPlayer.getConnectedPlayer().getTeam().equals(player.getTeam())) {
                 // Avoid sending message also to the original sender
                 if (!connectedPlayer.getConnectedPlayer().getName().equals(player.getName())) {
@@ -140,7 +140,7 @@ public class ServerConnectionManager implements Runnable {
 		if (message == null) {
 			throw new InvalidParameterException("Cannot send a null message");
 		}
-        for (ClientHandler connectedClient : clientHandlers) {
+        for (ConnectionHandler connectedClient : connectionHandlers) {
             Server.globalThreadPool.submit(new Sender(message, connectedClient.getSendStream()));
         }
     }
@@ -160,7 +160,7 @@ public class ServerConnectionManager implements Runnable {
 	private void executeServerShutdown() {
         Server.consolePrintLine("[!] Initiating server shutdown");
         Server.consolePrintLine("[*] Sending terminating messages to all clients...");
-        for (ClientHandler handler : clientHandlers) {
+        for (ConnectionHandler handler : connectionHandlers) {
             handler.terminateUserConnection();
         }
         for (Thread thread : clientThreads) {
