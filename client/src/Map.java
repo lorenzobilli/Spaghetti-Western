@@ -29,17 +29,13 @@ public abstract class Map {
 	protected int yLabelMargin;
 
 	protected void sendPlayerMove(String destination) {
+		MessageTable messageTable = new MessageTable();
+		messageTable.put("header", "TRY_PLAYER_MOVE");
+		messageTable.put("content", destination);
 		Future send = Client.globalThreadPool.submit(new Sender(new Message(
 				MessageType.MOVE,
 				Client.getPlayer(),
-				MessageManager.createXML(
-						new ArrayList<>(Arrays.asList(
-								"header", "content"
-						)),
-						new ArrayList<>(Arrays.asList(
-								"TRY_PLAYER_MOVE", destination
-						))
-				)
+				MessageManager.createXML(messageTable)
 		), Client.connectionManager.getSendStream()));
 	}
 

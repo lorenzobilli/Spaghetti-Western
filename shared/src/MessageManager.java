@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * MessageManager class
@@ -38,40 +41,44 @@ public class MessageManager {
         return header + begin + elem + end;
     }
 
-    public static String createXML(List<String> tagList, List<String> valueList) {
-        if (tagList == null) {
-            throw new InvalidParameterException("tag list cannot be null");
-        }
-        if (valueList == null) {
-            throw new InvalidParameterException("value list cannot be null");
-        }
-        if (tagList.size() != valueList.size()) {
-            throw new InvalidParameterException("tag-value list size mismatch");
-        }
-        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        String begin = "<message>";
-        String end = "</message>";
-        String elem = "";
+    public static String createXML(MessageTable messageTable) {
+    	if (messageTable == null) {
+    		throw new InvalidParameterException("Message table cannot be null");
+	    }
+	    String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+    	String begin = "<message>";
+    	String end = "</message>";
+    	String elem = "";
 
-        for (int i = 0; i < tagList.size(); i++) {
-            elem = elem.concat("<" + tagList.get(i) + ">" + valueList.get(i) + "</" + tagList.get(i) + ">");
-        }
+    	for (String value : messageTable.values()) {
+    		String key = null;
+		    Set<Map.Entry<String, String>> entries = messageTable.entrySet();
+    		for (Map.Entry<String, String> entry : entries) {
+    			if (entry.getValue().equals(value)) {
+    				key = entry.getKey();
+			    }
+		    }
+		    if (key == null) {  // A key should always be found, otherwise the hash table may not be correctly created
+    			throw new NoSuchElementException("Key-value mismatching error");
+		    }
+		    elem = elem.concat("<" + key + ">" + value + "</" + key + ">");
+	    }
 
-        return header + begin + elem + end;
+    	return header + begin + elem + end;
     }
 
-    public static String convertXML(String tag, String content) {
+    public static String convertXML(String tag, String message) {
         if (tag == null) {
-            throw new InvalidParameterException("tag cannot be null");
+            throw new InvalidParameterException("Tag cannot be null");
         }
-        if (content == null) {
-            throw new InvalidParameterException("content cannot be null");
+        if (message == null) {
+            throw new InvalidParameterException("Message cannot be null");
         }
         String result = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            InputSource input = new InputSource(new StringReader(content));
+            InputSource input = new InputSource(new StringReader(message));
             Document document = builder.parse(input);
             result = document.getElementsByTagName(tag).item(0).getTextContent();
         } catch (ParserConfigurationException | SAXException | IOException e) {
@@ -79,6 +86,7 @@ public class MessageManager {
             e.getCause();
             e.printStackTrace();
         }
+
         return result;
     }
 }

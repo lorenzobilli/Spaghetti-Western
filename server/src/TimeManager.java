@@ -33,17 +33,13 @@ public class TimeManager implements Callable<Boolean> {
 			@Override
 			public void run() {
 				waitDuration = waitDuration.minusSeconds(1);
+				MessageTable messageTable = new MessageTable();
+				messageTable.put("header", "WAIT_REMAINING");
+				messageTable.put("content", String.valueOf(waitDuration.getSeconds()));
 				Server.connectionManager.broadcastMessage(new Message(
 						MessageType.TIME,
 						new Player("SERVER", Player.Team.SERVER),
-						MessageManager.createXML(
-								new ArrayList<>(Arrays.asList(
-										"header", "content"
-								)),
-								new ArrayList<>(Arrays.asList(
-										"WAIT_REMAINING", String.valueOf(waitDuration.getSeconds())
-								))
-						)
+						MessageManager.createXML(messageTable)
 				));
 				if (waitDuration.isZero()) {
 					this.cancel();
@@ -79,17 +75,13 @@ public class TimeManager implements Callable<Boolean> {
 					//TODO: Handle turn change here
 				}
 				playDuration = playDuration.minusSeconds(1);
+				MessageTable messageTable = new MessageTable();
+				messageTable.put("header", "PLAY_REMAINING");
+				messageTable.put("content", String.valueOf(playDuration.getSeconds()));
 				Server.connectionManager.broadcastMessage(new Message(
 						MessageType.TIME,
 						new Player("SERVER", Player.Team.SERVER),
-						MessageManager.createXML(
-								new ArrayList<>(Arrays.asList(
-										"header", "content"
-								)),
-								new ArrayList<>(Arrays.asList(
-										"PLAY_REMAINING", String.valueOf(playDuration.getSeconds())
-								))
-						)
+						MessageManager.createXML(messageTable)
 				));
 				if (playDuration.isZero()) {
 					this.cancel();

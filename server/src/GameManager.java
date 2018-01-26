@@ -53,47 +53,35 @@ public class GameManager {
 		if (PlayerManager.getConnectedUsersNumber() <= 10) {
 			Server.setScenery(new SmallScenery());
 			Server.consolePrintLine("[*] Scenery selected: SmallScenery");
+			MessageTable messageTable = new MessageTable();
+			messageTable.put("header", "CHOOSEN_SCENERY");
+			messageTable.put("content", "SmallScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					MessageType.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
-					MessageManager.createXML(
-							new ArrayList<>(Arrays.asList(
-									"header", "content"
-							)),
-							new ArrayList<>(Arrays.asList(
-									"CHOOSEN_SCENERY", "SmallScenery"
-							))
-					)
+					MessageManager.createXML(messageTable)
 			));
 		} else if (PlayerManager.getConnectedUsersNumber() > 10 && PlayerManager.getConnectedUsersNumber() <= 20) {
 			Server.setScenery(new MediumScenery());
 			Server.consolePrintLine("[*] Scenery selected: MediumScenery");
+			MessageTable messageTable = new MessageTable();
+			messageTable.put("header", "CHOOSEN_SCENERY");
+			messageTable.put("content", "MediumScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					MessageType.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
-					MessageManager.createXML(
-							new ArrayList<>(Arrays.asList(
-									"header", "content"
-							)),
-							new ArrayList<>(Arrays.asList(
-									"CHOOSEN_SCENERY", "MediumScenery"
-							))
-					)
+					MessageManager.createXML(messageTable)
 			));
 		} else if (PlayerManager.getConnectedUsersNumber() > 20 && PlayerManager.getConnectedUsersNumber() <= 30) {
 			Server.setScenery(new LargeScenery());
 			Server.consolePrintLine("[*] Scenery selected: LargeScenery");
+			MessageTable messageTable = new MessageTable();
+			messageTable.put("header", "CHOOSEN_SCENERY");
+			messageTable.put("content", "LargeScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					MessageType.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
-					MessageManager.createXML(
-							new ArrayList<>(Arrays.asList(
-									"header", "content"
-							)),
-							new ArrayList<>(Arrays.asList(
-									"CHOOSEN_SCENERY", "LargeScenery"
-							))
-					)
+					MessageManager.createXML(messageTable)
 			));
 		}
 	}
@@ -112,20 +100,15 @@ public class GameManager {
 			if (result == Scenery.SceneryEvents.PLAYER_INSERTED) {
 				Server.connectionManager.getPlayerHandler(servedPlayer).getConnectedPlayer().setPosition(randomPlace);
 				servedPlayersNumber++;
+				MessageTable messageTable = new MessageTable();
+				messageTable.put("header", "PLAYER_INSERTED");
+				messageTable.put("player_name", servedPlayer.getName());
+				messageTable.put("player_team", servedPlayer.getTeamAsString());
+				messageTable.put("position", randomPlace.getPlaceName());
 				Server.connectionManager.broadcastMessage(new Message(
 						MessageType.SCENERY,
 						new Player("SERVER", Player.Team.SERVER),
-						MessageManager.createXML(
-								new ArrayList<>(Arrays.asList(
-										"header", "player_name", "player_team", "position"
-								)),
-								new ArrayList<>(Arrays.asList(
-										"PLAYER_INSERTED",
-										servedPlayer.getName(),
-										servedPlayer.getTeamAsString(),
-										randomPlace.getPlaceName()
-								))
-						)
+						MessageManager.createXML(messageTable)
 				));
 			}
 		}

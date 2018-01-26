@@ -104,25 +104,16 @@ public class ServerEventHandler extends EventHandler {
 			switch (result) {
 				case PLAYER_MOVED:
 					Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().setPosition(destination);
+					MessageTable broadcastMessageTable = new MessageTable();
+					broadcastMessageTable.put("header", "PLAYER_MOVED");
+					broadcastMessageTable.put("player_name", message.getMessageSender().getName());
+					broadcastMessageTable.put("player_team", message.getMessageSender().getTeamAsString());
+					broadcastMessageTable.put("origin", origin.getPlaceName());
+					broadcastMessageTable.put("destination", destination.getPlaceName());
 					Server.connectionManager.broadcastMessage(new Message(
 							MessageType.SCENERY,
 							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML(
-									new ArrayList<>(Arrays.asList(
-											"header",
-											"player_name",
-											"player_team",
-											"origin",
-											"destination"
-									)),
-									new ArrayList<>(Arrays.asList(
-											"PLAYER_MOVED",
-											message.getMessageSender().getName(),
-											message.getMessageSender().getTeamAsString(),
-											origin.getPlaceName(),
-											destination.getPlaceName()
-									))
-							)
+							MessageManager.createXML(broadcastMessageTable)
 					));
 					int takenBullets = destination.pickBullets();
 					if (message.getMessageSender().getTeam() == Player.Team.GOOD) {
@@ -131,17 +122,14 @@ public class ServerEventHandler extends EventHandler {
 						Server.setBadTeamBullets(takenBullets);
 					}
 					Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().addBullets(takenBullets);
+					MessageTable messageTable = new MessageTable();
+					messageTable.put("header", "PLAYER_MOVED");
+					messageTable.put("origin", origin.getPlaceName());
+					messageTable.put("destination", destination.getPlaceName());
 					return new Message(
 							MessageType.MOVE,
 							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML(
-									new ArrayList<>(Arrays.asList(
-											"header", "origin", "destination"
-									)),
-									new ArrayList<>(Arrays.asList(
-											"PLAYER_MOVED", origin.getPlaceName(), destination.getPlaceName()
-									))
-							)
+							MessageManager.createXML(messageTable)
 					);
 				case DESTINATION_BUSY:
 				case DESTINATION_UNREACHABLE:
@@ -248,81 +236,51 @@ public class ServerEventHandler extends EventHandler {
 			}
 			if (winners.equals(ClashManager.Winners.ATTACK)) {
 				for (Player winner : attackers) {
+					MessageTable messageTable = new MessageTable();
+					messageTable.put("header", "CLASH_WON");
+					messageTable.put("attack", attackResults.toString());
+					messageTable.put("defense", defenseResult.toString());
+					messageTable.put("prize", String.valueOf(PointsManager.getPrize(defenders)));
 					Server.connectionManager.sendMessageToPlayer(winner, new Message(
 							MessageType.CLASH,
 							winner,
-							MessageManager.createXML(
-									new ArrayList<>(Arrays.asList(
-											"header",
-											"attack",
-											"defense",
-											"prize"
-									)),
-									new ArrayList<>(Arrays.asList(
-											"CLASH_WON",
-											attackResults.toString(),
-											defenseResult.toString(),
-											String.valueOf(PointsManager.getPrize(defenders))
-									))
-							)
+							MessageManager.createXML(messageTable)
 					));
 				}
 				for (Player looser : defenders) {
+					MessageTable messageTable = new MessageTable();
+					messageTable.put("header", "CLASH_LOST");
+					messageTable.put("attack", attackResults.toString());
+					messageTable.put("defense", defenseResult.toString());
 					Server.connectionManager.sendMessageToPlayer(looser, new Message(
 						MessageType.CLASH,
 						looser,
-						MessageManager.createXML(
-								new ArrayList<>(Arrays.asList(
-										"header",
-										"attack",
-										"defense"
-								)),
-								new ArrayList<>(Arrays.asList(
-										"CLASH_LOST",
-										attackResults.toString(),
-										defenseResult.toString()
-								))
-						)
+						MessageManager.createXML(messageTable)
 					));
 				}
 			}
 			else if (winners.equals(ClashManager.Winners.DEFENSE)) {
 				for (Player winner : defenders) {
+					MessageTable messageTable = new MessageTable();
+					messageTable.put("header", "CLASH_WON");
+					messageTable.put("attack", attackResults.toString());
+					messageTable.put("defense", defenseResult.toString());
 					Server.connectionManager.sendMessageToPlayer(winner, new Message(
 							MessageType.CLASH,
 							winner,
-							MessageManager.createXML(
-									new ArrayList<>(Arrays.asList(
-											"header",
-											"attack",
-											"defense"
-									)),
-									new ArrayList<>(Arrays.asList(
-											"CLASH_LOST",
-											attackResults.toString(),
-											defenseResult.toString()
-									))
-							)
+							MessageManager.createXML(messageTable)
 					));
 				}
 				for (Player looser : attackers) {
+					MessageTable messageTable = new MessageTable();
+					messageTable.put("header", "CLASH_LOST");
+					messageTable.put("attack", attackResults.toString());
+					messageTable.put("defense", defenseResult.toString());
+					messageTable.put("prize", String.valueOf(PointsManager.getPrize(attackers)));
 					Server.connectionManager.sendMessageToPlayer(looser, new Message(
 							MessageType.CLASH,
 							looser,
-							MessageManager.createXML(
-									new ArrayList<>(Arrays.asList(
-											"header",
-											"attack",
-											"defense",
-											"prize"
-									)),
-									new ArrayList<>(Arrays.asList(
-											"CLASH_WON",
-											attackResults.toString(),
-											defenseResult.toString(),
-											String.valueOf(PointsManager.getPrize(attackers))
-									))
-							)
+							MessageManager.createXML(messageTable)
 					));
 				}
 			}
