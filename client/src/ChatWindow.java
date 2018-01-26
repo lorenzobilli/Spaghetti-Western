@@ -50,7 +50,7 @@ public class ChatWindow {
     private void sendMessage() {
         chatView.append(" [" + Client.getPlayer().getName() + "]: " + chatField.getText() + "\n");
         Message chatMessage = new Message(
-                MessageType.CHAT,
+                Message.Type.CHAT,
                 Client.getPlayer(),
 		        MessageManager.createXML(new MessageTable("content", chatField.getText()))
         );

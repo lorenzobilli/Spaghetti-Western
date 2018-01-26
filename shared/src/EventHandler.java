@@ -1,3 +1,4 @@
+import java.rmi.NoSuchObjectException;
 import java.security.InvalidParameterException;
 import java.util.concurrent.Callable;
 
@@ -16,9 +17,9 @@ public abstract class EventHandler implements Callable<Message> {
     }
 
     @Override
-    public Message call() {
+    public Message call() throws NoSuchObjectException {
         Message result = null;
-        switch (message.getMessageType()) {
+        switch (message.getType()) {
             case SESSION:
                 result = handleSession();
                 break;
@@ -44,8 +45,7 @@ public abstract class EventHandler implements Callable<Message> {
 				result = handleClash();
 				break;
             default:
-                result = null;
-                break;
+            	throw new NoSuchObjectException("Wrong message received from handler");
         }
         return result;
     }

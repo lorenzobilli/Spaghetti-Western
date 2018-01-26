@@ -33,7 +33,7 @@ public abstract class Map {
 		messageTable.put("header", "TRY_PLAYER_MOVE");
 		messageTable.put("content", destination);
 		Future send = Client.globalThreadPool.submit(new Sender(new Message(
-				MessageType.MOVE,
+				Message.Type.MOVE,
 				Client.getPlayer(),
 				MessageManager.createXML(messageTable)
 		), Client.connectionManager.getSendStream()));
@@ -87,7 +87,7 @@ public abstract class Map {
 		clashButton.addActionListener(e -> {
 			Future send = Client.globalThreadPool.submit(new Sender(
 					new Message(
-							MessageType.CLASH,
+							Message.Type.CLASH,
 							Client.getPlayer(),
 							MessageManager.createXML(new MessageTable("header", "CLASH_REQUEST"))
 					), Client.connectionManager.getSendStream()

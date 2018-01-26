@@ -5,14 +5,23 @@ import java.security.InvalidParameterException;
  */
 public class Message {
 
-    private MessageType messageType;
+    private Type type;
     private Player messageSender;
     private Player messageReceiver;
     private String messageContent;
 
-    public Message(MessageType messageType, Player messageSender, Player messageReceiver, String messageContent) {
-        if (messageType == null) {
-            throw new InvalidParameterException("MessageType cannot be null");
+	public enum Type {
+		SESSION,
+		TIME,
+		CHAT,
+		SCENERY,
+		MOVE,
+		CLASH
+	}
+
+    public Message(Type type, Player messageSender, Player messageReceiver, String messageContent) {
+        if (type == null) {
+            throw new InvalidParameterException("Type cannot be null");
         }
         if (messageSender == null) {
             throw new InvalidParameterException("MessageSender cannot be null");
@@ -23,15 +32,15 @@ public class Message {
         if (messageContent == null) {
             throw new InvalidParameterException("MessageContent cannot be null");
         }
-        this.messageType = messageType;
+        this.type = type;
         this.messageSender = messageSender;
         this.messageReceiver = messageReceiver;
         this.messageContent = messageContent;
     }
 
-    public Message(MessageType messageType, Player messageSender, String messageContent) {
-        if (messageType == null) {
-            throw new InvalidParameterException("MessageType cannot be null");
+    public Message(Type type, Player messageSender, String messageContent) {
+        if (type == null) {
+            throw new InvalidParameterException("Type cannot be null");
         }
         if (messageSender == null) {
             throw new InvalidParameterException("MessageReceiver cannot be null");
@@ -39,14 +48,14 @@ public class Message {
         if (messageContent == null) {
             throw new InvalidParameterException("MessageContent cannot be null");
         }
-        this.messageType = messageType;
+        this.type = type;
         this.messageSender = messageSender;
         this.messageReceiver = new Player("SERVER", Player.Team.SERVER);
         this.messageContent = messageContent;
     }
 
-    public MessageType getMessageType() {
-        return this.messageType;
+    public Type getType() {
+        return this.type;
     }
 
     public Player getMessageSender() {

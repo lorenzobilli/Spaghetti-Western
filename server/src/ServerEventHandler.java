@@ -25,28 +25,28 @@ public class ServerEventHandler extends EventHandler {
             switch (userManagerStatus) {
                 case SUCCESS:
                     return new Message(
-                            MessageType.SESSION,
+                            Message.Type.SESSION,
                             new Player("SERVER", Player.Team.SERVER),
                             message.getMessageSender(),
 		                    MessageManager.createXML(new MessageTable("header", "ACCEPTED"))
                     );
                 case ALREADY_REGISTERED:
                     return new Message(
-                            MessageType.SESSION,
+                            Message.Type.SESSION,
                             new Player("SERVER", Player.Team.SERVER),
                             message.getMessageSender(),
 		                    MessageManager.createXML(new MessageTable("header", "ALREADY_CONNECTED"))
                     );
                 case MAX_NUM_REACHED:
                     return new Message(
-                            MessageType.SESSION,
+                            Message.Type.SESSION,
                             new Player("SERVER", Player.Team.SERVER),
                             message.getMessageSender(),
                             MessageManager.createXML(new MessageTable("header", "MAX_NUM_REACHED"))
                     );
                 case SESSION_RUNNING:
                     return new Message(
-                            MessageType.SESSION,
+                            Message.Type.SESSION,
                             new Player("SERVER", Player.Team.SERVER),
                             message.getMessageSender(),
                             MessageManager.createXML(new MessageTable("header", "SESSION_RUNNING"))
@@ -62,7 +62,7 @@ public class ServerEventHandler extends EventHandler {
                 throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");
             }
             return new Message(
-                    MessageType.SESSION,
+                    Message.Type.SESSION,
                     new Player("SERVER", Player.Team.SERVER),
                     message.getMessageSender(),
                     MessageManager.createXML(new MessageTable("header", "SHUTDOWN"))
@@ -111,7 +111,7 @@ public class ServerEventHandler extends EventHandler {
 					broadcastMessageTable.put("origin", origin.getPlaceName());
 					broadcastMessageTable.put("destination", destination.getPlaceName());
 					Server.connectionManager.broadcastMessage(new Message(
-							MessageType.SCENERY,
+							Message.Type.SCENERY,
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML(broadcastMessageTable)
 					));
@@ -127,14 +127,14 @@ public class ServerEventHandler extends EventHandler {
 					messageTable.put("origin", origin.getPlaceName());
 					messageTable.put("destination", destination.getPlaceName());
 					return new Message(
-							MessageType.MOVE,
+							Message.Type.MOVE,
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML(messageTable)
 					);
 				case DESTINATION_BUSY:
 				case DESTINATION_UNREACHABLE:
 					return new Message(
-							MessageType.MOVE,
+							Message.Type.MOVE,
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML(new MessageTable("header", "PLAYER_NOT_MOVED"))
 					);
@@ -169,7 +169,7 @@ public class ServerEventHandler extends EventHandler {
 			List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
 			for (Player receiver : receivers) {
 				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
-						MessageType.CLASH,
+						Message.Type.CLASH,
 						message.getMessageSender(),
 						MessageManager.createXML(new MessageTable("header", "CLASH_REQUEST"))
 				));
@@ -184,7 +184,7 @@ public class ServerEventHandler extends EventHandler {
 				List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
 				for (Player receiver : receivers) {
 					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
-							MessageType.CLASH,
+							Message.Type.CLASH,
 							message.getMessageSender(),
 							MessageManager.createXML(new MessageTable("header", "CLASH_ACCEPTED"))
 					));
@@ -201,7 +201,7 @@ public class ServerEventHandler extends EventHandler {
 				List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
 				for (Player receiver : receivers) {
 					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
-							MessageType.CLASH,
+							Message.Type.CLASH,
 							receiver,
 							MessageManager.createXML(new MessageTable("header", "CLASH_REJECTED"))
 					));
@@ -242,7 +242,7 @@ public class ServerEventHandler extends EventHandler {
 					messageTable.put("defense", defenseResult.toString());
 					messageTable.put("prize", String.valueOf(PointsManager.getPrize(defenders)));
 					Server.connectionManager.sendMessageToPlayer(winner, new Message(
-							MessageType.CLASH,
+							Message.Type.CLASH,
 							winner,
 							MessageManager.createXML(messageTable)
 					));
@@ -253,7 +253,7 @@ public class ServerEventHandler extends EventHandler {
 					messageTable.put("attack", attackResults.toString());
 					messageTable.put("defense", defenseResult.toString());
 					Server.connectionManager.sendMessageToPlayer(looser, new Message(
-						MessageType.CLASH,
+						Message.Type.CLASH,
 						looser,
 						MessageManager.createXML(messageTable)
 					));
@@ -266,7 +266,7 @@ public class ServerEventHandler extends EventHandler {
 					messageTable.put("attack", attackResults.toString());
 					messageTable.put("defense", defenseResult.toString());
 					Server.connectionManager.sendMessageToPlayer(winner, new Message(
-							MessageType.CLASH,
+							Message.Type.CLASH,
 							winner,
 							MessageManager.createXML(messageTable)
 					));
@@ -278,7 +278,7 @@ public class ServerEventHandler extends EventHandler {
 					messageTable.put("defense", defenseResult.toString());
 					messageTable.put("prize", String.valueOf(PointsManager.getPrize(attackers)));
 					Server.connectionManager.sendMessageToPlayer(looser, new Message(
-							MessageType.CLASH,
+							Message.Type.CLASH,
 							looser,
 							MessageManager.createXML(messageTable)
 					));

@@ -57,7 +57,7 @@ public class GameManager {
 			messageTable.put("header", "CHOOSEN_SCENERY");
 			messageTable.put("content", "SmallScenery");
 			Server.connectionManager.broadcastMessage(new Message(
-					MessageType.SCENERY,
+					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
 					MessageManager.createXML(messageTable)
 			));
@@ -68,7 +68,7 @@ public class GameManager {
 			messageTable.put("header", "CHOOSEN_SCENERY");
 			messageTable.put("content", "MediumScenery");
 			Server.connectionManager.broadcastMessage(new Message(
-					MessageType.SCENERY,
+					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
 					MessageManager.createXML(messageTable)
 			));
@@ -79,7 +79,7 @@ public class GameManager {
 			messageTable.put("header", "CHOOSEN_SCENERY");
 			messageTable.put("content", "LargeScenery");
 			Server.connectionManager.broadcastMessage(new Message(
-					MessageType.SCENERY,
+					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
 					MessageManager.createXML(messageTable)
 			));
@@ -106,7 +106,7 @@ public class GameManager {
 				messageTable.put("player_team", servedPlayer.getTeamAsString());
 				messageTable.put("position", randomPlace.getPlaceName());
 				Server.connectionManager.broadcastMessage(new Message(
-						MessageType.SCENERY,
+						Message.Type.SCENERY,
 						new Player("SERVER", Player.Team.SERVER),
 						MessageManager.createXML(messageTable)
 				));

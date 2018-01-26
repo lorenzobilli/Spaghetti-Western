@@ -174,7 +174,7 @@ public class ConnectionHandler implements Runnable {
     //TODO: Implement this the proper way
     public void terminateUserConnection() {
         Message notifyConnectionTerm = new Message(
-                MessageType.SESSION,
+                Message.Type.SESSION,
                 new Player("SERVER", Player.Team.SERVER),
                 connectedPlayer,
 		        MessageManager.createXML(new MessageTable("header", "DISCONNECTED"))

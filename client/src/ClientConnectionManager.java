@@ -92,7 +92,7 @@ public class ClientConnectionManager implements Runnable {
             }
             // In this phase we still have to compose a message without the handler
             Message initCurrentSession = new Message(
-                    MessageType.SESSION,
+                    Message.Type.SESSION,
                     Client.getPlayer(),
 		            MessageManager.createXML(new MessageTable("header", "SESSION_START_REQUEST"))
             );
@@ -104,7 +104,7 @@ public class ClientConnectionManager implements Runnable {
                 do {
                     Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
                     response = receive.get();
-                    if (response.getMessageType() == MessageType.SESSION) {     // Accept only session related messages
+                    if (response.getType() == Message.Type.SESSION) {     // Accept only session related messages
                         sessionResponse = true;
                     }
                 } while (!sessionResponse);
@@ -158,7 +158,7 @@ public class ClientConnectionManager implements Runnable {
             }
         }
         Client.globalThreadPool.submit(new Sender(new Message(
-                MessageType.TIME,
+                Message.Type.TIME,
                 Client.getPlayer(),
 		        MessageManager.createXML(new MessageTable("header", "WAIT_START_REQUEST"))
         ), getSendStream()));
@@ -196,7 +196,7 @@ public class ClientConnectionManager implements Runnable {
 	private void shutdownClient() {
         System.out.println("[*] Terminating current client session...");
         Message terminateCurrentSession = new Message(
-                MessageType.SESSION,
+                Message.Type.SESSION,
                 Client.getPlayer(),
 		        MessageManager.createXML(new MessageTable("header", "SESSION_STOP_REQUEST"))
         );

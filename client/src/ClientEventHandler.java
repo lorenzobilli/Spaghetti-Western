@@ -144,14 +144,14 @@ public class ClientEventHandler extends EventHandler {
 			switch (selected) {
 				case JOptionPane.YES_OPTION:	// "Accept" selected
 					return new Message(
-							MessageType.CLASH,
+							Message.Type.CLASH,
 							Client.getPlayer(),
 							MessageManager.createXML(new MessageTable("header", "CLASH_ACCEPTED"))
 					);
 				case JOptionPane.NO_OPTION:
 				case JOptionPane.CLOSED_OPTION:
 					return new Message(
-							MessageType.CLASH,
+							Message.Type.CLASH,
 							Client.getPlayer(),
 							MessageManager.createXML(new MessageTable("header", "CLASH_REJECTED"))
 					);
@@ -164,7 +164,7 @@ public class ClientEventHandler extends EventHandler {
 					"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
 			);	//TODO: Consider auto closeable message option
 			return new Message(
-					MessageType.CLASH,
+					Message.Type.CLASH,
 					Client.getPlayer(),
 					MessageManager.createXML(new MessageTable("header", "START_CLASH"))
 			);

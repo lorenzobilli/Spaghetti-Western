@@ -37,14 +37,14 @@ public class TimeManager implements Callable<Boolean> {
 				messageTable.put("header", "WAIT_REMAINING");
 				messageTable.put("content", String.valueOf(waitDuration.getSeconds()));
 				Server.connectionManager.broadcastMessage(new Message(
-						MessageType.TIME,
+						Message.Type.TIME,
 						new Player("SERVER", Player.Team.SERVER),
 						MessageManager.createXML(messageTable)
 				));
 				if (waitDuration.isZero()) {
 					this.cancel();
 					Server.connectionManager.broadcastMessage(new Message(
-							MessageType.TIME,
+							Message.Type.TIME,
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML(new MessageTable("header", "WAIT_TIMEOUT"))
 					));
@@ -63,7 +63,7 @@ public class TimeManager implements Callable<Boolean> {
 	private void playTimer() {
 		Server.consolePrintLine("[*] Starting new gaming session...");
 		Server.connectionManager.broadcastMessage(new Message(
-				MessageType.TIME,
+				Message.Type.TIME,
 				new Player("SERVER", Player.Team.SERVER),
 				MessageManager.createXML(new MessageTable("header", "PLAY_SESSION_START"))
 		));
@@ -79,14 +79,14 @@ public class TimeManager implements Callable<Boolean> {
 				messageTable.put("header", "PLAY_REMAINING");
 				messageTable.put("content", String.valueOf(playDuration.getSeconds()));
 				Server.connectionManager.broadcastMessage(new Message(
-						MessageType.TIME,
+						Message.Type.TIME,
 						new Player("SERVER", Player.Team.SERVER),
 						MessageManager.createXML(messageTable)
 				));
 				if (playDuration.isZero()) {
 					this.cancel();
 					Server.connectionManager.broadcastMessage(new Message(
-							MessageType.TIME,
+							Message.Type.TIME,
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML(new MessageTable("header", "PLAY_TIMEOUT"))
 					));
