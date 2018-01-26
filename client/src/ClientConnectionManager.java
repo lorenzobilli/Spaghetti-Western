@@ -94,7 +94,7 @@ public class ClientConnectionManager implements Runnable {
             Message initCurrentSession = new Message(
                     MessageType.SESSION,
                     Client.getPlayer(),
-                    MessageManager.createXML("header", "SESSION_START_REQUEST")
+		            MessageManager.createXML(new MessageTable("header", "SESSION_START_REQUEST"))
             );
             try {
                 // Send request message to the server
@@ -160,7 +160,7 @@ public class ClientConnectionManager implements Runnable {
         Client.globalThreadPool.submit(new Sender(new Message(
                 MessageType.TIME,
                 Client.getPlayer(),
-                MessageManager.createXML("header", "WAIT_START_REQUEST")
+		        MessageManager.createXML(new MessageTable("header", "WAIT_START_REQUEST"))
         ), getSendStream()));
         Client.clientWindow.createWaitingCountdown();
     }
@@ -198,7 +198,7 @@ public class ClientConnectionManager implements Runnable {
         Message terminateCurrentSession = new Message(
                 MessageType.SESSION,
                 Client.getPlayer(),
-                MessageManager.createXML("header", "SESSION_STOP_REQUEST")
+		        MessageManager.createXML(new MessageTable("header", "SESSION_STOP_REQUEST"))
         );
         try {
             Future send = Client.globalThreadPool.submit(new Sender(terminateCurrentSession, getSendStream()));

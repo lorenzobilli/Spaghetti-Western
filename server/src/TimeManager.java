@@ -46,7 +46,7 @@ public class TimeManager implements Callable<Boolean> {
 					Server.connectionManager.broadcastMessage(new Message(
 							MessageType.TIME,
 							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML("header", "WAIT_TIMEOUT")
+							MessageManager.createXML(new MessageTable("header", "WAIT_TIMEOUT"))
 					));
 					Server.gameManager.setSessionState(true);
 					Server.consolePrintLine("[*] Session wait timer expired");
@@ -65,7 +65,7 @@ public class TimeManager implements Callable<Boolean> {
 		Server.connectionManager.broadcastMessage(new Message(
 				MessageType.TIME,
 				new Player("SERVER", Player.Team.SERVER),
-				MessageManager.createXML("header", "PLAY_SESSION_START")
+				MessageManager.createXML(new MessageTable("header", "PLAY_SESSION_START"))
 		));
 		countdown = new TimerTask() {
 			@Override
@@ -88,7 +88,7 @@ public class TimeManager implements Callable<Boolean> {
 					Server.connectionManager.broadcastMessage(new Message(
 							MessageType.TIME,
 							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML("header", "PLAY_TIMEOUT")
+							MessageManager.createXML(new MessageTable("header", "PLAY_TIMEOUT"))
 					));
 					Server.gameManager.setSessionState(false);
 					Server.consolePrintLine("[*] Session play timer expired");

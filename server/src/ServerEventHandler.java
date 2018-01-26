@@ -28,28 +28,28 @@ public class ServerEventHandler extends EventHandler {
                             MessageType.SESSION,
                             new Player("SERVER", Player.Team.SERVER),
                             message.getMessageSender(),
-                            MessageManager.createXML("header", "ACCEPTED")
+		                    MessageManager.createXML(new MessageTable("header", "ACCEPTED"))
                     );
                 case ALREADY_REGISTERED:
                     return new Message(
                             MessageType.SESSION,
                             new Player("SERVER", Player.Team.SERVER),
                             message.getMessageSender(),
-                            MessageManager.createXML("header", "ALREADY_CONNECTED")
+		                    MessageManager.createXML(new MessageTable("header", "ALREADY_CONNECTED"))
                     );
                 case MAX_NUM_REACHED:
                     return new Message(
                             MessageType.SESSION,
                             new Player("SERVER", Player.Team.SERVER),
                             message.getMessageSender(),
-                            MessageManager.createXML("header", "MAX_NUM_REACHED")
+                            MessageManager.createXML(new MessageTable("header", "MAX_NUM_REACHED"))
                     );
                 case SESSION_RUNNING:
                     return new Message(
                             MessageType.SESSION,
                             new Player("SERVER", Player.Team.SERVER),
                             message.getMessageSender(),
-                            MessageManager.createXML("header", "SESSION_RUNNING")
+                            MessageManager.createXML(new MessageTable("header", "SESSION_RUNNING"))
                     );
                 default:
                     return null;
@@ -65,7 +65,7 @@ public class ServerEventHandler extends EventHandler {
                     MessageType.SESSION,
                     new Player("SERVER", Player.Team.SERVER),
                     message.getMessageSender(),
-                    MessageManager.createXML("header", "SHUTDOWN")
+                    MessageManager.createXML(new MessageTable("header", "SHUTDOWN"))
             );
         }
         return null;
@@ -136,7 +136,7 @@ public class ServerEventHandler extends EventHandler {
 					return new Message(
 							MessageType.MOVE,
 							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML("header", "PLAYER_NOT_MOVED")
+							MessageManager.createXML(new MessageTable("header", "PLAYER_NOT_MOVED"))
 					);
 			}
 		}
@@ -171,7 +171,7 @@ public class ServerEventHandler extends EventHandler {
 				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 						MessageType.CLASH,
 						message.getMessageSender(),
-						MessageManager.createXML("header", "CLASH_REQUEST")
+						MessageManager.createXML(new MessageTable("header", "CLASH_REQUEST"))
 				));
 			}
 		}
@@ -186,7 +186,7 @@ public class ServerEventHandler extends EventHandler {
 					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 							MessageType.CLASH,
 							message.getMessageSender(),
-							MessageManager.createXML("header", "CLASH_ACCEPTED")
+							MessageManager.createXML(new MessageTable("header", "CLASH_ACCEPTED"))
 					));
 				}
 			} else {
@@ -203,7 +203,7 @@ public class ServerEventHandler extends EventHandler {
 					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 							MessageType.CLASH,
 							receiver,
-							MessageManager.createXML("header", "CLASH_REJECTED")
+							MessageManager.createXML(new MessageTable("header", "CLASH_REJECTED"))
 					));
 				}
 			} else {

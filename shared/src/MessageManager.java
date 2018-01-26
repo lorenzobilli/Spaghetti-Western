@@ -8,7 +8,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.InvalidParameterException;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -17,6 +16,7 @@ import java.util.Set;
  * MessageManager class
  */
 public class MessageManager {
+
     private static Gson manager = new Gson();
 
     public static String prepareSend(Message message) {
@@ -25,20 +25,6 @@ public class MessageManager {
 
     public static Message prepareReceive(String message) {
         return manager.fromJson(message, Message.class);
-    }
-
-    public static String createXML(String tag, String value) {
-        if (tag == null) {
-            throw new InvalidParameterException("tag cannot be null");
-        }
-        if (value == null) {
-            throw new InvalidParameterException("value cannot be null");
-        }
-        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-        String begin = "<message>";
-        String end = "</message>";
-        String elem = "<" + tag + ">" + value + "</" + tag + ">";
-        return header + begin + elem + end;
     }
 
     public static String createXML(MessageTable messageTable) {

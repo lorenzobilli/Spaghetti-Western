@@ -177,7 +177,7 @@ public class ConnectionHandler implements Runnable {
                 MessageType.SESSION,
                 new Player("SERVER", Player.Team.SERVER),
                 connectedPlayer,
-                MessageManager.createXML("header", "DISCONNECTED")
+		        MessageManager.createXML(new MessageTable("header", "DISCONNECTED"))
         );
         Server.consolePrintLine("[*] Sending terminating message to: " + connectedPlayer.getName());
             //TODO: Check if an async call is a better option...

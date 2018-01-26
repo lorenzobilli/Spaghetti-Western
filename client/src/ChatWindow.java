@@ -52,7 +52,7 @@ public class ChatWindow {
         Message chatMessage = new Message(
                 MessageType.CHAT,
                 Client.getPlayer(),
-                MessageManager.createXML("content", chatField.getText())
+		        MessageManager.createXML(new MessageTable("content", chatField.getText()))
         );
         Future sendMessage = Client.globalThreadPool.submit(
                 new Sender(chatMessage, Client.connectionManager.getSendStream())

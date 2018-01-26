@@ -146,14 +146,14 @@ public class ClientEventHandler extends EventHandler {
 					return new Message(
 							MessageType.CLASH,
 							Client.getPlayer(),
-							MessageManager.createXML("header", "CLASH_ACCEPTED")
+							MessageManager.createXML(new MessageTable("header", "CLASH_ACCEPTED"))
 					);
 				case JOptionPane.NO_OPTION:
 				case JOptionPane.CLOSED_OPTION:
 					return new Message(
 							MessageType.CLASH,
 							Client.getPlayer(),
-							MessageManager.createXML("header", "CLASH_REJECTED")
+							MessageManager.createXML(new MessageTable("header", "CLASH_REJECTED"))
 					);
 			}
 		}
@@ -166,7 +166,7 @@ public class ClientEventHandler extends EventHandler {
 			return new Message(
 					MessageType.CLASH,
 					Client.getPlayer(),
-					MessageManager.createXML("header", "START_CLASH")
+					MessageManager.createXML(new MessageTable("header", "START_CLASH"))
 			);
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {

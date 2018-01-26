@@ -89,7 +89,7 @@ public abstract class Map {
 					new Message(
 							MessageType.CLASH,
 							Client.getPlayer(),
-							MessageManager.createXML("header", "CLASH_REQUEST")
+							MessageManager.createXML(new MessageTable("header", "CLASH_REQUEST"))
 					), Client.connectionManager.getSendStream()
 			));
 		});
