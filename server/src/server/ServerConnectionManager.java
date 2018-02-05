@@ -2,7 +2,7 @@ package server;
 
 import shared.messaging.Message;
 import shared.Player;
-import shared.Sender;
+import shared.communication.Sender;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -99,7 +99,7 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Send a message to a player.
-	 * @param player shared.Receiver of the message.
+	 * @param player shared.communication.Receiver of the message.
 	 * @param message shared.messaging.Message to be sent.
 	 */
     public void sendMessageToPlayer(Player player, Message message) {

@@ -1,4 +1,4 @@
-package shared;
+package shared.communication;
 
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
@@ -9,7 +9,7 @@ import java.security.InvalidParameterException;
 import java.util.concurrent.Callable;
 
 /**
- * shared.Receiver class
+ * shared.communication.Receiver class
  */
 public class Receiver implements Callable<Message> {
 

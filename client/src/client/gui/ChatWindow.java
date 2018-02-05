@@ -4,7 +4,7 @@ import client.Client;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
-import shared.Sender;
+import shared.communication.Sender;
 
 import javax.swing.*;
 import java.awt.*;
