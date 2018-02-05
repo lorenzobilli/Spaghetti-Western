@@ -1,10 +1,12 @@
-package client;
+package client.gui;
+
+import client.Client;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * client.MapWindow class
+ * client.gui.MapWindow class
  */
 public class MapWindow {
 

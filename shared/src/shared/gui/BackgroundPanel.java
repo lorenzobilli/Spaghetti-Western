@@ -1,4 +1,4 @@
-package shared;
+package shared.gui;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * shared.BackgroundPanel class
+ * shared.gui.BackgroundPanel class
  */
 public class BackgroundPanel extends JPanel {
 

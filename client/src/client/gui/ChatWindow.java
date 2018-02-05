@@ -1,5 +1,6 @@
-package client;
+package client.gui;
 
+import client.Client;
 import shared.Message;
 import shared.MessageManager;
 import shared.MessageTable;
@@ -10,7 +11,7 @@ import java.awt.*;
 import java.util.concurrent.Future;
 
 /**
- * client.ChatWindow class
+ * client.gui.ChatWindow class
  */
 public class ChatWindow {
 

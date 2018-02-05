@@ -1,11 +1,13 @@
-package server;
+package server.gui;
+
+import server.Server;
 
 import javax.swing.*;
 import java.awt.*;
 import java.security.InvalidParameterException;
 
 /**
- * server.MainWindow class
+ * server.gui.MainWindow class
  */
 public class MainWindow {
 

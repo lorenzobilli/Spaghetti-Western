@@ -1,5 +1,6 @@
-package client;
+package client.gui;
 
+import client.Client;
 import shared.*;
 
 import javax.swing.*;
@@ -9,7 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.Future;
 
 /**
- * client.Map class
+ * client.gui.Map class
  */
 public abstract class Map {
 
@@ -77,7 +78,7 @@ public abstract class Map {
 		));
 	}
 
-	protected void updateBulletLabel(MapWindow map, int bullets) {
+	public void updateBulletLabel(MapWindow map, int bullets) {
 		bulletLabel.setText("Bullets: " + String.valueOf(bullets));
 		map.update(bulletLabel, bulletLabel.getPreferredSize());
 	}
@@ -102,7 +103,7 @@ public abstract class Map {
 		));
 	}
 
-	protected void toggleClashButton() {
+	public void toggleClashButton() {
 		clashButton.setVisible(!clashButton.isVisible());
 	}
 
@@ -154,9 +155,9 @@ public abstract class Map {
 		}
 	}
 
-	protected abstract void populate(MapWindow map);
+	public abstract void populate(MapWindow map);
 
-	protected void updateMap(Player player, Place place) {
+	public void updateMap(Player player, Place place) {
 		if (player.equals(Client.getPlayer())) {
 			populatePlayerLabel(place);
 		} else if (player.getTeam().equals(Player.Team.GOOD)) {
@@ -166,7 +167,7 @@ public abstract class Map {
 		}
 	}
 
-	protected void updateMap(Player movingPlayer, Place origin, Place destination) {
+	public void updateMap(Player movingPlayer, Place origin, Place destination) {
 		if (movingPlayer.equals(Client.getPlayer())) {
 			updatePlayerLabels(origin, destination);
 		} else if (movingPlayer.getTeam().equals(Player.Team.GOOD)) {

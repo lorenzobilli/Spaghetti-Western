@@ -1,10 +1,12 @@
-package client;
+package client.gui;
+
+import client.Client;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * client.MainWindow class
+ * client.gui.MainWindow class
  */
 public class MainWindow {
 

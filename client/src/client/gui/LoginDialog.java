@@ -1,12 +1,13 @@
-package client;
+package client.gui;
 
+import client.Client;
 import shared.Player;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * client.LoginDialog class
+ * client.gui.LoginDialog class
  */
 public class LoginDialog {
 

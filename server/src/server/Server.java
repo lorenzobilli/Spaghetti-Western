@@ -1,5 +1,6 @@
 package server;
 
+import server.gui.MainWindow;
 import shared.Scenery;
 
 import java.security.InvalidParameterException;

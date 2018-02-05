@@ -1,5 +1,6 @@
 package client;
 
+import client.gui.*;
 import shared.*;
 
 import javax.swing.*;

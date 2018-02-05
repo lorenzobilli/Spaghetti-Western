@@ -1,10 +1,10 @@
-package client;
+package client.gui;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * client.SmallMap class
+ * client.gui.SmallMap class
  */
 public class SmallMap extends Map {
 
@@ -102,7 +102,7 @@ public class SmallMap extends Map {
 	}
 
 	@Override
-	protected void populate(MapWindow map) {
+	public void populate(MapWindow map) {
 
 		// Adding global button and labels
 		super.configureBulletLabel(map);
