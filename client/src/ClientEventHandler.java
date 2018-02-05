@@ -2,15 +2,27 @@ import javax.swing.*;
 import java.security.InvalidParameterException;
 
 /**
- * ClientEventHandler
+ * Client implementation of the Event Handler
  */
 public class ClientEventHandler extends EventHandler {
 
+	/**
+	 * Creates new Client Event Handler.
+	 * @param message Message to be handled.
+	 */
     protected ClientEventHandler(Message message) {
         super(message);
     }
 
-    @Override
+	/**
+	 * Handle all session-related messages. In particular, these events are handled:
+	 *  - ACCEPTED: Request has been accepted and client has been registered.
+	 *  - ALREADY_CONNECTED: A client is already registered with the same username.
+	 *  - MAX_NUM_REACHED: Maximum number of connected clients reached, no more clients accepted by the server.
+	 *  - SESSION_RUNNING: A play session is already running, no client registrations allowed.
+	 * @return The message containing the response result, a null message if the request is not recognised.
+	 */
+	@Override
     protected Message handleSession() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("ACCEPTED") ||
                 MessageManager.convertXML("header", message.getMessageContent()).equals("ALREADY_CONNECTED") ||
@@ -22,7 +34,14 @@ public class ClientEventHandler extends EventHandler {
         }
     }
 
-    @Override
+	/**
+	 * Handle all time-related messages. In particular, these events are handled:
+	 *  - WAIT_REMAINING: Updates about remaining time until a new session is started.
+	 *  - WAIT_TIMEOUT: Remaining time is up, a session start is imminent.
+	 *  - PLAY_SESSION_START: A session is starting up.
+	 * @return A null message, since all events are handled inside this method.
+	 */
+	@Override
     protected Message handleTime() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_REMAINING")) {
             int secondsRemaining = Integer.parseInt(
@@ -42,13 +61,25 @@ public class ClientEventHandler extends EventHandler {
         return null;
     }
 
-    @Override
+	/**
+	 * Handle all chat-related messages.
+	 * Every received message is shown in the chat window.
+	 * @return A null message.
+	 */
+	@Override
     protected Message handleChat() {
         Client.chatWindow.updateChat(message);
         return null;
     }
 
-    @Override
+	/**
+	 * Handle all scenery-related messages. In particular, these events are handled:
+	 *  - CHOOSEN_SCENERY: Message containing which scenery has been chosen by the server.
+	 *  - PLAYER_INSERTED: Player has been correctly inserted in the active scenery by the server.
+	 *  - PLAYER_MOVED: Another player has been moved correctly by the server.
+	 * @return A null message.
+	 */
+	@Override
     protected Message handleScenery() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("CHOOSEN_SCENERY")) {
             String choosenScenery = MessageManager.convertXML("content", message.getMessageContent());
@@ -87,6 +118,7 @@ public class ClientEventHandler extends EventHandler {
 			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
+        	//TODO: Consider changing "PLAYER_MOVED" with OTHER_PLAYER_MOVED
         	Player player = new Player(
         			MessageManager.convertXML("player_name", message.getMessageContent()),
 					MessageManager.convertXML("player_team", message.getMessageContent())
@@ -106,6 +138,11 @@ public class ClientEventHandler extends EventHandler {
         return null;
     }
 
+	/**
+	 * Handle all move-related messages. In particular, these events are handled:
+	 *  - PLAYER_MOVED:
+	 * @return A null message, since all operations are done inside the method.
+	 */
 	@Override
 	protected Message handleMove() {
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAYER_MOVED")) {
@@ -127,6 +164,21 @@ public class ClientEventHandler extends EventHandler {
 		return null;
 	}
 
+	/**
+	 * Handle all clash-related messages. In particular, these events are handled:
+	 *  - CLASH_REQUEST: Another client has sent a clash request to the current client.
+	 *  - CLASH_ACCEPTED: Another client has accepted a clash request sent by the current client.
+	 *  - CLASH_REJECTED: Another client has rejected a clash request sent by the current client.
+	 *  - CLASH_WON: Current client has won a clash.
+	 *  - CLASH_LOST: Current client has lost a clash.
+	 * @return A new message with the request result.
+	 * Possible results for CLASH_REQUEST are:
+	 *  - CLASH_ACCEPTED: Client has accepted the clash request.
+	 *  - CLASH_REJECTED: Client has rejected the clash request.
+	 * Possible results for CLASH_ACCEPTED are:
+	 *  - START_CLASH: Signal for clash starting.
+	 * If no other options are recognized, a null message is returned.
+	 */
 	@Override
 	protected Message handleClash() {
     	if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {

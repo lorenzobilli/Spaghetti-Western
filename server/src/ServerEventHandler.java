@@ -1,26 +1,37 @@
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Future;
 
 /**
- * ServerEventHandler class
+ * Server implementation of the Event Handler.
  */
 public class ServerEventHandler extends EventHandler {
 
-	private final Object monitor = new Object();
-
+	/**
+	 * Creates new Server Event Handler.
+	 * @param message Message to be handled.
+	 */
     protected ServerEventHandler(Message message) {
         super(message);
     }
 
-    @Override
+	/**
+	 * Handle all session-related messages. In particular, these events are handled:
+	 *  - SESSION_START_REQUEST: A client requesting a new connection to the server (with unique username).
+	 *  - SESSION_STOP_REQUEST: A client requesting to end an existing connection with the server.
+	 * @return A new message with the request result.
+	 * Possible results for SESSION_START_REQUEST are:
+	 *  - ACCEPTED: Request has been accepted and client has been registered.
+	 *  - ALREADY_CONNECTED: A client is already registered with the same username.
+	 *  - MAX_NUM_REACHED: Maximum number of connected clients reached, no more clients accepted by the server.
+	 *  - SESSION_RUNNING: A play session is already running, no client registrations allowed.
+	 *  Possible results for SESSION_STOP_REQUEST are:
+	 *  - SHUTDOWN: Stop request accepted, client disconnected from the server.
+	 */
+	@Override
     protected Message handleSession() {
-        if (MessageManager.convertXML(
-                "header",
-                message.getMessageContent()).equals("SESSION_START_REQUEST")) {
+        if (MessageManager.convertXML("header",
+		        message.getMessageContent()).equals("SESSION_START_REQUEST")) {
             PlayerManager.Status userManagerStatus = PlayerManager.addPlayer(message.getMessageSender());
             switch (userManagerStatus) {
                 case SUCCESS:
@@ -54,8 +65,7 @@ public class ServerEventHandler extends EventHandler {
                 default:
                     return null;
             }
-        } else if (MessageManager.convertXML(
-                "header",
+        } else if (MessageManager.convertXML("header",
                 message.getMessageContent()).equals("SESSION_STOP_REQUEST")) {
             //TODO: implement stop session request from a client
             if (!PlayerManager.removePlayer(message.getMessageSender())) {
@@ -71,28 +81,53 @@ public class ServerEventHandler extends EventHandler {
         return null;
     }
 
-    @Override
+	/**
+	 * Handle all time-related messages. In particular, these events are handled:
+	 *  - WAIT_START_REQUEST: A client requesting to start the login timer.
+	 * @return A null message, since all operations are handled directly by the time manager.
+	 */
+	@Override
     protected Message handleTime() {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_START_REQUEST")) {
-            if (PlayerManager.getConnectedUsersNumber() == 1) {
+            if (PlayerManager.getConnectedUsersNumber() == 1) {     // First client connected to the server
             	Server.timeManager = new TimeManager();
-                Future<Boolean> enableTimeManager = Server.globalThreadPool.submit(Server.timeManager);
+                Server.globalThreadPool.submit(Server.timeManager);     // Start time manager
             }
         }
         return null;
     }
 
-    @Override
+	/**
+	 * Handle all chat-related messages.
+	 * Every received message is redirected to the other team members of the message sender.
+	 * @return A null message.
+	 */
+	@Override
     protected Message handleChat() {
         Server.connectionManager.sendMessageToTeamMembers(message.getMessageSender(), message);
         return null;
     }
 
-    @Override
+	/**
+	 * Handle all scenery-related messages.
+	 * No events are handled currently
+	 * @return A null message.
+	 */
+	@Deprecated
+	@Override
     protected Message handleScenery() {
         return null;
     }
 
+	/**
+	 * Handle all move-related messages. In particular, these events are handled:
+	 *  - TRY_PLAYER_MOVE: A client requesting to be moved in the scenery.
+	 * @return A new message with the request result.
+	 * Possible results for TRY_PLAYER_MOVE are:
+	 *  - PLAYER_MOVED: Client has been moved successfully in the scenery.
+	 *  - DESTINATION_BUSY: The desired destination has reached the maximum capacity of the node.
+	 *  - DESTINATION_UNREACHABLE: The desired destination is not reachable from current client position.
+	 */
 	@Override
 	protected Message handleMove() {
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("TRY_PLAYER_MOVE")) {
@@ -143,7 +178,13 @@ public class ServerEventHandler extends EventHandler {
 		return null;
 	}
 
-	private List<Player> getOppositeClashers(Player player, Place position) {
+	/**
+	 * Get the corresponding fighters in a place given the opposite players' team.
+	 * @param player Player used as reference for retrieving the fighting team.
+	 * @param position Scenery place where clash will be made.
+	 * @return List of opponent players.
+	 */
+	private List<Player> getOppositeFighters(Player player, Place position) {
     	if (player == null) {
     		throw new InvalidParameterException("Player cannot be null");
 		}
@@ -160,13 +201,21 @@ public class ServerEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Handle all clash-related messages. In particular, these events are handled:
+	 *  - CLASH_REQUEST: A client requests a new clash.
+	 *  - CLASH_ACCEPTED: A clash request has been accepted by the system.
+	 *  - CLASH_REJECTED: A clash request has been rejected by the system.
+	 *  - START_CLASH: Clash start request.
+	 * @return A null message only, since all events are handled internally by the method.
+	 */
 	@Override
 	protected Message handleClash() {
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
 			Server.gameManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
 			Place clashLocation = Server.connectionManager.getPlayerHandler(
 					message.getMessageSender()).getConnectedPlayer().getPosition();
-			List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
+			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
 			for (Player receiver : receivers) {
 				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 						Message.Type.CLASH,
@@ -181,7 +230,7 @@ public class ServerEventHandler extends EventHandler {
 				Server.gameManager.denyClashRequests();
 				Place clashLocation = Server.connectionManager.getPlayerHandler(
 						message.getMessageSender()).getConnectedPlayer().getPosition();
-				List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
+				List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
 				for (Player receiver : receivers) {
 					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 							Message.Type.CLASH,
@@ -198,7 +247,7 @@ public class ServerEventHandler extends EventHandler {
 				Server.gameManager.denyClashRequests();
 				Place clashLocation = Server.connectionManager.getPlayerHandler(
 						message.getMessageSender()).getConnectedPlayer().getPosition();
-				List<Player> receivers = getOppositeClashers(message.getMessageSender(), clashLocation);
+				List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
 				for (Player receiver : receivers) {
 					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 							Message.Type.CLASH,
