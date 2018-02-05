@@ -1,7 +1,10 @@
-package shared;
+package shared.scenery;
+
+import shared.Path;
+import shared.Place;
 
 /**
- * shared.MediumScenery class
+ * shared.scenery.MediumScenery class
  */
 public class MediumScenery extends Scenery {
 

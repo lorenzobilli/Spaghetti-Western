@@ -1,7 +1,7 @@
 package server;
 
 import server.gui.MainWindow;
-import shared.Scenery;
+import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutorService;
@@ -129,7 +129,7 @@ public class Server {
 	 */
 	public static void setScenery(Scenery scenery) {
     	if (scenery == null) {
-    		throw new InvalidParameterException("shared.Scenery cannot be null");
+    		throw new InvalidParameterException("shared.scenery.Scenery cannot be null");
 		}
 		Server.scenery = scenery;
 	}

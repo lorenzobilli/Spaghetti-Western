@@ -1,13 +1,16 @@
-package shared;
+package shared.scenery;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import shared.Path;
+import shared.Place;
+import shared.Player;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 
 /**
- * shared.Scenery class
+ * shared.scenery.Scenery class
  */
 public abstract class Scenery {
 
@@ -29,7 +32,7 @@ public abstract class Scenery {
 
     public void setSceneryBackground(String sceneryBackground) {
         if (sceneryBackground == null) {
-            throw new InvalidParameterException("shared.Scenery background cannot be null");
+            throw new InvalidParameterException("shared.scenery.Scenery background cannot be null");
         }
         this.sceneryBackground = sceneryBackground;
     }

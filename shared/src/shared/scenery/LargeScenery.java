@@ -1,7 +1,10 @@
-package shared;
+package shared.scenery;
+
+import shared.Path;
+import shared.Place;
 
 /**
- * shared.LargeScenery class
+ * shared.scenery.LargeScenery class
  */
 public class LargeScenery extends Scenery {
 

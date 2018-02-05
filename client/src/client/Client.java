@@ -6,7 +6,7 @@ import client.gui.Map;
 import client.gui.MapWindow;
 import shared.Place;
 import shared.Player;
-import shared.Scenery;
+import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutorService;
@@ -145,11 +145,11 @@ public class Client {
 
 	/**
 	 * Set the scenery to be used for the current session.
-	 * @param scenery shared.Scenery to be used for the current session.
+	 * @param scenery shared.scenery.Scenery to be used for the current session.
 	 */
 	public static void setScenery(Scenery scenery) {
     	if (scenery == null) {
-    		throw new InvalidParameterException("shared.Scenery cannot be null");
+    		throw new InvalidParameterException("shared.scenery.Scenery cannot be null");
 		}
 		Client.scenery = scenery;
 	}

@@ -1,6 +1,10 @@
 package server;
 
 import shared.*;
+import shared.scenery.LargeScenery;
+import shared.scenery.MediumScenery;
+import shared.scenery.Scenery;
+import shared.scenery.SmallScenery;
 
 /**
  * This class is responsible for basic game related controls and checks, such as:
@@ -53,10 +57,10 @@ public class GameManager {
 	public void chooseScenery() {
 		if (PlayerManager.getConnectedUsersNumber() <= 10) {
 			Server.setScenery(new SmallScenery());
-			Server.consolePrintLine("[*] shared.Scenery selected: shared.SmallScenery");
+			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.SmallScenery");
 			MessageTable messageTable = new MessageTable();
 			messageTable.put("header", "CHOOSEN_SCENERY");
-			messageTable.put("content", "shared.SmallScenery");
+			messageTable.put("content", "shared.scenery.SmallScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
@@ -64,10 +68,10 @@ public class GameManager {
 			));
 		} else if (PlayerManager.getConnectedUsersNumber() > 10 && PlayerManager.getConnectedUsersNumber() <= 20) {
 			Server.setScenery(new MediumScenery());
-			Server.consolePrintLine("[*] shared.Scenery selected: shared.MediumScenery");
+			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.MediumScenery");
 			MessageTable messageTable = new MessageTable();
 			messageTable.put("header", "CHOOSEN_SCENERY");
-			messageTable.put("content", "shared.MediumScenery");
+			messageTable.put("content", "shared.scenery.MediumScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
@@ -75,10 +79,10 @@ public class GameManager {
 			));
 		} else if (PlayerManager.getConnectedUsersNumber() > 20 && PlayerManager.getConnectedUsersNumber() <= 30) {
 			Server.setScenery(new LargeScenery());
-			Server.consolePrintLine("[*] shared.Scenery selected: shared.LargeScenery");
+			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.LargeScenery");
 			MessageTable messageTable = new MessageTable();
 			messageTable.put("header", "CHOOSEN_SCENERY");
-			messageTable.put("content", "shared.LargeScenery");
+			messageTable.put("content", "shared.scenery.LargeScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),

@@ -2,6 +2,9 @@ package client;
 
 import client.gui.*;
 import shared.*;
+import shared.scenery.LargeScenery;
+import shared.scenery.MediumScenery;
+import shared.scenery.SmallScenery;
 
 import javax.swing.*;
 import java.security.InvalidParameterException;
@@ -89,15 +92,15 @@ public class ClientEventHandler extends EventHandler {
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("CHOOSEN_SCENERY")) {
             String choosenScenery = MessageManager.convertXML("content", message.getMessageContent());
 			switch (choosenScenery) {
-				case "shared.SmallScenery":
+				case "shared.scenery.SmallScenery":
 					Client.setScenery(new SmallScenery());
 					Client.setMap(new SmallMap());
 					break;
-				case "shared.MediumScenery":
+				case "shared.scenery.MediumScenery":
 					Client.setScenery(new MediumScenery());
 					Client.setMap(new MediumMap());
 					break;
-				case "shared.LargeScenery":
+				case "shared.scenery.LargeScenery":
 					Client.setScenery(new LargeScenery());
 					Client.setMap(new LargeMap());
 					break;

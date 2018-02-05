@@ -1,6 +1,7 @@
 package server;
 
 import shared.*;
+import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -185,7 +186,7 @@ public class ServerEventHandler extends EventHandler {
 	/**
 	 * Get the corresponding fighters in a place given the opposite players' team.
 	 * @param player shared.Player used as reference for retrieving the fighting team.
-	 * @param position shared.Scenery place where clash will be made.
+	 * @param position shared.scenery.Scenery place where clash will be made.
 	 * @return List of opponent players.
 	 */
 	private List<Player> getOppositeFighters(Player player, Place position) {
