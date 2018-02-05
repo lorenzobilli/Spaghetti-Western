@@ -1,5 +1,7 @@
 package shared;
 
+import shared.messaging.Message;
+
 import java.rmi.NoSuchObjectException;
 import java.security.InvalidParameterException;
 import java.util.concurrent.Callable;
@@ -12,13 +14,13 @@ import java.util.concurrent.Callable;
 public abstract class EventHandler implements Callable<Message> {
 
 	/**
-	 * shared.Message to be handled.
+	 * shared.messaging.Message to be handled.
 	 */
     protected Message message;
 
 	/**
 	 * Creates a new Event Handler object.
-	 * @param message shared.Message to be handled.
+	 * @param message shared.messaging.Message to be handled.
 	 */
 	protected EventHandler(Message message) {
         if (message == null) {

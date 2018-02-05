@@ -1,9 +1,11 @@
-package shared;
+package shared.messaging;
+
+import shared.Player;
 
 import java.security.InvalidParameterException;
 
 /**
- * shared.Message class
+ * shared.messaging.Message class
  */
 public class Message {
 

@@ -1,6 +1,9 @@
 package server;
 
 import shared.*;
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+import shared.messaging.MessageTable;
 import shared.scenery.LargeScenery;
 import shared.scenery.MediumScenery;
 import shared.scenery.Scenery;

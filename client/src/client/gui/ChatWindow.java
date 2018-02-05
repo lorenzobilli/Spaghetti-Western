@@ -1,9 +1,9 @@
 package client.gui;
 
 import client.Client;
-import shared.Message;
-import shared.MessageManager;
-import shared.MessageTable;
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+import shared.messaging.MessageTable;
 import shared.Sender;
 
 import javax.swing.*;

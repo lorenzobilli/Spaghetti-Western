@@ -1,6 +1,6 @@
 package server;
 
-import shared.Message;
+import shared.messaging.Message;
 import shared.Player;
 import shared.Sender;
 
@@ -100,7 +100,7 @@ public class ServerConnectionManager implements Runnable {
 	/**
 	 * Send a message to a player.
 	 * @param player shared.Receiver of the message.
-	 * @param message shared.Message to be sent.
+	 * @param message shared.messaging.Message to be sent.
 	 */
     public void sendMessageToPlayer(Player player, Message message) {
 		if (player == null) {
@@ -119,7 +119,7 @@ public class ServerConnectionManager implements Runnable {
 	/**
 	 * Send a message to all team members of the given player
 	 * @param player shared.Player who is part of the team where message will be sent.
-	 * @param message shared.Message to be sent.
+	 * @param message shared.messaging.Message to be sent.
 	 */
 	public void sendMessageToTeamMembers(Player player, Message message) {
     	if (player == null) {
@@ -140,7 +140,7 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Send a message to all connected clients.
-	 * @param message shared.Message to be sent.
+	 * @param message shared.messaging.Message to be sent.
 	 */
 	public void broadcastMessage(Message message) {
 		if (message == null) {

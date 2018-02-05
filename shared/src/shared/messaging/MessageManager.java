@@ -1,4 +1,4 @@
-package shared;
+package shared.messaging;
 
 import com.google.gson.Gson;
 import org.w3c.dom.Document;
@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * shared.MessageManager class
+ * shared.messaging.MessageManager class
  */
 public class MessageManager {
 
@@ -32,7 +32,7 @@ public class MessageManager {
 
     public static String createXML(MessageTable messageTable) {
     	if (messageTable == null) {
-    		throw new InvalidParameterException("shared.Message table cannot be null");
+    		throw new InvalidParameterException("shared.messaging.Message table cannot be null");
 	    }
 	    String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     	String begin = "<message>";
@@ -61,7 +61,7 @@ public class MessageManager {
             throw new InvalidParameterException("Tag cannot be null");
         }
         if (message == null) {
-            throw new InvalidParameterException("shared.Message cannot be null");
+            throw new InvalidParameterException("shared.messaging.Message cannot be null");
         }
         String result = null;
         try {

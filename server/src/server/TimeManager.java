@@ -1,8 +1,8 @@
 package server;
 
-import shared.Message;
-import shared.MessageManager;
-import shared.MessageTable;
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+import shared.messaging.MessageTable;
 import shared.Player;
 
 import java.time.Duration;

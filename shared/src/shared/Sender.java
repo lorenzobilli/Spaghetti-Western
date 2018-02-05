@@ -1,5 +1,8 @@
 package shared;
 
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+
 import java.io.PrintWriter;
 import java.security.InvalidParameterException;
 import java.util.concurrent.Callable;

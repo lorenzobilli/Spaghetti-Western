@@ -1,6 +1,9 @@
 package server;
 
 import shared.*;
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+import shared.messaging.MessageTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;

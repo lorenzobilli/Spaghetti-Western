@@ -1,6 +1,9 @@
 package server;
 
 import shared.*;
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+import shared.messaging.MessageTable;
 import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;
@@ -14,7 +17,7 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Creates new server.Server Event Handler.
-	 * @param message shared.Message to be handled.
+	 * @param message shared.messaging.Message to be handled.
 	 */
     protected ServerEventHandler(Message message) {
         super(message);

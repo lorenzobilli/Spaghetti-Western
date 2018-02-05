@@ -1,4 +1,4 @@
-package shared;
+package shared.messaging;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;

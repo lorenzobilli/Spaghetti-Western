@@ -2,6 +2,9 @@ package client.gui;
 
 import client.Client;
 import shared.*;
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+import shared.messaging.MessageTable;
 
 import javax.swing.*;
 import java.awt.*;

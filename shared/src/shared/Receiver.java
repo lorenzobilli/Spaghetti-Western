@@ -1,5 +1,8 @@
 package shared;
 
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.InvalidParameterException;
