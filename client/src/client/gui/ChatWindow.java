@@ -11,14 +11,24 @@ import java.awt.*;
 import java.util.concurrent.Future;
 
 /**
- * client.gui.ChatWindow class
+ * Class implementing chat window of each client.
  */
 public class ChatWindow {
 
-    private JTextArea chatView;
+	/**
+	 * Text area for displaying chat messages.
+	 */
+	private JTextArea chatView;
+
+	/**
+	 * Text area for writing user's chats.
+	 */
     private JTextArea chatField;
 
-    public ChatWindow() {
+	/**
+	 * Spawns a new chat window.
+	 */
+	public ChatWindow() {
 
         // Window settings
         JFrame window = new JFrame(Client.getPlayer().getName());
@@ -55,20 +65,25 @@ public class ChatWindow {
         window.setVisible(true);
     }
 
-    private void sendMessage() {
+	/**
+	 * Sends a message to the other members of the current user's team.
+	 */
+	private void sendMessage() {
         chatView.append(" [" + Client.getPlayer().getName() + "]: " + chatField.getText() + "\n");
         Message chatMessage = new Message(
                 Message.Type.CHAT,
                 Client.getPlayer(),
 		        MessageManager.createXML(new MessageTable("content", chatField.getText()))
         );
-        Future sendMessage = Client.globalThreadPool.submit(
-                new Sender(chatMessage, Client.connectionManager.getSendStream())
-        );
+        Client.globalThreadPool.submit(new Sender(chatMessage, Client.connectionManager.getSendStream()));
         chatField.setText("");
     }
 
-    public void updateChat(Message message) {
+	/**
+	 * Update the chat window with a new received message.
+	 * @param message Received message.
+	 */
+	public void updateChat(Message message) {
         chatView.append(" [" + message.getMessageSender().getName() + "]: " +
                 MessageManager.convertXML("content", message.getMessageContent()) + "\n"
         );

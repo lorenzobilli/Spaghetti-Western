@@ -1,13 +1,17 @@
-package client.gui;
+package client.gui.map;
+
+import client.gui.MapWindow;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * client.gui.SmallMap class
+ * Implementation of a small size map.
+ * A small map is meant to be used when connected players number is below 10.
  */
 public class SmallMap extends Map {
 
+	// Setting up some generic settings such as paths to graphical assets and buttons/labels dimensions
 	{
 		super.redHatIcon = "shared/assets/red_hat_small.png";
 		super.whiteHatIcon = "shared/assets/white_hat_small.png";
@@ -18,30 +22,113 @@ public class SmallMap extends Map {
 		super.yLabelMargin = 5;
 	}
 
-	// Buttons declaration
+	// Buttons declaration:
+
+	/**
+	 * Button assigned to Santa Fe.
+	 */
 	private JButton santaFeButton = new JButton();
+
+	/**
+	 * Button assigned to San Rafael.
+	 */
 	private JButton sanRafaelButton = new JButton();
+
+	/**
+	 * Button assigned to Valverde.
+	 */
 	private JButton valverdeButton = new JButton();
+
+	/**
+	 * Button assigned to the watermill.
+	 */
 	private JButton watermillButton = new JButton();
+
+	/**
+	 * Button assigned to the desert.
+	 */
 	private JButton desertButton = new JButton();
 
-	// Labels declaration and arrays initialization
+	// Labels declaration and arrays initialization:
+
+	/**
+	 * Player label assigned to Santa Fe.
+	 */
 	private JLabel santaFePlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Santa Fe.
+	 */
 	private JLabel[] santaFeGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Santa Fe.
+	 */
 	private JLabel[] santaFeBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to San Rafael.
+	 */
 	private JLabel sanRafaelPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to San Rafael.
+	 */
 	private JLabel[] sanRafaelGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to San Rafael.
+	 */
 	private JLabel[] sanRafaelBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Valverde.
+	 */
 	private JLabel valverdePlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Valverde.
+	 */
 	private JLabel[] valverdeGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Valverde.
+	 */
 	private JLabel[] valverdeBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to the watermill.
+	 */
 	private JLabel watermillPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to the watermill.
+	 */
 	private JLabel[] watermillGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to the watermill.
+	 */
 	private JLabel[] watermillBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to the desert.
+	 */
 	private JLabel desertPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to the desert.
+	 */
 	private JLabel[] desertGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to the desert.
+	 */
 	private JLabel[] desertBadLabels = new JLabel[labelClusterSize];
 
+	/**
+	 * Creates a new instance of a small map.
+	 */
 	public SmallMap() {
 
 		// Declaring used positions
@@ -101,6 +188,10 @@ public class SmallMap extends Map {
 		badLabels.put(desertPosition, desertBadLabels);
 	}
 
+	/**
+	 * Inserts all map elements into a MapWindow instance.
+	 * @param map Instance of MapWindow to be populated.
+	 */
 	@Override
 	public void populate(MapWindow map) {
 

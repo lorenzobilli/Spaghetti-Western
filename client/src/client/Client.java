@@ -2,7 +2,7 @@ package client;
 
 import client.gui.ChatWindow;
 import client.gui.MainWindow;
-import client.gui.Map;
+import client.gui.map.Map;
 import client.gui.MapWindow;
 import shared.Place;
 import shared.Player;
@@ -164,11 +164,11 @@ public class Client {
 
 	/**
 	 * Set the current map object to be used.
-	 * @param map client.gui.Map to be used for the current session.
+	 * @param map client.gui.map.Map to be used for the current session.
 	 */
 	public static void setMap(Map map) {
     	if (map == null) {
-    		throw new InvalidParameterException("client.gui.Map cannot be null");
+    		throw new InvalidParameterException("client.gui.map.Map cannot be null");
 		}
 		Client.map = map;
 	}

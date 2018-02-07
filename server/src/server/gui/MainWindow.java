@@ -7,12 +7,19 @@ import java.awt.*;
 import java.security.InvalidParameterException;
 
 /**
- * server.gui.MainWindow class
+ * Class implementing main window of the server.
  */
 public class MainWindow {
 
-    private static JTextArea consoleOutput;
+	/**
+	 * Text area used for showing console output.
+	 */
+	private static JTextArea consoleOutput;
 
+	/**
+	 * Spawns new window with given title.
+	 * @param title Title of the window.
+	 */
     public MainWindow(String title) {
         if (title == null) {
             throw new InvalidParameterException("Window title unspecified");
@@ -58,7 +65,11 @@ public class MainWindow {
         window.setVisible(true);
     }
 
-    public void appendText(String message) {
+	/**
+	 * Insert new text in the console output area.
+	 * @param message Message to be shown in the console area.
+	 */
+	public void appendText(String message) {
         if (message == null) {
             throw new InvalidParameterException("Null message");
         }

@@ -6,40 +6,67 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * client.gui.MainWindow class
+ * Class implementing main window of each client.
  */
 public class MainWindow {
 
-	private JFrame frame;
+	/**
+	 * Frame used as basic gui element.
+	 */
+	private JFrame window;
+
+	/**
+	 * Label used for displaying a background image.
+	 */
 	private JLabel background;
+
+	/**
+	 * Label used for displaying user advices.
+	 */
 	private JLabel advice;
+
+	/**
+	 * Label used for showing remaining time.
+	 */
 	private JLabel countdown;
 
+	/**
+	 * Spawns new window with a background and initialize its components.
+	 */
 	public MainWindow() {
 		final Dimension size = new Dimension(1366, 768);
 		final Point position = new Point(0, 0);
 		final String imagePath = "shared/assets/splashscreen.jpg";
 
-		frame = new JFrame(Client.GAME_NAME);
+		// Creating main window
+		window = new JFrame(Client.GAME_NAME);
 
+		// Setting background image
 		background = new JLabel();
 		background.setIcon(new ImageIcon(imagePath));
 		background.setSize(size);
 		background.setLocation(position);
 		background.setLayout(new GridBagLayout());
-		frame.add(background);
+		window.add(background);
 
-		frame.setSize(size);
-		frame.setResizable(false);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		// Window setting
+		window.setSize(size);
+		window.setResizable(false);
+		window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		window.setLocationRelativeTo(null);
+		window.setVisible(true);
 	}
 
+	/**
+	 * Spawn a new instance of LoginDialog.
+	 */
 	public void createLoginDialog() {
-		new LoginDialog(frame);
+		new LoginDialog(window);
 	}
 
+	/**
+	 * Initialize advice label and start displaying the countdown.
+	 */
 	public void createWaitingCountdown() {
 		advice = new JLabel("New play session will begin in: ");
 		countdown = new JLabel("minutes");
@@ -53,6 +80,10 @@ public class MainWindow {
 		background.add(countdown);
 	}
 
+	/**
+	 * Update the countdown with a new value.
+	 * @param minutes Minutes remaining of the countdown.
+	 */
 	public void updateWaitingCountdown(int minutes) {
 		String label;
 		if (minutes > 1) {
@@ -63,16 +94,25 @@ public class MainWindow {
 		countdown.setText(String.valueOf(minutes) + " " + label);
 	}
 
+	/**
+	 * Change the advice label in order to notify the user about the imminent session start.
+	 */
 	public void showSessionReadyAdvice() {
-		frame.remove(countdown);
+		window.remove(countdown);
 		advice.setText("Get ready!");
 	}
 
+	/**
+	 * Make the main window visible.
+	 */
 	public void show() {
-		frame.setVisible(true);
+		window.setVisible(true);
 	}
 
+	/**
+	 * Make the main window invisible.
+	 */
 	public void hide() {
-		frame.setVisible(false);
+		window.setVisible(false);
 	}
 }

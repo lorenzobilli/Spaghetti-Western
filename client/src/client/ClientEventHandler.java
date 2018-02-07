@@ -1,6 +1,9 @@
 package client;
 
 import client.gui.*;
+import client.gui.map.LargeMap;
+import client.gui.map.MediumMap;
+import client.gui.map.SmallMap;
 import shared.*;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
@@ -195,7 +198,7 @@ public class ClientEventHandler extends EventHandler {
     	if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
     		Object[] options = {"Accept", "Reject"};
 			int selected = JOptionPane.showOptionDialog(
-					Client.mapWindow.getFrame(),
+					Client.mapWindow.getWindow(),
 					"Hey " + Client.getPlayer().getName() + "! " +
 							message.getMessageSender().getName() + " has sent a clash request! Accept request?",
 					"Clash request",
@@ -222,7 +225,7 @@ public class ClientEventHandler extends EventHandler {
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
 			JOptionPane.showMessageDialog(
-					Client.mapWindow.getFrame(),
+					Client.mapWindow.getWindow(),
 					message.getMessageSender().getName() + " has accepted the clash!",
 					"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
 			);	//TODO: Consider auto closeable message option
@@ -234,7 +237,7 @@ public class ClientEventHandler extends EventHandler {
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
 			JOptionPane.showMessageDialog(
-					Client.mapWindow.getFrame(),
+					Client.mapWindow.getWindow(),
 					message.getMessageSender().getName() + " has rejected the clash!",
 					"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
 			);	//TODO: Consider auto closeable message option
@@ -244,7 +247,7 @@ public class ClientEventHandler extends EventHandler {
 			String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
 			String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
 			JOptionPane.showMessageDialog(
-					Client.mapWindow.getFrame(),
+					Client.mapWindow.getWindow(),
 					"Attack: " + attackResult + " - " +
 							"Defense: " + defenseResult,
 					"YOU WON!", JOptionPane.INFORMATION_MESSAGE
@@ -258,7 +261,7 @@ public class ClientEventHandler extends EventHandler {
 			String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
 			String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
 			JOptionPane.showMessageDialog(
-					Client.mapWindow.getFrame(),
+					Client.mapWindow.getWindow(),
 					"Attack: " + attackResult + " - " +
 							"Defense: " + defenseResult,
 					"YOU LOOSE!", JOptionPane.INFORMATION_MESSAGE

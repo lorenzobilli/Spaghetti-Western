@@ -1,13 +1,17 @@
-package client.gui;
+package client.gui.map;
+
+import client.gui.MapWindow;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * client.gui.LargeMap class
+ * Implementation of a large size map.
+ * A large map is meant to be used when connected players number is over 20.
  */
 public class LargeMap extends Map {
 
+	// Setting up some generic settings such as paths to graphical assets and buttons/labels dimentions.
 	{
 		super.redHatIcon = "shared/assets/red_hat_large.png";
 		super.whiteHatIcon = "shared/assets/white_hat_large.png";
@@ -18,70 +22,313 @@ public class LargeMap extends Map {
 		super.yLabelMargin = 1; //TODO: Check this value
 	}
 
-	// Buttons declaration
+	// Buttons declaration:
+
+	/**
+	 * Button assigned to Santa Fe.
+	 */
 	private JButton santaFeButton = new JButton();
+
+	/**
+	 * Button assigned to San Rafael.
+	 */
 	private JButton sanRafaelButton = new JButton();
+
+	/**
+	 * Button assigned to Valverde.
+	 */
 	private JButton valverdeButton = new JButton();
+
+	/**
+	 * Button assigned to the watermill.
+	 */
 	private JButton watermillButton = new JButton();
+
+	/**
+	 * Button assigned to the desert.
+	 */
 	private JButton desertButton = new JButton();
+
+	/**
+	 * Button assigned to Canyon Diablo.
+	 */
 	private JButton canyonDiabloButton = new JButton();
+
+	/**
+	 * Button assigned to Phoenix.
+	 */
 	private JButton phoenixButton = new JButton();
+
+	/**
+	 * Button assigned to Tucson.
+	 */
 	private JButton tucsonButton = new JButton();
+
+	/**
+	 * Button assigned to El Paso.
+	 */
 	private JButton elPasoButton = new JButton();
+
+	/**
+	 * Button assigned to Santa Ana.
+	 */
 	private JButton santaAnaButton = new JButton();
+
+	/**
+	 * Button assigned to Langstone bridge.
+	 */
 	private JButton langstoneBridgeButton = new JButton();
+
+	/**
+	 * Button assigned to Sadhill graveyard.
+	 */
 	private JButton sadHillGraveyardButton = new JButton();
+
+	/**
+	 * Button assigned to Confederate prison.
+	 */
 	private JButton confederatePrisonButton = new JButton();
+
+	/**
+	 * Button assigned to Union prison
+	 */
 	private JButton unionPrisonButton = new JButton();
+
+	/**
+	 * Button assigned to Saint Anthony mission.
+	 */
 	private JButton saintAnthonyMissionButton = new JButton();
 
-	// Labels declaration and arrays initialization
+	// Labels declaration and arrays initialization:
+
+	/**
+	 * Player label assigned to Santa Fe.
+	 */
 	private JLabel santaFePlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Santa Fe.
+	 */
 	private JLabel[] santaFeGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Santa Fe.
+	 */
 	private JLabel[] santaFeBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to San Rafael.
+	 */
 	private JLabel sanRafaelPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to San Rafael.
+	 */
 	private JLabel[] sanRafaelGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to San Rafael.
+	 */
 	private JLabel[] sanRafaelBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Valverde.
+	 */
 	private JLabel valverdePlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Valverde.
+	 */
 	private JLabel[] valverdeGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Valverde.
+	 */
 	private JLabel[] valverdeBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to the watermill.
+	 */
 	private JLabel watermillPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to the watermill.
+	 */
 	private JLabel[] watermillGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to the watermill.
+	 */
 	private JLabel[] watermillBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to the desert.
+	 */
 	private JLabel desertPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to the desert.
+	 */
 	private JLabel[] desertGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to the desert.
+	 */
 	private JLabel[] desertBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player labels assigned to Canyon Diablo.
+	 */
 	private JLabel canyonDiabloPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Canyon Diablo.
+	 */
 	private JLabel[] canyonDiabloGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Canyon Diablo.
+	 */
 	private JLabel[] canyonDiabloBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Phoenix.
+	 */
 	private JLabel phoenixPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Phoenix.
+	 */
 	private JLabel[] phoenixGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Phoenix.
+	 */
 	private JLabel[] phoenixBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Tucson.
+	 */
 	private JLabel tucsonPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Tucson.
+	 */
 	private JLabel[] tucsonGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Tucson.
+	 */
 	private JLabel[] tucsonBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to El Paso.
+	 */
 	private JLabel elPasoPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to El Paso.
+	 */
 	private JLabel[] elPasoGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to El Paso.
+	 */
 	private JLabel[] elPasoBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Santa Ana.
+	 */
 	private JLabel santaAnaPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Santa Ana.
+	 */
 	private JLabel[] santaAnaGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Santa Ana.
+	 */
 	private JLabel[] santaAnaBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Langstone bridge.
+	 */
 	private JLabel langstoneBridgePlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Langstone bridge.
+	 */
 	private JLabel[] langstoneBridgeGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Langstone bridge.
+	 */
 	private JLabel[] langstoneBridgeBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Sadhill graveyard.
+	 */
 	private JLabel sadHillGraveyardPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Sadhill graveyard.
+	 */
 	private JLabel[] sadHillGraveyardGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Sadhill graveyard.
+	 */
 	private JLabel[] sadHillGraveyardBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Confederate prison.
+	 */
 	private JLabel confederatePrisonPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Confederate prison.
+	 */
 	private JLabel[] confederatePrisonGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Confederate prison.
+	 */
 	private JLabel[] confederatePrisonBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Union prison.
+	 */
 	private JLabel unionPrisonPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Union prison.
+	 */
 	private JLabel[] unionPrisonGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Union prison.
+	 */
 	private JLabel[] unionPrisonBadLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Player label assigned to Saint Anthony mission.
+	 */
 	private JLabel saintAnthonyMissionPlayerLabel = new JLabel();
+
+	/**
+	 * Good-team player labels assigned to Saint Anthony mission.
+	 */
 	private JLabel[] saintAnthonyMissionGoodLabels = new JLabel[labelClusterSize];
+
+	/**
+	 * Bad-team player labels assigned to Saint Anthony mission.
+	 */
 	private JLabel[] saintAnthonyMissionBadLabels = new JLabel[labelClusterSize];
 
+	/**
+	 * Creates a new instance of a large map.
+	 */
 	public LargeMap() {
 
 		// Declaring used positions
@@ -221,6 +468,10 @@ public class LargeMap extends Map {
 		badLabels.put(saintAnthonyMissionPosition, saintAnthonyMissionBadLabels);
 	}
 
+	/**
+	 * Inserts all map elements into a MapWindow instance.
+	 * @param map Instance of MapWindow to be populated.
+	 */
 	@Override
 	public void populate(MapWindow map) {
 

@@ -7,14 +7,29 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * client.gui.LoginDialog class
+ * Class implementing the login dialog.
  */
 public class LoginDialog {
 
-    private String choosenName;
-    private Player.Team choosenTeam;
-    private boolean dataConfigured;
+	/**
+	 * Name inserted by the user.
+	 */
+	private String choosenName;
 
+	/**
+	 * Team selected by the user.
+	 */
+    private Player.Team choosenTeam;
+
+	/**
+	 * Checks if both name and team have been selected correctly by the user.
+	 */
+	private boolean dataConfigured;
+
+	/**
+	 * Spawns new login dialog.
+	 * @param parentWindow Parent window of the dialog.
+	 */
     public LoginDialog(Frame parentWindow) {
 
         // Dialog settings
