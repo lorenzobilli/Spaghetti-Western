@@ -16,21 +16,39 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * shared.messaging.MessageManager class
+ * Handle message translation to and from XML format.
  */
 public class MessageManager {
 
+	/**
+	 * Manages JSON/XML translation.
+	 */
     private static Gson manager = new Gson();
 
-    public static String prepareSend(Message message) {
+	/**
+	 * Prepares to send the message by translating it from XML to JSON format.
+	 * @param message Message to be translated.
+	 * @return Translated message in JSON format.
+	 */
+	public static String prepareSend(Message message) {
         return manager.toJson(message);
     }
 
-    public static Message prepareReceive(String message) {
+	/**
+	 * Prepares to receive the message by translating it from JSON to XML format.
+	 * @param message Message to be translated.
+	 * @return Translated message in XML format.
+	 */
+	public static Message prepareReceive(String message) {
         return manager.fromJson(message, Message.class);
     }
 
-    public static String createXML(MessageTable messageTable) {
+	/**
+	 * Create a XML message from a MessageTable object.
+	 * @param messageTable MessageTable used for translation.
+	 * @return Translated message in XML format.
+	 */
+	public static String createXML(MessageTable messageTable) {
     	if (messageTable == null) {
     		throw new InvalidParameterException("shared.messaging.Message table cannot be null");
 	    }
@@ -56,7 +74,13 @@ public class MessageManager {
     	return header + begin + elem + end;
     }
 
-    public static String convertXML(String tag, String message) {
+	/**
+	 * Gets corresponding string value inside a message given its tag value.
+	 * @param tag Tag value corresponding to the retrieving value.
+	 * @param message Message from which the value should be retrieved.
+	 * @return Value retrieved from the message.
+	 */
+	public static String convertXML(String tag, String message) {
         if (tag == null) {
             throw new InvalidParameterException("Tag cannot be null");
         }
