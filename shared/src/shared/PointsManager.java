@@ -4,10 +4,15 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 /**
- * shared.PointsManager class
+ * Handles all points-related operations.
  */
 public class PointsManager {
 
+	/**
+	 * Get total amount of prize of the clash.
+	 * @param loosers List of players who had lost the clash.
+	 * @return Number of bullets representing the prize.
+	 */
 	public static int getPrize(List<Player> loosers) {
 		if (loosers == null) {
 			throw new InvalidParameterException("Loosers list cannot be null");
@@ -37,6 +42,11 @@ public class PointsManager {
 		return totalPrize;
 	}
 
+	/**
+	 * Gives an equal part of the total prize to each winner.
+	 * @param winners List of players who had won the clash.
+	 * @param totalPrize Total amount of prize of the clash.
+	 */
 	public static void distributePrize(List<Player> winners, int totalPrize) {
 		if (winners == null) {
 			throw new InvalidParameterException("Winners list cannot be null");
