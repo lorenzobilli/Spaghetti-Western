@@ -128,7 +128,7 @@ public class ClientEventHandler extends EventHandler {
         			player, position
 			);
 			Client.getMap().updateMap(player, position);
-			if (Client.getPosition().getClashStatus()) {
+			if (Client.getPosition().isClashEnabled()) {
 				Client.getMap().toggleClashButton();		//TODO: Add here turn-checking
 			}
 		}
@@ -172,7 +172,7 @@ public class ClientEventHandler extends EventHandler {
 			Client.getMap().updateMap(Client.getPlayer(), origin, destination);
 			Client.setBullets(destination.pickBullets());
 			Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
-			if (Client.getPosition().getClashStatus()) {
+			if (Client.getPosition().isClashEnabled()) {
 				Client.getMap().toggleClashButton();
 			}
 		}

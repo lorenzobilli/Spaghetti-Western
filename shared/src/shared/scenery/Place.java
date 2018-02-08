@@ -8,21 +8,60 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * shared.scenery.Place class
+ * Place object implementation.
  */
 public class Place {
 
-    private final int MAX_GOOD_PLAYERS = 3;
+	/**
+	 * Maximum number of good-team players that can be present in the current place at the same time.
+	 */
+	private final int MAX_GOOD_PLAYERS = 3;
+
+	/**
+	 * Maximum number of bad-team players that can be present in the current place at the same time.
+	 */
     private final int MAX_BAD_PLAYERS = 3;
-    private final int MAX_BULLETS = 50;
 
+	/**
+	 * Maximum number of bullets that can be present at the initialization time of an instance of a place.
+	 */
+	private final int MAX_BULLETS = 50;
+
+	/**
+	 * Name of the place.
+	 */
     private String placeName;
-    private int placeId;
-    private List<Player> goodPlayers;
-    private List<Player> badPlayers;
-    private boolean clashEnabled;
-    private int bullets;
 
+	/**
+	 * Unique ID of the place.
+	 */
+	private int placeId;
+
+	/**
+	 * List of currently present good-team players in the place.
+	 */
+    private List<Player> goodPlayers;
+
+	/**
+	 * List of currently present bad-team players in the place.
+	 */
+	private List<Player> badPlayers;
+
+	/**
+	 * Used to determine if the current place is eligible for clashes.
+	 */
+    private boolean clashEnabled;
+
+	/**
+	 * Number of bullets present in the place.
+	 */
+	private int bullets;
+
+	/**
+	 * Creates a new place with given name and ID.
+	 * @param placeName Name of the place.
+	 * @param placeId ID of the place
+	 */
     public Place(String placeName, int placeId) {
         if (placeName == null) {
             throw new InvalidParameterException("shared.scenery.Place name cannot be null");
@@ -41,14 +80,27 @@ public class Place {
         bullets = Randomizer.getRandomInteger(MAX_BULLETS);
     }
 
-    public String getPlaceName() {
+	/**
+	 * Gets name of the place.
+	 * @return Name of the place.
+	 */
+	public String getPlaceName() {
         return placeName;
     }
 
-    public int getPlaceId() {
+	/**
+	 * Gets ID of the place.
+	 * @return ID of the place.
+	 */
+	public int getPlaceId() {
     	return placeId;
 	}
 
+	/**
+	 * Picks up an half of the present bullets.
+	 * If bullets number is odd, total bullets number is first decreased by one.
+	 * @return Number of picked bullets.
+	 */
 	public int pickBullets() {
     	if (bullets == 0) {
     		return 0;
@@ -61,6 +113,11 @@ public class Place {
     	return takenBullets;
 	}
 
+	/**
+	 * Add a player in the current place.
+	 * @param player Player to be added.
+	 * @return True if player has been correctly added, false if not.
+	 */
     public boolean addPlayer(Player player) {
         if (player == null) {
             throw new InvalidParameterException("shared.Player to be added cannot be null");
@@ -86,7 +143,12 @@ public class Place {
         return playerAdded;
     }
 
-    public boolean removePlayer(Player player) {
+	/**
+	 * Remove an existing player from the current place.
+	 * @param player Player to be removed
+	 * @return True if player has been correctly remove, false if not.
+	 */
+	public boolean removePlayer(Player player) {
         if (player == null) {
             throw new InvalidParameterException("shared.Player to be removed cannot be null");
         }
@@ -109,7 +171,12 @@ public class Place {
         return playerRemoved;
     }
 
-    public boolean isPlayerPresent(Player player) {
+	/**
+	 * Checks if a player is present in the current place.
+	 * @param player Player to be checked.
+	 * @return True if the player is present, false if not.
+	 */
+	public boolean isPlayerPresent(Player player) {
         if (player == null) {
             throw new InvalidParameterException("shared.Player to be checked cannot be null");
         }
@@ -130,19 +197,34 @@ public class Place {
         return playerFound;
     }
 
-    public List<Player> getGoodPlayers() {
+	/**
+	 * Gets all good-team players present in the current place.
+	 * @return List of present good-team players
+	 */
+	public List<Player> getGoodPlayers() {
     	return goodPlayers;
 	}
 
+	/**
+	 * Gets all bad-team players present in the current place.
+	 * @return List of present bad-team players.
+	 */
 	public List<Player> getBadPlayers() {
     	return badPlayers;
 	}
 
-    public boolean getClashStatus() {
+	/**
+	 * Checks if clashes are enabled in the current place.
+	 * @return True if clashes are enabled, fase if not.
+	 */
+    public boolean isClashEnabled() {
         return clashEnabled;
     }
 
-    private void checkClash() {
+	/**
+	 * Check wherever to enable or disable clashes.
+	 */
+	private void checkClash() {
         clashEnabled = goodPlayers.size() > 0 && badPlayers.size() > 0;
     }
 }

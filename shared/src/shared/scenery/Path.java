@@ -5,25 +5,43 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.security.InvalidParameterException;
 
 /**
- * shared.scenery.Path class
+ * Path implementation. A path is defined as a link between two Place objects.
  */
 public class Path extends DefaultWeightedEdge {
 
-    private int cost;
+	/**
+	 * Cost of the path. If the cost is set to 0, the path is considered as non-weighted.
+	 */
+	private int cost;
 
+	/**
+	 * Creates a new non-weighted path.
+	 */
     public Path() {
         setCost(0);
     }
 
-    public Path(int cost) {
+	/**
+	 * Creates a new weighted path with the given cost.
+	 * @param cost Cost of the path.
+	 */
+	public Path(int cost) {
         setCost(cost);
     }
 
-    public int getCost() {
+	/**
+	 * Gets cost of the path.
+	 * @return Cost of the path.
+	 */
+	public int getCost() {
         return cost;
     }
 
-    public void setCost(int cost) {
+	/**
+	 * Sets cost of the path.
+	 * @param cost Cost of the path.
+	 */
+	public void setCost(int cost) {
         if (cost < 0) {
             throw new InvalidParameterException("shared.scenery.Path weight cannot be less than zero");
         }
