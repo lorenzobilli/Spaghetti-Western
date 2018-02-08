@@ -7,6 +7,7 @@ import shared.communication.Sender;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
+import shared.scenery.Place;
 
 import javax.swing.*;
 import java.awt.*;

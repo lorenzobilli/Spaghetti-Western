@@ -1,11 +1,11 @@
-package shared;
+package shared.scenery;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.security.InvalidParameterException;
 
 /**
- * shared.Path class
+ * shared.scenery.Path class
  */
 public class Path extends DefaultWeightedEdge {
 
@@ -25,7 +25,7 @@ public class Path extends DefaultWeightedEdge {
 
     public void setCost(int cost) {
         if (cost < 0) {
-            throw new InvalidParameterException("shared.Path weight cannot be less than zero");
+            throw new InvalidParameterException("shared.scenery.Path weight cannot be less than zero");
         }
         this.cost = cost;
     }

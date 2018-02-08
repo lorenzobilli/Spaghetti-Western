@@ -10,6 +10,7 @@ import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
 import shared.scenery.LargeScenery;
 import shared.scenery.MediumScenery;
+import shared.scenery.Place;
 import shared.scenery.SmallScenery;
 
 import javax.swing.*;

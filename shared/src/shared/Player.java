@@ -1,5 +1,7 @@
 package shared;
 
+import shared.scenery.Place;
+
 import java.security.InvalidParameterException;
 
 /**

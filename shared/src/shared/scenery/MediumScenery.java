@@ -1,8 +1,5 @@
 package shared.scenery;
 
-import shared.Path;
-import shared.Place;
-
 /**
  * Implementation of a medium size scenery.
  * A medium scenery is meant to be used when connected players number is between 10 and 20.

@@ -1,8 +1,5 @@
 package shared.scenery;
 
-import shared.Path;
-import shared.Place;
-
 /**
  * Implementation of a small size scenery.
  * A small scenery is meant to be used when connected players number is below 10.

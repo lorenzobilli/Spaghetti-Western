@@ -4,10 +4,7 @@ import shared.*;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
-import shared.scenery.LargeScenery;
-import shared.scenery.MediumScenery;
-import shared.scenery.Scenery;
-import shared.scenery.SmallScenery;
+import shared.scenery.*;
 
 /**
  * This class is responsible for basic game related controls and checks, such as:

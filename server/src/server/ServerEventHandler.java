@@ -4,6 +4,7 @@ import shared.*;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
+import shared.scenery.Place;
 import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;

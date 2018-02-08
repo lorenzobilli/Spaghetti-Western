@@ -1,11 +1,14 @@
-package shared;
+package shared.scenery;
+
+import shared.Player;
+import shared.Randomizer;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * shared.Place class
+ * shared.scenery.Place class
  */
 public class Place {
 
@@ -22,13 +25,13 @@ public class Place {
 
     public Place(String placeName, int placeId) {
         if (placeName == null) {
-            throw new InvalidParameterException("shared.Place name cannot be null");
+            throw new InvalidParameterException("shared.scenery.Place name cannot be null");
         }
         if (placeId <= 0) {
-        	throw new InvalidParameterException("shared.Place id cannot be zero or negative");
+        	throw new InvalidParameterException("shared.scenery.Place id cannot be zero or negative");
 		}
         if (placeName.equals("")) {
-            throw new InvalidParameterException("shared.Place name cannot be empty");
+            throw new InvalidParameterException("shared.scenery.Place name cannot be empty");
         }
         this.placeName = placeName;
         this.placeId = placeId;

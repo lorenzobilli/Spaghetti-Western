@@ -4,7 +4,7 @@ import client.gui.ChatWindow;
 import client.gui.MainWindow;
 import client.gui.map.Map;
 import client.gui.MapWindow;
-import shared.Place;
+import shared.scenery.Place;
 import shared.Player;
 import shared.scenery.Scenery;
 

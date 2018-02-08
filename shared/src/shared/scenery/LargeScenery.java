@@ -1,8 +1,5 @@
 package shared.scenery;
 
-import shared.Path;
-import shared.Place;
-
 /**
  * Implementation of a large size scenery.
  * A large scenery is meant to be used when connected players number is over 20.

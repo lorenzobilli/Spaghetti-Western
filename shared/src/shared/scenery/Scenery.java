@@ -2,8 +2,6 @@ package shared.scenery;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleWeightedGraph;
-import shared.Path;
-import shared.Place;
 import shared.Player;
 
 import java.security.InvalidParameterException;
