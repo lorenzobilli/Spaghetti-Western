@@ -143,7 +143,7 @@ public class ServerEventHandler extends EventHandler {
 					message.getMessageSender()).getConnectedPlayer().getPosition();
 			Place destination = Server.getScenery().getNamePlaces().get(
 					MessageManager.convertXML("content", message.getMessageContent()));
-			Scenery.SceneryEvents result = Server.getScenery().movePlayer(message.getMessageSender(), origin, destination);
+			Scenery.SceneryEvent result = Server.getScenery().movePlayer(message.getMessageSender(), origin, destination);
 			switch (result) {
 				case PLAYER_MOVED:
 					Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().setPosition(destination);

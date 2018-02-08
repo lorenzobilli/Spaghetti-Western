@@ -68,7 +68,7 @@ public class ClientEventHandler extends EventHandler {
         }
         if (MessageManager.convertXML("header", message.getMessageContent()).equals("PLAY_SESSION_START")) {
         	Client.clientWindow.hide();
-			Client.mapWindow = new MapWindow(Client.getScenery().getSceneryBackground());	// Loading map
+			Client.mapWindow = new MapWindow(Client.getMap().getMapBackground());	// Loading map
 			Client.getMap().populate(Client.mapWindow);
         	Client.chatWindow = new ChatWindow();	// Spawning chat window
 		}

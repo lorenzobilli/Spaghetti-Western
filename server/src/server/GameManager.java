@@ -104,8 +104,8 @@ public class GameManager {
 			int randomId = Randomizer.getRandomInteger(Server.getScenery().getPlacesNumber());
 			Player servedPlayer = PlayerManager.getPlayer(servedPlayersNumber);
 			Place randomPlace = Server.getScenery().getIdPlaces().get(randomId);
-			Scenery.SceneryEvents result = Server.getScenery().insertPlayer(servedPlayer, randomPlace);
-			if (result == Scenery.SceneryEvents.PLAYER_INSERTED) {
+			Scenery.SceneryEvent result = Server.getScenery().insertPlayer(servedPlayer, randomPlace);
+			if (result == Scenery.SceneryEvent.PLAYER_INSERTED) {
 				Server.connectionManager.getPlayerHandler(servedPlayer).getConnectedPlayer().setPosition(randomPlace);
 				servedPlayersNumber++;
 				MessageTable messageTable = new MessageTable();

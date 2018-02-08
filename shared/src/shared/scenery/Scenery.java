@@ -10,59 +10,94 @@ import java.security.InvalidParameterException;
 import java.util.HashMap;
 
 /**
- * shared.scenery.Scenery class
+ * Base class for all sceneries implementations.
  */
 public abstract class Scenery {
 
-    private String sceneryBackground;
+	/**
+	 * Simple weighted graph representing the scenery.
+	 */
     protected Graph<Place, Path> sceneryGraph = new SimpleWeightedGraph<>(Path.class);
-    protected HashMap<String, Place> namePlaces = new HashMap<>();
+
+	/**
+	 * Hash map containing names of scenery places.
+	 */
+	protected HashMap<String, Place> namePlaces = new HashMap<>();
+
+	/**
+	 * Hash map containing numeric id of scenery places.
+	 */
     protected HashMap<Integer, Place> idPlaces = new HashMap<>();
 
-    public enum SceneryEvents {
+	/**
+	 * Enumeration representing possible events happening in the scenery.
+	 * Possible events are:
+	 *  - PLAYER_INSERTED: A player has been correctly inserted inside the scenery.
+	 *  - PLAYER_MOVED: A player has been correctly moved from one place to another.
+	 *  - DESTINATION_BUSY: Place where the player is trying to move is full.
+	 *  - DESTINATION_UNREACHABLE: Place where the player is trying to move is not linked to the current place.
+	 */
+	public enum SceneryEvent {
     	PLAYER_INSERTED,
         PLAYER_MOVED,
         DESTINATION_BUSY,
 		DESTINATION_UNREACHABLE
     }
 
-    public String getSceneryBackground() {
-        return sceneryBackground;
-    }
+	/**
+	 * Initializes the scenery by creating all places and linking them together.
+	 */
+	protected abstract void setPlacesAndPaths();
 
-    public void setSceneryBackground(String sceneryBackground) {
-        if (sceneryBackground == null) {
-            throw new InvalidParameterException("shared.scenery.Scenery background cannot be null");
-        }
-        this.sceneryBackground = sceneryBackground;
-    }
-
-    protected abstract void setPlacesAndPaths();
-
+	/**
+	 * Gets hash map containing all places names.
+	 * @return Hash map containing all places names.
+	 */
 	public HashMap<String, Place> getNamePlaces() {
 		return namePlaces;
 	}
 
+	/**
+	 * Gets hash map containing all places ids.
+	 * @return Hash map containing all places ids.
+	 */
 	public HashMap<Integer, Place> getIdPlaces() {
 		return idPlaces;
 	}
 
+	/**
+	 * Gets number of places in the scenery.
+	 * @return Number of places in the scenery.
+	 */
 	public int getPlacesNumber() {
 		return namePlaces.size();
 	}
 
-	public SceneryEvents insertPlayer(Player player, Place place) {
+	/**
+	 * Insert a player in the scenery.
+	 * @param player Player to be added to the scenery.
+	 * @param place Place where the player should be added.
+	 * @return A SceneryEvent containing the result of the operation.
+	 */
+	public SceneryEvent insertPlayer(Player player, Place place) {
 		if (!sceneryGraph.containsVertex(place)) {
 			throw new InvalidParameterException("Specified place doesn't exist inside scenery");
 		}
 		if (place.addPlayer(player)) {
-			return SceneryEvents.PLAYER_INSERTED;
+			return SceneryEvent.PLAYER_INSERTED;
 		} else {
-			return SceneryEvents.DESTINATION_BUSY;
+			return SceneryEvent.DESTINATION_BUSY;
 		}
 	}
 
-	public SceneryEvents movePlayer(Player player, Place origin, Place destination) {
+	/**
+	 * Move a player from one place to another.
+	 * @param player Player to be moved.
+	 * @param origin Current player position.
+	 * @param destination Place where the player should be moved.
+	 * @return A SceneryEvent containing the result of the operation.
+	 */
+	public SceneryEvent movePlayer(Player player, Place origin, Place destination) {
 		if (!origin.isPlayerPresent(player)) {
 			throw new InvalidParameterException("Specified player is not present inside scenery");
 		}
@@ -74,13 +109,13 @@ public abstract class Scenery {
         }
 
         if (!sceneryGraph.containsEdge(origin, destination)) {
-        	return SceneryEvents.DESTINATION_UNREACHABLE;
+        	return SceneryEvent.DESTINATION_UNREACHABLE;
 		}
         if (destination.addPlayer(player)) {
             origin.removePlayer(player);
-            return SceneryEvents.PLAYER_MOVED;
+            return SceneryEvent.PLAYER_MOVED;
         } else {
-            return SceneryEvents.DESTINATION_BUSY;
+            return SceneryEvent.DESTINATION_BUSY;
         }
     }
 }

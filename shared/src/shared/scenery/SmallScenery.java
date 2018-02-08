@@ -4,17 +4,21 @@ import shared.Path;
 import shared.Place;
 
 /**
- * shared.scenery.SmallScenery class
+ * Implementation of a small size scenery.
+ * A small scenery is meant to be used when connected players number is below 10.
  */
 public class SmallScenery extends Scenery {
 
+	/**
+	 * Creates a new small scenery.
+	 */
     public SmallScenery() {
-
-		final String background = "shared/assets/small_scenery.jpg";
-		setSceneryBackground(background);
 		setPlacesAndPaths();
     }
 
+	/**
+	 * Initializes the scenery by creating all places and linking them together.
+	 */
 	@Override
 	protected void setPlacesAndPaths() {
 		// Defined scenery places

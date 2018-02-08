@@ -13,6 +13,7 @@ public class LargeMap extends Map {
 
 	// Setting up some generic settings such as paths to graphical assets and buttons/labels dimentions.
 	{
+		super.mapBackground = "shared/assets/large_map.jpg";
 		super.redHatIcon = "shared/assets/red_hat_large.png";
 		super.whiteHatIcon = "shared/assets/white_hat_large.png";
 		super.blackHatIcon = "shared/assets/black_hat_large.png";

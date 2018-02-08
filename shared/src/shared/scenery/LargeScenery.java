@@ -4,17 +4,21 @@ import shared.Path;
 import shared.Place;
 
 /**
- * shared.scenery.LargeScenery class
+ * Implementation of a large size scenery.
+ * A large scenery is meant to be used when connected players number is over 20.
  */
 public class LargeScenery extends Scenery {
 
+	/**
+	 * Creates a new large scenery.
+	 */
     public LargeScenery() {
-
-    	final String background = "shared/assets/large_scenery.jpg";
-    	setSceneryBackground(background);
 		setPlacesAndPaths();
     }
 
+	/**
+	 * Initializes the scenery by creating all places and linking them together.
+	 */
 	@Override
 	protected void setPlacesAndPaths() {
 		// Defined scenery places

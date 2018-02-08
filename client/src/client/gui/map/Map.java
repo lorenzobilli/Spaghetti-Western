@@ -65,6 +65,11 @@ public abstract class Map {
 	protected HashMap<String, JLabel[]> badLabels = new HashMap<>();
 
 	/**
+	 * Path to map background asset.
+	 */
+	protected String mapBackground;
+
+	/**
 	 * Path to the red hat graphic asset.
 	 */
 	protected String redHatIcon;
@@ -98,6 +103,10 @@ public abstract class Map {
 	 * Vertical margin between player labels.
 	 */
 	protected int yLabelMargin;
+
+	public String getMapBackground() {
+		return mapBackground;
+	}
 
 	/**
 	 * Converts a click on a button to a player move.

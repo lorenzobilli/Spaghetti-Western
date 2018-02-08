@@ -4,17 +4,21 @@ import shared.Path;
 import shared.Place;
 
 /**
- * shared.scenery.MediumScenery class
+ * Implementation of a medium size scenery.
+ * A medium scenery is meant to be used when connected players number is between 10 and 20.
  */
 public class MediumScenery extends Scenery {
 
+	/**
+	 * Creates a new medium scenery.
+	 */
     public MediumScenery() {
-
-    	final String background = "shared/assets/medium_scenery.jpg";
-    	setSceneryBackground(background);
 		setPlacesAndPaths();
     }
 
+	/**
+	 * Initializes the scenery by creating all places and linking them together.
+	 */
 	@Override
 	protected void setPlacesAndPaths() {
 		// Defined scenery places

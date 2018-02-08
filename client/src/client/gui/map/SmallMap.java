@@ -13,6 +13,7 @@ public class SmallMap extends Map {
 
 	// Setting up some generic settings such as paths to graphical assets and buttons/labels dimensions
 	{
+		super.mapBackground = "shared/assets/small_map.jpg";
 		super.redHatIcon = "shared/assets/red_hat_small.png";
 		super.whiteHatIcon = "shared/assets/white_hat_small.png";
 		super.blackHatIcon = "shared/assets/black_hat_small.png";
