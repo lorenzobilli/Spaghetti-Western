@@ -9,12 +9,19 @@ import java.security.InvalidParameterException;
 import java.util.concurrent.Callable;
 
 /**
- * shared.communication.Receiver class
+ * Receiver class. Message receiving routines are all abstracted inside this class.
  */
 public class Receiver implements Callable<Message> {
 
-    private BufferedReader receiveStream;
+	/**
+	 * Stream used for receiving messages.
+	 */
+	private BufferedReader receiveStream;
 
+	/**
+	 * Creates a new instance of Receiver listening for new messages on the given stream.
+	 * @param receiveStream Receiving stream on which the receiver will listen for new messages.
+	 */
     public Receiver(BufferedReader receiveStream) {
         if (receiveStream == null) {
             throw new InvalidParameterException("Invalid receiveStream stream given");
@@ -22,8 +29,12 @@ public class Receiver implements Callable<Message> {
         this.receiveStream = receiveStream;
     }
 
-    @Override
-    public Message call() throws Exception {
+	/**
+	 * Read a new incoming streaming message in a thread-safe manner and return the translated message
+	 * @return The received message as a proper Message object.
+	 */
+	@Override
+    public Message call() {
         String receivedMessage = "";
         try {
             synchronized (this) {
