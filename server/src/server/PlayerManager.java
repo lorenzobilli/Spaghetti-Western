@@ -6,12 +6,22 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 /**
- * server.PlayerManager class
+ * This classes handles all player-related routines.
  */
 public class PlayerManager {
 
-    private static ArrayList<Player> connectedPlayers = new ArrayList<>();
+	/**
+	 * List of connected players.
+	 */
+	private static ArrayList<Player> connectedPlayers = new ArrayList<>();
 
+	/**
+	 * Represents all possible internal status for player operations:
+	 *  - SUCCESS: Operation successfully.
+	 *  - ALREADY_REGISTERED: A player with the same chosen name is already logged in the system.
+	 *  - MAX_NUM_REACHED: Maximum number of concurrent connected players has been reached.
+	 *  - SESSION_RUNNING: A gaming session is currently running.
+	 */
     public enum Status {
         SUCCESS,
         ALREADY_REGISTERED,
@@ -19,14 +29,19 @@ public class PlayerManager {
         SESSION_RUNNING
     }
 
-    public static Status addPlayer(Player player) {
+	/**
+	 * Adds a player to the system.
+	 * @param player Player to be added.
+	 * @return Status indicating the result of the operation.
+	 */
+	public static Status addPlayer(Player player) {
         if (player == null) {
             throw new InvalidParameterException("Invalid parameter given");
         }
         if (Server.gameManager.getSessionState()) {
             return Status.SESSION_RUNNING;
         }
-        if (connectedPlayers.isEmpty() || !isUserConnected(player)) {
+        if (connectedPlayers.isEmpty() || !isPlayerConnected(player)) {
             if (connectedPlayers.size() >= Server.MAX_PLAYERS) {
                 return Status.MAX_NUM_REACHED;
             }
@@ -36,25 +51,40 @@ public class PlayerManager {
         return Status.ALREADY_REGISTERED;
     }
 
-    public static boolean removePlayer(Player player) {
+	/**
+	 * Removes a player from the system.
+	 * @param player Player to be removed.
+	 * @return True if the used was connected and has been removed successfully, false if the user is not connected.
+	 */
+	public static boolean removePlayer(Player player) {
         if (player == null) {
             throw new InvalidParameterException("Invalid parameter given");
         }
-        if (isUserConnected(player)) {
+        if (isPlayerConnected(player)) {
             connectedPlayers.remove(player);
             return true;
         }
         return false;
     }
 
-    public static Player getPlayer(int index) {
+	/**
+	 * Gets player with the given index in the connected player list.
+	 * @param index Index of the player.
+	 * @return Player corresponding to the given index in the list.
+	 */
+	public static Player getPlayer(int index) {
     	if (index < 0 || index > connectedPlayers.size()) {
     		throw new ArrayIndexOutOfBoundsException("Invalid index given");
 		}
     	return connectedPlayers.get(index);
 	}
 
-    private static boolean isUserConnected(Player player) {
+	/**
+	 * Checks if the given player is connected to the system.
+	 * @param player Player to be checked.
+	 * @return True if the player is connected to the system, false if not.
+	 */
+    private static boolean isPlayerConnected(Player player) {
         for (Player checkPlayer : connectedPlayers) {
             if (checkPlayer.equals(player)) {
                 return true;
@@ -63,7 +93,11 @@ public class PlayerManager {
         return false;
     }
 
-    public static int getConnectedUsersNumber() {
+	/**
+	 * Gets total number of connected players.
+	 * @return Number of connected players.
+	 */
+	public static int getConnectedPlayersNumber() {
         return connectedPlayers.size();
     }
 }

@@ -55,7 +55,7 @@ public class GameManager {
 	 *  - Connected clients between 21 and 30: A large scenery map will be used.
 	 */
 	public void chooseScenery() {
-		if (PlayerManager.getConnectedUsersNumber() <= 10) {
+		if (PlayerManager.getConnectedPlayersNumber() <= 10) {
 			Server.setScenery(new SmallScenery());
 			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.SmallScenery");
 			MessageTable messageTable = new MessageTable();
@@ -66,7 +66,7 @@ public class GameManager {
 					new Player("SERVER", Player.Team.SERVER),
 					MessageManager.createXML(messageTable)
 			));
-		} else if (PlayerManager.getConnectedUsersNumber() > 10 && PlayerManager.getConnectedUsersNumber() <= 20) {
+		} else if (PlayerManager.getConnectedPlayersNumber() > 10 && PlayerManager.getConnectedPlayersNumber() <= 20) {
 			Server.setScenery(new MediumScenery());
 			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.MediumScenery");
 			MessageTable messageTable = new MessageTable();
@@ -77,7 +77,7 @@ public class GameManager {
 					new Player("SERVER", Player.Team.SERVER),
 					MessageManager.createXML(messageTable)
 			));
-		} else if (PlayerManager.getConnectedUsersNumber() > 20 && PlayerManager.getConnectedUsersNumber() <= 30) {
+		} else if (PlayerManager.getConnectedPlayersNumber() > 20 && PlayerManager.getConnectedPlayersNumber() <= 30) {
 			Server.setScenery(new LargeScenery());
 			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.LargeScenery");
 			MessageTable messageTable = new MessageTable();
@@ -95,7 +95,7 @@ public class GameManager {
 	 * Initialize the game by randomly putting players in the choosen scenery.
 	 */
 	public void putPlayers() {
-		int totalPlayersNumber = PlayerManager.getConnectedUsersNumber();
+		int totalPlayersNumber = PlayerManager.getConnectedPlayersNumber();
 		int servedPlayersNumber = 0;
 		while (servedPlayersNumber != totalPlayersNumber) {
 			int randomId = Randomizer.getRandomInteger(Server.getScenery().getPlacesNumber());
