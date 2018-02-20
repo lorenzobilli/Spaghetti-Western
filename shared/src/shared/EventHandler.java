@@ -2,7 +2,6 @@ package shared;
 
 import shared.messaging.Message;
 
-import java.rmi.NoSuchObjectException;
 import java.security.InvalidParameterException;
 import java.util.concurrent.Callable;
 
@@ -33,11 +32,10 @@ public abstract class EventHandler implements Callable<Message> {
 	 * Call appropriate handlers based upon message type.
 	 * @return A new resulting message with further handling operations. Please note that the resulting message may be
 	 * null if no further operations are required.
-	 * @throws NoSuchObjectException If received message has a wrong type.
 	 */
 	@Override
-    public Message call() throws NoSuchObjectException {
-        Message result = null;
+    public Message call() {
+        Message result;
         switch (message.getType()) {
             case SESSION:
                 result = handleSession();
@@ -58,7 +56,7 @@ public abstract class EventHandler implements Callable<Message> {
 				result = handleClash();
 				break;
             default:
-            	throw new NoSuchObjectException("Wrong message received from handler");
+            	throw new HandlerException("Unrecognized message type");
         }
         return result;
     }
