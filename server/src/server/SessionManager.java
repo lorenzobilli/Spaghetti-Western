@@ -14,7 +14,7 @@ import shared.scenery.*;
  * - Randomly putting players inside the scenery
  * - Handling in a thread-safe manner some time critical routines such as clash/attack requests synchronization
  */
-public class GameManager {
+public class SessionManager {
 
 	/**
 	 * Stores current state of the session

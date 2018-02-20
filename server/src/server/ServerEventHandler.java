@@ -221,7 +221,7 @@ public class ServerEventHandler extends EventHandler {
 	@Override
 	protected Message handleClash() {
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
-			Server.gameManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
+			Server.sessionManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
 			Place clashLocation = Server.connectionManager.getPlayerHandler(
 					message.getMessageSender()).getConnectedPlayer().getPosition();
 			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
@@ -234,9 +234,9 @@ public class ServerEventHandler extends EventHandler {
 			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
-			Server.gameManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
-			if (Server.gameManager.isClashRequestAccepted()) {
-				Server.gameManager.denyClashRequests();
+			Server.sessionManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
+			if (Server.sessionManager.isClashRequestAccepted()) {
+				Server.sessionManager.denyClashRequests();
 				Place clashLocation = Server.connectionManager.getPlayerHandler(
 						message.getMessageSender()).getConnectedPlayer().getPosition();
 				List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
@@ -252,8 +252,8 @@ public class ServerEventHandler extends EventHandler {
 			}
 		}
 		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
-			if (Server.gameManager.isClashRequestAccepted()) {
-				Server.gameManager.denyClashRequests();
+			if (Server.sessionManager.isClashRequestAccepted()) {
+				Server.sessionManager.denyClashRequests();
 				Place clashLocation = Server.connectionManager.getPlayerHandler(
 						message.getMessageSender()).getConnectedPlayer().getPosition();
 				List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);

@@ -53,12 +53,12 @@ public class TimeManager implements Callable<Boolean> {
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML(new MessageTable("header", "WAIT_TIMEOUT"))
 					));
-					Server.gameManager.setSessionState(true);
+					Server.sessionManager.setSessionState(true);
 					Server.consolePrintLine("[*] Session wait timer expired");
 					Server.consolePrintLine("[*] Choosing new scenery based on connected players...");
-					Server.gameManager.chooseScenery();
+					Server.sessionManager.chooseScenery();
 					Server.consolePrintLine("[*] Spawning players inside scenery graph...");
-					Server.gameManager.putPlayers();
+					Server.sessionManager.putPlayers();
 					playTimer();
 				}
 			}
@@ -95,7 +95,7 @@ public class TimeManager implements Callable<Boolean> {
 							new Player("SERVER", Player.Team.SERVER),
 							MessageManager.createXML(new MessageTable("header", "PLAY_TIMEOUT"))
 					));
-					Server.gameManager.setSessionState(false);
+					Server.sessionManager.setSessionState(false);
 					Server.consolePrintLine("[*] Session play timer expired");
 					//TODO: Add here winners declaration
 				}
