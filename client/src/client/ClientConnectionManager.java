@@ -63,7 +63,7 @@ public class ClientConnectionManager implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
-        
+
         initUserConnection();
 
         // Send message for start the timer and create the waiting countdown

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -70,7 +71,7 @@ public class ConnectionHandler implements Runnable {
         }
         Server.consolePrintLine("[*] A client has connected to the server");
         initUserConnection();
-        serveUserConnection();
+        talkWithClient();
     }
 
 	/**
@@ -97,6 +98,36 @@ public class ConnectionHandler implements Runnable {
         return receiveStream;
     }
 
+    private boolean checkConnectionResponse(Message message) {
+		if (message == null) {
+			throw new InvalidParameterException("Response message cannot be null");
+		}
+
+		switch (MessageManager.convertXML("header", message.getMessageContent())) {
+			case "ACCEPTED":
+				connectedPlayer = message.getMessageReceiver();
+				Server.consolePrintLine("[*] New client registered as: " + connectedPlayer.getName());
+				Server.globalThreadPool.submit(new Sender(message, sendStream));
+				return true;
+			case "ALREADY_CONNECTED":
+				Server.consolePrintLine("[!] Attempt to login from client " + message.getMessageReceiver().getName() +
+						" has been refused: username already in use");
+				Server.globalThreadPool.submit(new Sender(message, sendStream));
+				return false;
+			case "MAX_NUM_REACHED":
+				Server.consolePrintLine("[!] Attempt to login from client " + message.getMessageReceiver().getName() +
+						" has been refused: maximum number of concurrent users reached.");
+				Server.globalThreadPool.submit(new Sender(message, sendStream));
+				return false;
+			case "SESSION_RUNNING":
+				Server.consolePrintLine("[!] Attempt to login from client " + message.getMessageReceiver().getName() +
+						" has been refused: a play session is already running.");
+				Server.globalThreadPool.submit(new Sender(message, sendStream));
+			default:
+				throw new InvalidParameterException("Unknown message given");
+		}
+    }
+
 	/**
 	 * Initiate server connection with the user. An attempt is done until a valid username is inserted by the client.
 	 * Connection is refused if a client is already connected with the same choosen username or if the maximum client
@@ -104,32 +135,15 @@ public class ConnectionHandler implements Runnable {
 	 * If the client is the first to connect to this server, it will also cause the login timer to start.
 	 */
 	private void initUserConnection() {
-        boolean isUsernameAccepted = false;
-        while (!isUsernameAccepted) {
+        while (true) {
             try {
                 // Wait for first message from client and pass it to the handler
                 Future<Message> receive = Server.globalThreadPool.submit(new Receiver(getReceiveStream()));
                 Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
                 // Retrieve generated message from handle, check if username has been accepted and send it back
-                Message message = handle.get();
-                if (MessageManager.convertXML("header", message.getMessageContent()).equals("ACCEPTED")) {
-                    connectedPlayer = message.getMessageReceiver();
-                    Server.consolePrintLine("[*] New client registered as: " + connectedPlayer.getName());
-                    isUsernameAccepted = true;
-                } else {
-                    Server.consolePrint("[!] Attempt to log in from client " + message.getMessageReceiver().getName() +
-                    " has been refused: ");
-                    if (MessageManager.convertXML(
-                            "header",
-                            message.getMessageContent()).equals("ALREADY_CONNECTED")) {
-                        Server.consolePrintLine("username already in use");
-                    } else if (MessageManager.convertXML(
-                            "header",
-                            message.getMessageContent()).equals("MAX_NUM_REACHED")) {
-                        Server.consolePrintLine("max number of concurrent users reached");
-                    }
-                }
-                Server.globalThreadPool.submit(new Sender(message, sendStream));
+	            if (checkConnectionResponse(handle.get())) {
+	            	break;
+	            }
             } catch (InterruptedException | ExecutionException e) {
                 e.getMessage();
                 e.getCause();
@@ -143,7 +157,7 @@ public class ConnectionHandler implements Runnable {
 	 * synchronously to an handler. Then the response message is retrieved synchronously from the handler and sent
 	 * asynchronously to the client. Finally, the server enters the listening state again, and the loop repeats.
 	 */
-	private void serveUserConnection() {
+	private void talkWithClient() {
         while (true) {  //TODO: implement here loop exit for correct connection shutdown
             try {
                 // Wait for a message and pass it to the handler
