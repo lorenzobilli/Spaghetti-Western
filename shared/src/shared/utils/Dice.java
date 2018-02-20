@@ -1,4 +1,4 @@
-package shared;
+package shared.utils;
 
 /**
  * Models the dice object. A dice can either be an attack dice or a defense dice. All dice have six faces.
@@ -47,7 +47,7 @@ public class Dice {
 	 */
 	public int getValue() throws Exception {
 		if (!thrown) {
-			throw new Exception("shared.Dice has not been thrown yet.");
+			throw new Exception("shared.utils.Dice has not been thrown yet.");
 		}
 		thrown = false;
 		return value;

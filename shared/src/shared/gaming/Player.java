@@ -1,4 +1,4 @@
-package shared;
+package shared.gaming;
 
 import shared.scenery.Place;
 
@@ -50,10 +50,10 @@ public class Player {
 	 */
 	public Player(String name, Team team) {
         if (name == null) {
-            throw new InvalidParameterException("shared.Player name cannot be null");
+            throw new InvalidParameterException("shared.gaming.Player name cannot be null");
         }
         if (team == null) {
-            throw new InvalidParameterException("shared.Player team cannot be null");
+            throw new InvalidParameterException("shared.gaming.Player team cannot be null");
         }
         this.name = name;
         this.team = team;
@@ -68,10 +68,10 @@ public class Player {
 	 */
 	public Player(String name, String team) {
     	if (name == null) {
-    		throw new InvalidParameterException("shared.Player name cannot be null");
+    		throw new InvalidParameterException("shared.gaming.Player name cannot be null");
 		}
 		if (team == null) {
-    		throw new InvalidParameterException("shared.Player team cannot be null");
+    		throw new InvalidParameterException("shared.gaming.Player team cannot be null");
 		}
 		if (team.equals("SERVER")) {
     		this.name = name;
@@ -125,7 +125,7 @@ public class Player {
 	 */
 	public void setPosition(Place position) {
     	if (position == null) {
-    		throw new InvalidParameterException("shared.Player position cannot be null");
+    		throw new InvalidParameterException("shared.gaming.Player position cannot be null");
 	    }
 	    this.position = position;
     }

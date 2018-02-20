@@ -1,5 +1,7 @@
-package client;
+package client.connection;
 
+import client.Client;
+import client.handle.ClientEventHandler;
 import shared.communication.Receiver;
 import shared.communication.Sender;
 import shared.messaging.Message;
@@ -18,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
- * client.ClientConnectionManager class
+ * client.connection.ClientConnectionManager class
  */
 public class ClientConnectionManager implements Runnable {
 

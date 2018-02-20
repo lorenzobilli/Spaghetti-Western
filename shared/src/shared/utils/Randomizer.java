@@ -1,4 +1,4 @@
-package shared;
+package shared.utils;
 
 import java.util.Random;
 

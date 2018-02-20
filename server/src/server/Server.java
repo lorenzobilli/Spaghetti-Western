@@ -1,5 +1,8 @@
 package server;
 
+import server.connection.ServerConnectionManager;
+import server.gaming.SessionManager;
+import server.gaming.TimeManager;
 import server.gui.MainWindow;
 import shared.scenery.Scenery;
 

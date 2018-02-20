@@ -2,8 +2,8 @@ package client.gui.map;
 
 import client.Client;
 import client.gui.MapWindow;
-import shared.*;
 import shared.communication.Sender;
+import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;

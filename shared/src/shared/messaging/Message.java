@@ -1,6 +1,6 @@
 package shared.messaging;
 
-import shared.Player;
+import shared.gaming.Player;
 
 import java.security.InvalidParameterException;
 

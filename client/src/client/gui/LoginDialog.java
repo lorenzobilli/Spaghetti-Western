@@ -1,7 +1,7 @@
 package client.gui;
 
 import client.Client;
-import shared.Player;
+import shared.gaming.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,12 +14,12 @@ public class LoginDialog {
 	/**
 	 * Name inserted by the user.
 	 */
-	private String choosenName;
+	private String chosenName;
 
 	/**
 	 * Team selected by the user.
 	 */
-    private Player.Team choosenTeam;
+    private Player.Team chosenTeam;
 
 	/**
 	 * Checks if both name and team have been selected correctly by the user.
@@ -75,11 +75,11 @@ public class LoginDialog {
             String selectedTeam = String.valueOf(teamComboBox.getSelectedItem());
             switch (selectedTeam) {
                 case "GOOD":
-                    choosenTeam = Player.Team.GOOD;
+                    chosenTeam = Player.Team.GOOD;
                     dataConfigured = true;
                     break;
                 case "BAD":
-                    choosenTeam = Player.Team.BAD;
+                    chosenTeam = Player.Team.BAD;
                     dataConfigured = true;
                     break;
                 default:
@@ -95,8 +95,8 @@ public class LoginDialog {
         JButton loginButton = new JButton("Login");
         loginButton.addActionListener(e -> {
             if (dataConfigured) {
-                choosenName = usernameTextField.getText().trim();
-                Client.setPlayer(new Player(choosenName, choosenTeam));
+                chosenName = usernameTextField.getText().trim();
+                Client.setPlayer(new Player(chosenName, chosenTeam));
                 dialog.dispose();
             }
         });

@@ -1,7 +1,7 @@
 package shared.scenery;
 
-import shared.Player;
-import shared.Randomizer;
+import shared.gaming.Player;
+import shared.utils.Randomizer;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -120,7 +120,7 @@ public class Place {
 	 */
     public boolean addPlayer(Player player) {
         if (player == null) {
-            throw new InvalidParameterException("shared.Player to be added cannot be null");
+            throw new InvalidParameterException("shared.gaming.Player to be added cannot be null");
         }
 
         boolean playerAdded = false;
@@ -150,7 +150,7 @@ public class Place {
 	 */
 	public boolean removePlayer(Player player) {
         if (player == null) {
-            throw new InvalidParameterException("shared.Player to be removed cannot be null");
+            throw new InvalidParameterException("shared.gaming.Player to be removed cannot be null");
         }
 
         boolean playerRemoved = false;
@@ -178,7 +178,7 @@ public class Place {
 	 */
 	public boolean isPlayerPresent(Player player) {
         if (player == null) {
-            throw new InvalidParameterException("shared.Player to be checked cannot be null");
+            throw new InvalidParameterException("shared.gaming.Player to be checked cannot be null");
         }
 
         boolean playerFound = false;

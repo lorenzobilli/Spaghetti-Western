@@ -1,10 +1,12 @@
-package client;
+package client.handle;
 
+import client.Client;
 import client.gui.*;
 import client.gui.map.LargeMap;
 import client.gui.map.MediumMap;
 import client.gui.map.SmallMap;
-import shared.*;
+import shared.gaming.Player;
+import shared.handle.EventHandler;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
@@ -25,7 +27,7 @@ public class ClientEventHandler extends EventHandler {
 	 * Creates new client.Client Event Handler.
 	 * @param message shared.messaging.Message to be handled.
 	 */
-    protected ClientEventHandler(Message message) {
+    public ClientEventHandler(Message message) {
         super(message);
     }
 
@@ -90,7 +92,7 @@ public class ClientEventHandler extends EventHandler {
 	/**
 	 * Handle all scenery-related messages. In particular, these events are handled:
 	 *  - CHOOSEN_SCENERY: shared.messaging.Message containing which scenery has been chosen by the server.
-	 *  - PLAYER_INSERTED: shared.Player has been correctly inserted in the active scenery by the server.
+	 *  - PLAYER_INSERTED: shared.gaming.Player has been correctly inserted in the active scenery by the server.
 	 *  - PLAYER_MOVED: Another player has been moved correctly by the server.
 	 * @return A null message.
 	 */

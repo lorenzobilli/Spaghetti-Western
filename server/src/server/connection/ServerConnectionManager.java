@@ -1,7 +1,8 @@
-package server;
+package server.connection;
 
+import server.Server;
 import shared.messaging.Message;
-import shared.Player;
+import shared.gaming.Player;
 import shared.communication.Sender;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Threads used for connections with clients. Each client is associated with a separate thread. Each thread executes
-	 * the corresponding server.ConnectionHandler class.
+	 * the corresponding server.connection.ConnectionHandler class.
 	 */
 	private ArrayList<Thread> clientThreads = new ArrayList<>();
 
@@ -82,7 +83,7 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Get corresponding handler for a given player.
-	 * @param player shared.Player whose handler is wanted.
+	 * @param player shared.gaming.Player whose handler is wanted.
 	 * @return Handler associated with the given player.
 	 */
 	public ConnectionHandler getPlayerHandler(Player player) {
@@ -118,7 +119,7 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Send a message to all team members of the given player
-	 * @param player shared.Player who is part of the team where message will be sent.
+	 * @param player shared.gaming.Player who is part of the team where message will be sent.
 	 * @param message shared.messaging.Message to be sent.
 	 */
 	public void sendMessageToTeamMembers(Player player, Message message) {

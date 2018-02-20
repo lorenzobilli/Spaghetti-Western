@@ -1,10 +1,12 @@
-package server;
+package server.gaming;
 
-import shared.*;
+import server.Server;
+import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
 import shared.scenery.*;
+import shared.utils.Randomizer;
 
 /**
  * This class is responsible for basic game related controls and checks, such as:

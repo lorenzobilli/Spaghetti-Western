@@ -1,4 +1,4 @@
-package shared;
+package shared.handle;
 
 import shared.messaging.Message;
 

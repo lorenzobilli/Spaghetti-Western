@@ -1,4 +1,4 @@
-package shared;
+package shared.handle;
 
 /**
  * Exception thrown by the EventHandler if critical errors are encountered.

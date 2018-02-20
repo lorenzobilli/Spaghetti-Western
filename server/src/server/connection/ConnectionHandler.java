@@ -1,8 +1,10 @@
-package server;
+package server.connection;
 
-import shared.*;
+import server.Server;
+import server.handle.ServerEventHandler;
 import shared.communication.Receiver;
 import shared.communication.Sender;
+import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
@@ -47,7 +49,7 @@ public class ConnectionHandler implements Runnable {
 	private volatile boolean keepAlive = true;
 
 	/**
-	 * Creates new server.ConnectionHandler by assigning the internal socket to another initialized socket.
+	 * Creates new server.connection.ConnectionHandler by assigning the internal socket to another initialized socket.
 	 * @param connection Socket that will be used for the connection. An active client must be already assigned to this
 	 *                   socket prior run() call.
 	 */

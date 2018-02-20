@@ -1,6 +1,7 @@
-package server;
+package server.gaming;
 
-import shared.Player;
+import server.Server;
+import shared.gaming.Player;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;

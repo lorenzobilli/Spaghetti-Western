@@ -1,6 +1,12 @@
-package server;
+package server.handle;
 
-import shared.*;
+import server.Server;
+import server.gaming.PlayerManager;
+import server.gaming.TimeManager;
+import shared.gaming.ClashManager;
+import shared.gaming.Player;
+import shared.gaming.PointsManager;
+import shared.handle.EventHandler;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
@@ -20,7 +26,7 @@ public class ServerEventHandler extends EventHandler {
 	 * Creates new server.Server Event Handler.
 	 * @param message shared.messaging.Message to be handled.
 	 */
-    protected ServerEventHandler(Message message) {
+    public ServerEventHandler(Message message) {
         super(message);
     }
 
@@ -189,13 +195,13 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Get the corresponding fighters in a place given the opposite players' team.
-	 * @param player shared.Player used as reference for retrieving the fighting team.
+	 * @param player shared.gaming.Player used as reference for retrieving the fighting team.
 	 * @param position shared.scenery.Scenery place where clash will be made.
 	 * @return List of opponent players.
 	 */
 	private List<Player> getOppositeFighters(Player player, Place position) {
     	if (player == null) {
-    		throw new InvalidParameterException("shared.Player cannot be null");
+    		throw new InvalidParameterException("shared.gaming.Player cannot be null");
 		}
 		if (position == null) {
     		throw new InvalidParameterException("Position cannot be null");

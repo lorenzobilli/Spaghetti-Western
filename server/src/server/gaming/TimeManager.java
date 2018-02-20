@@ -1,9 +1,10 @@
-package server;
+package server.gaming;
 
+import server.Server;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
-import shared.Player;
+import shared.gaming.Player;
 
 import java.time.Duration;
 import java.util.Timer;
@@ -11,7 +12,7 @@ import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
 /**
- * server.TimeManager class
+ * server.gaming.TimeManager class
  */
 public class TimeManager implements Callable<Boolean> {
 

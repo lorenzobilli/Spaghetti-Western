@@ -2,7 +2,7 @@ package shared.scenery;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleWeightedGraph;
-import shared.Player;
+import shared.gaming.Player;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;

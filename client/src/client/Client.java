@@ -1,11 +1,12 @@
 package client;
 
+import client.connection.ClientConnectionManager;
 import client.gui.ChatWindow;
 import client.gui.MainWindow;
 import client.gui.map.Map;
 import client.gui.MapWindow;
 import shared.scenery.Place;
-import shared.Player;
+import shared.gaming.Player;
 import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;

@@ -1,4 +1,4 @@
-package shared;
+package shared.gaming;
 
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -10,19 +10,19 @@ public class PointsManager {
 
 	/**
 	 * Get total amount of prize of the clash.
-	 * @param loosers List of players who had lost the clash.
+	 * @param losers List of players who had lost the clash.
 	 * @return Number of bullets representing the prize.
 	 */
-	public static int getPrize(List<Player> loosers) {
-		if (loosers == null) {
+	public static int getPrize(List<Player> losers) {
+		if (losers == null) {
 			throw new InvalidParameterException("Loosers list cannot be null");
 		}
 		int totalPrize = 0;
-		for (Player looser : loosers) {
+		for (Player looser : losers) {
 			totalPrize += looser.getBullets();
 			looser.removeBullets();
 		}
-		switch (loosers.size()) {
+		switch (losers.size()) {
 			case 1:
 				return totalPrize;
 			case 2:

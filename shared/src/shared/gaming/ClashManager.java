@@ -1,4 +1,6 @@
-package shared;
+package shared.gaming;
+
+import shared.utils.Dice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,12 +20,12 @@ public class ClashManager {
 	}
 
 	/**
-	 * shared.Dice of type attack used for attacking.
+	 * shared.utils.Dice of type attack used for attacking.
 	 */
 	private Dice attackDice = new Dice(Dice.Type.ATTACK);
 
 	/**
-	 * shared.Dice of type defense used for defending.
+	 * shared.utils.Dice of type defense used for defending.
 	 */
 	private Dice defenseDice = new Dice(Dice.Type.DEFENSE);
 
@@ -76,7 +78,7 @@ public class ClashManager {
 	/**
 	 * Internal method which determines who is the winning team of the clash.
 	 * Points are given in the same manner as in the Risiko game:
-	 *  - shared.Dice are sorted in descending order.
+	 *  - shared.utils.Dice are sorted in descending order.
 	 *  - Each attack dice is compared in order to the corresponding defense dice, the higher dice gets the point.
 	 *  - Defense has priority over attack, so if an attack dice has the same value of a defense dice, the point is
 	 *    given to the defense.
