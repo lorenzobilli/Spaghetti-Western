@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.security.InvalidParameterException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -62,7 +63,17 @@ public class ClientConnectionManager implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
+        
         initUserConnection();
+
+        // Send message for start the timer and create the waiting countdown
+	    Client.globalThreadPool.submit(new Sender(new Message(
+			    Message.Type.TIME,
+			    Client.getPlayer(),
+			    MessageManager.createXML(new MessageTable("header", "WAIT_START_REQUEST"))
+	    ), getSendStream()));
+	    Client.clientWindow.createWaitingCountdown();
+
         talkWithServer();
         shutdownClient();
     }
@@ -83,95 +94,95 @@ public class ClientConnectionManager implements Runnable {
         return receiveStream;
     }
 
+    private void invokeLoginDialog() {
+	    try {
+		    SwingUtilities.invokeAndWait(() -> Client.clientWindow.createLoginDialog());
+	    } catch (InterruptedException | InvocationTargetException e) {
+		    e.getMessage();
+		    e.getCause();
+		    e.printStackTrace();
+	    }
+	}
+
+    private boolean checkConnectionResponse(Message message) {
+		if (message == null) {
+			throw new InvalidParameterException("Response message cannot be null");
+		}
+
+		switch (MessageManager.convertXML("header", message.getMessageContent())) {
+			case "ACCEPTED":
+				// Show success message dialog
+				JOptionPane.showMessageDialog(
+						null,
+						"Successfully registered as: " + Client.getPlayer().getName(),"Success!",
+						JOptionPane.INFORMATION_MESSAGE
+				);
+				return true;
+			case "ALREADY_CONNECTED":
+				// Show error message dialog
+				JOptionPane.showMessageDialog(
+						null,
+						"The chosen username already exist.","Failed!",
+						JOptionPane.ERROR_MESSAGE
+				);
+				return false;
+			case "MAX_NUM_REACHED":
+				JOptionPane.showMessageDialog(
+						null,
+						"Max number of players reached. Please try again later.","Failed!",
+						JOptionPane.ERROR_MESSAGE
+				);
+				return false;
+			case "SESSION_RUNNING":
+				// Show session running message dialog
+				JOptionPane.showMessageDialog(
+						null,
+						"A play session is already running. Please try again later.","Failed!",
+						JOptionPane.ERROR_MESSAGE
+				);
+				return false;
+			default:
+				throw new InvalidParameterException("Unknown message given");
+		}
+    }
+
 	/**
 	 * Initiate user connection with the server. An attempt is done until a username is accepted by the server.
 	 * At the end of this method the client will be connected with the server with a unique username choosen by the
 	 * user. If the client is the first to connect to the server, it will also cause the login timer to start.
 	 */
 	private void initUserConnection() {
-        while (true) {
-            // Generate the login dialog for username retrieving
-            try {
-                SwingUtilities.invokeAndWait(() -> Client.clientWindow.createLoginDialog());
-            } catch (InterruptedException | InvocationTargetException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-            // In this phase we still have to compose a message without the handler
-            Message initCurrentSession = new Message(
-                    Message.Type.SESSION,
-                    Client.getPlayer(),
-		            MessageManager.createXML(new MessageTable("header", "SESSION_START_REQUEST"))
-            );
-            try {
-                // Send request message to the server
-                Client.globalThreadPool.submit(new Sender(initCurrentSession, getSendStream()));
-                Message response = null;
-                boolean sessionResponse = false;
-                do {
-                    Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
-                    response = receive.get();
-                    if (response.getType() == Message.Type.SESSION) {     // Accept only session related messages
-                        sessionResponse = true;
-                    }
-                } while (!sessionResponse);
-                // Wait for response message and pass it to the handler
-                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(response));
-                // Retrieve generated message from handler, check if server has accepted the chosen username
-                Message message = handle.get();
-                if (message == null) {
-                    throw new RuntimeException("Invalid message received");
-                }
-                if (MessageManager.convertXML(
-                        "header",
-                        message.getMessageContent()).equals("ACCEPTED")) {
-                    // Show success message dialog
-                    JOptionPane.showMessageDialog(
-                            null, "Successfully registered as: " + Client.getPlayer().getName(),
-                            "Success!", JOptionPane.INFORMATION_MESSAGE
-                    );
-                    break;
-                } else if (MessageManager.convertXML(
-                        "header",
-                        message.getMessageContent()).equals("ALREADY_CONNECTED")) {
-                    // Show error message dialog
-                    JOptionPane.showMessageDialog(
-                            null, "The choosen username already exist.",
-                            "Failed!", JOptionPane.ERROR_MESSAGE
-                    );
-                } else if (MessageManager.convertXML(
-                        "header",
-                        message.getMessageContent()).equals("MAX_NUM_REACHED")) {
-                    // Show max number of users reached advice
-                    JOptionPane.showMessageDialog(
-                            null, "Max number of players reached. Please try again later.",
-                            "Failed!", JOptionPane.ERROR_MESSAGE
-                    );
-                    System.exit(0);
-                } else if (MessageManager.convertXML(
-                        "header",
-                        message.getMessageContent()).equals("SESSION_RUNNING")) {
-                    // Show session running message dialog
-                    JOptionPane.showMessageDialog(
-                            null, "A play session is already running. Please try again later.",
-                            "Failed!", JOptionPane.ERROR_MESSAGE
-                    );
-                    System.exit(0);
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-        }
-        Client.globalThreadPool.submit(new Sender(new Message(
-                Message.Type.TIME,
-                Client.getPlayer(),
-		        MessageManager.createXML(new MessageTable("header", "WAIT_START_REQUEST"))
-        ), getSendStream()));
-        Client.clientWindow.createWaitingCountdown();
-    }
+		while (true) {
+			// Generate the login dialog for username retrieving
+			invokeLoginDialog();
+
+			// Send a manual session start request message
+			Client.globalThreadPool.submit(new Sender(new Message(
+					Message.Type.SESSION,
+					Client.getPlayer(),
+					MessageManager.createXML(new MessageTable("header", "SESSION_START_REQUEST"))
+			), getSendStream()));
+
+			try {
+				// Wait for a message from the server, accept only session-related messages as responses
+				Message response;
+				do {
+					Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
+					response = receive.get();
+				} while (response.getType() != Message.Type.SESSION);
+				// Wait for response message and pass it to the handler
+				Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(response));
+				// Retrieve generated message from handler, check if server has accepted the chosen username
+				if (checkConnectionResponse(handle.get())) {
+					break;
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.getMessage();
+				e.getCause();
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * Listens for messages coming from the server synchronously. When a message comes from the server, it passes it
