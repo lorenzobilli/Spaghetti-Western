@@ -7,6 +7,7 @@ import shared.gaming.ClashManager;
 import shared.gaming.Player;
 import shared.gaming.PointsManager;
 import shared.handle.EventHandler;
+import shared.handle.HandlerException;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
@@ -30,6 +31,45 @@ public class ServerEventHandler extends EventHandler {
         super(message);
     }
 
+    private Message manageSessionStart() {
+	    PlayerManager.Status userManagerStatus = PlayerManager.addPlayer(message.getMessageSender());
+	    MessageTable result = null;
+	    switch (userManagerStatus) {
+		    case SUCCESS:
+			    result = new MessageTable("header", "ACCEPTED");
+			    break;
+		    case ALREADY_REGISTERED:
+			    result = new MessageTable("header", "ALREADY_CONNECTED");
+			    break;
+		    case MAX_NUM_REACHED:
+			    result = new MessageTable("header", "MAX_NUM_REACHED");
+			    break;
+		    case SESSION_RUNNING:
+			    result = new MessageTable("header", "SESSION_RUNNING");
+			    break;
+		    default:
+			    throw new HandlerException("Invalid message state encountered");
+	    }
+	    return new Message(Message.Type.SESSION,
+			    new Player("SERVER", Player.Team.SERVER),
+			    message.getMessageSender(),
+			    MessageManager.createXML(result)
+	    );
+    }
+
+    private Message manageSessionStop() {
+	    //TODO: implement stop session request from a client
+	    if (!PlayerManager.removePlayer(message.getMessageSender())) {
+		    throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");
+	    }
+	    return new Message(
+			    Message.Type.SESSION,
+			    new Player("SERVER", Player.Team.SERVER),
+			    message.getMessageSender(),
+			    MessageManager.createXML(new MessageTable("header", "SHUTDOWN"))
+	    );
+    }
+
 	/**
 	 * Handle all session-related messages. In particular, these events are handled:
 	 *  - SESSION_START_REQUEST: A client requesting a new connection to the server (with unique username).
@@ -45,55 +85,14 @@ public class ServerEventHandler extends EventHandler {
 	 */
 	@Override
     protected Message handleSession() {
-        if (MessageManager.convertXML("header",
-		        message.getMessageContent()).equals("SESSION_START_REQUEST")) {
-            PlayerManager.Status userManagerStatus = PlayerManager.addPlayer(message.getMessageSender());
-            switch (userManagerStatus) {
-                case SUCCESS:
-                    return new Message(
-                            Message.Type.SESSION,
-                            new Player("SERVER", Player.Team.SERVER),
-                            message.getMessageSender(),
-		                    MessageManager.createXML(new MessageTable("header", "ACCEPTED"))
-                    );
-                case ALREADY_REGISTERED:
-                    return new Message(
-                            Message.Type.SESSION,
-                            new Player("SERVER", Player.Team.SERVER),
-                            message.getMessageSender(),
-		                    MessageManager.createXML(new MessageTable("header", "ALREADY_CONNECTED"))
-                    );
-                case MAX_NUM_REACHED:
-                    return new Message(
-                            Message.Type.SESSION,
-                            new Player("SERVER", Player.Team.SERVER),
-                            message.getMessageSender(),
-                            MessageManager.createXML(new MessageTable("header", "MAX_NUM_REACHED"))
-                    );
-                case SESSION_RUNNING:
-                    return new Message(
-                            Message.Type.SESSION,
-                            new Player("SERVER", Player.Team.SERVER),
-                            message.getMessageSender(),
-                            MessageManager.createXML(new MessageTable("header", "SESSION_RUNNING"))
-                    );
-                default:
-                    return null;
-            }
-        } else if (MessageManager.convertXML("header",
-                message.getMessageContent()).equals("SESSION_STOP_REQUEST")) {
-            //TODO: implement stop session request from a client
-            if (!PlayerManager.removePlayer(message.getMessageSender())) {
-                throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");
-            }
-            return new Message(
-                    Message.Type.SESSION,
-                    new Player("SERVER", Player.Team.SERVER),
-                    message.getMessageSender(),
-                    MessageManager.createXML(new MessageTable("header", "SHUTDOWN"))
-            );
-        }
-        return null;
+		switch (MessageManager.convertXML("header", message.getMessageContent())) {
+			case "SESSION_START_REQUEST":
+				return manageSessionStart();
+			case "SESSION_STOP_REQUEST":
+				return manageSessionStop();
+			default:
+				throw new HandlerException("Invalid message type encountered");
+		}
     }
 
 	/**
@@ -103,12 +102,16 @@ public class ServerEventHandler extends EventHandler {
 	 */
 	@Override
     protected Message handleTime() {
-        if (MessageManager.convertXML("header", message.getMessageContent()).equals("WAIT_START_REQUEST")) {
-            if (PlayerManager.getConnectedPlayersNumber() == 1) {     // First client connected to the server
-            	Server.timeManager = new TimeManager();
-                Server.globalThreadPool.submit(Server.timeManager);     // Start time manager
-            }
-        }
+		switch (MessageManager.convertXML("header", message.getMessageContent())) {
+			case "WAIT_START_REQUEST":
+				if (PlayerManager.getConnectedPlayersNumber() == 1) {     // First client connected to the server
+					Server.timeManager = new TimeManager();
+					Server.globalThreadPool.submit(Server.timeManager);     // Start time manager
+				}
+				break;
+			default:
+				throw new HandlerException("Invalid message state encountered");
+		}
         return null;
     }
 
@@ -128,10 +131,58 @@ public class ServerEventHandler extends EventHandler {
 	 * No events are handled currently
 	 * @return A null message.
 	 */
-	@Deprecated
 	@Override
     protected Message handleScenery() {
         return null;
+    }
+
+    private Message managePlayerMovement() {
+	    Place origin = Server.connectionManager.getPlayerHandler(
+	    		message.getMessageSender()).getConnectedPlayer().getPosition();
+	    Place destination = Server.getScenery().getNamePlaces().get(
+			    MessageManager.convertXML("content", message.getMessageContent()));
+	    Scenery.SceneryEvent result = Server.getScenery().movePlayer(message.getMessageSender(), origin, destination);
+
+	    switch (result) {
+		    case PLAYER_MOVED:
+			    Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().setPosition(destination);
+			    MessageTable broadcastMessageTable = new MessageTable();
+			    broadcastMessageTable.put("header", "PLAYER_MOVED");
+			    broadcastMessageTable.put("player_name", message.getMessageSender().getName());
+			    broadcastMessageTable.put("player_team", message.getMessageSender().getTeamAsString());
+			    broadcastMessageTable.put("origin", origin.getPlaceName());
+			    broadcastMessageTable.put("destination", destination.getPlaceName());
+			    Server.connectionManager.broadcastMessage(new Message(
+					    Message.Type.SCENERY,
+					    new Player("SERVER", Player.Team.SERVER),
+					    MessageManager.createXML(broadcastMessageTable)
+			    ));
+			    int takenBullets = destination.pickBullets();
+			    if (message.getMessageSender().getTeam() == Player.Team.GOOD) {
+				    Server.setGoodTeamBullets(takenBullets);
+			    } else if (message.getMessageSender().getTeam() == Player.Team.BAD) {
+				    Server.setBadTeamBullets(takenBullets);
+			    }
+			    Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().addBullets(takenBullets);
+			    MessageTable messageTable = new MessageTable();
+			    messageTable.put("header", "PLAYER_MOVED");
+			    messageTable.put("origin", origin.getPlaceName());
+			    messageTable.put("destination", destination.getPlaceName());
+			    return new Message(
+					    Message.Type.MOVE,
+					    new Player("SERVER", Player.Team.SERVER),
+					    MessageManager.createXML(messageTable)
+			    );
+		    case DESTINATION_BUSY:
+		    case DESTINATION_UNREACHABLE:
+			    return new Message(
+					    Message.Type.MOVE,
+					    new Player("SERVER", Player.Team.SERVER),
+					    MessageManager.createXML(new MessageTable("header", "PLAYER_NOT_MOVED"))
+			    );
+			default:
+				throw new HandlerException("Invalid message found");
+	    }
     }
 
 	/**
@@ -145,52 +196,12 @@ public class ServerEventHandler extends EventHandler {
 	 */
 	@Override
 	protected Message handleMove() {
-		if (MessageManager.convertXML("header", message.getMessageContent()).equals("TRY_PLAYER_MOVE")) {
-			Place origin = Server.connectionManager.getPlayerHandler(
-					message.getMessageSender()).getConnectedPlayer().getPosition();
-			Place destination = Server.getScenery().getNamePlaces().get(
-					MessageManager.convertXML("content", message.getMessageContent()));
-			Scenery.SceneryEvent result = Server.getScenery().movePlayer(message.getMessageSender(), origin, destination);
-			switch (result) {
-				case PLAYER_MOVED:
-					Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().setPosition(destination);
-					MessageTable broadcastMessageTable = new MessageTable();
-					broadcastMessageTable.put("header", "PLAYER_MOVED");
-					broadcastMessageTable.put("player_name", message.getMessageSender().getName());
-					broadcastMessageTable.put("player_team", message.getMessageSender().getTeamAsString());
-					broadcastMessageTable.put("origin", origin.getPlaceName());
-					broadcastMessageTable.put("destination", destination.getPlaceName());
-					Server.connectionManager.broadcastMessage(new Message(
-							Message.Type.SCENERY,
-							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML(broadcastMessageTable)
-					));
-					int takenBullets = destination.pickBullets();
-					if (message.getMessageSender().getTeam() == Player.Team.GOOD) {
-						Server.setGoodTeamBullets(takenBullets);
-					} else if (message.getMessageSender().getTeam() == Player.Team.BAD) {
-						Server.setBadTeamBullets(takenBullets);
-					}
-					Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().addBullets(takenBullets);
-					MessageTable messageTable = new MessageTable();
-					messageTable.put("header", "PLAYER_MOVED");
-					messageTable.put("origin", origin.getPlaceName());
-					messageTable.put("destination", destination.getPlaceName());
-					return new Message(
-							Message.Type.MOVE,
-							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML(messageTable)
-					);
-				case DESTINATION_BUSY:
-				case DESTINATION_UNREACHABLE:
-					return new Message(
-							Message.Type.MOVE,
-							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML(new MessageTable("header", "PLAYER_NOT_MOVED"))
-					);
-			}
+		switch (MessageManager.convertXML("header", message.getMessageContent())) {
+			case "TRY_PLAYER_MOVE":
+				return managePlayerMovement();
+			default:
+				throw new HandlerException("Invalid message type encountered");
 		}
-		return null;
 	}
 
 	/**
@@ -216,6 +227,165 @@ public class ServerEventHandler extends EventHandler {
 		}
 	}
 
+	private void manageClashRequest() {
+		Server.sessionManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
+		Place clashLocation = Server.connectionManager.getPlayerHandler(
+				message.getMessageSender()).getConnectedPlayer().getPosition();
+		List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
+		for (Player receiver : receivers) {
+			Server.connectionManager.sendMessageToPlayer(receiver, new Message(
+					Message.Type.CLASH,
+					message.getMessageSender(),
+					MessageManager.createXML(new MessageTable("header", "CLASH_REQUEST"))
+			));
+		}
+	}
+
+	private void manageAcceptedClash() {
+		Server.sessionManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
+		if (Server.sessionManager.isClashRequestAccepted()) {
+			Server.sessionManager.denyClashRequests();
+			Place clashLocation = Server.connectionManager.getPlayerHandler(
+					message.getMessageSender()).getConnectedPlayer().getPosition();
+			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
+			for (Player receiver : receivers) {
+				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
+						Message.Type.CLASH,
+						message.getMessageSender(),
+						MessageManager.createXML(new MessageTable("header", "CLASH_ACCEPTED"))
+				));
+			}
+		}
+	}
+
+	private void manageRejectedClash() {
+		if (Server.sessionManager.isClashRequestAccepted()) {
+			Server.sessionManager.denyClashRequests();
+			Place clashLocation = Server.connectionManager.getPlayerHandler(
+					message.getMessageSender()).getConnectedPlayer().getPosition();
+			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
+			for (Player receiver : receivers) {
+				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
+						Message.Type.CLASH,
+						receiver,
+						MessageManager.createXML(new MessageTable("header", "CLASH_REJECTED"))
+				));
+			}
+		}
+	}
+
+	private void sendWinningMessage(List<Player> winners, String attack, String defense, String prize) {
+		if (winners == null) {
+			throw new InvalidParameterException("Winners players list cannot be null");
+		}
+		if (attack == null) {
+			throw new InvalidParameterException("Attack value cannot be null");
+		}
+		if (defense == null) {
+			throw new InvalidParameterException("Defense value cannot be null");
+		}
+		if (prize == null) {
+			throw new InvalidParameterException("Prize value cannot be null");
+		}
+
+		MessageTable messageTable = new MessageTable();
+		messageTable.put("header", "CLASH_WON");
+		messageTable.put("attack", attack);
+		messageTable.put("defense", defense);
+		messageTable.put("prize", prize);
+
+		for (Player player : winners) {
+			Server.connectionManager.sendMessageToPlayer(player, new Message(
+					Message.Type.CLASH,
+					player,
+					MessageManager.createXML(messageTable)
+			));
+		}
+	}
+
+	private void sendLoosingMessage(List<Player> losers, String attack, String defense) {
+		if (losers == null) {
+			throw new InvalidParameterException("Losers players list cannot be null");
+		}
+		if (attack == null) {
+			throw new InvalidParameterException("Attack value cannot be null");
+		}
+		if (defense == null) {
+			throw new InvalidParameterException("Defense value cannot be null");
+		}
+
+		MessageTable messageTable = new MessageTable();
+		messageTable.put("header", "CLASH_LOST");
+		messageTable.put("attack", attack);
+		messageTable.put("defense", defense);
+
+		for (Player player : losers) {
+			Server.connectionManager.sendMessageToPlayer(player, new Message(
+					Message.Type.CLASH,
+					player,
+					MessageManager.createXML(messageTable)
+			));
+		}
+	}
+
+	private void manageClashStart() {
+
+		ClashManager currentClash = new ClashManager();
+		Place clashLocation = Server.connectionManager.getPlayerHandler(
+				message.getMessageSender()).getConnectedPlayer().getPosition();
+		List<Player> attackers = null;
+		List<Player> defenders = null;
+
+		if (message.getMessageSender().getTeam().equals(Player.Team.GOOD)) {
+			attackers = clashLocation.getGoodPlayers();
+			defenders = clashLocation.getBadPlayers();
+		} else if (message.getMessageSender().getTeam().equals(Player.Team.BAD)) {
+			attackers = clashLocation.getBadPlayers();
+			defenders = clashLocation.getGoodPlayers();
+		}
+
+		assert attackers != null;
+		assert defenders != null;
+
+		ClashManager.Winners winners = currentClash.clash(attackers, defenders);
+
+		StringBuilder attackResults = new StringBuilder();
+		for (Integer result : currentClash.getAttackResult()) {
+			attackResults.append(String.valueOf(result));
+		}
+		StringBuilder defenseResult = new StringBuilder();
+		for (Integer result : currentClash.getDefenseResult()) {
+			defenseResult.append(String.valueOf(result));
+		}
+
+		if (winners.equals(ClashManager.Winners.ATTACK)) {
+			sendWinningMessage(
+					attackers,
+					attackResults.toString(),
+					defenseResult.toString(),
+					String.valueOf(PointsManager.getPrize(defenders))
+			);
+			sendLoosingMessage(
+					defenders,
+					attackResults.toString(),
+					defenseResult.toString()
+			);
+		}
+		else if (winners.equals(ClashManager.Winners.DEFENSE)) {
+			sendWinningMessage(
+					defenders,
+					attackResults.toString(),
+					defenseResult.toString(),
+					String.valueOf(PointsManager.getPrize(attackers))
+			);
+			sendLoosingMessage(
+					attackers,
+					attackResults.toString(),
+					defenseResult.toString()
+			);
+		}
+	}
+
 	/**
 	 * Handle all clash-related messages. In particular, these events are handled:
 	 *  - CLASH_REQUEST: A client requests a new clash.
@@ -226,128 +396,21 @@ public class ServerEventHandler extends EventHandler {
 	 */
 	@Override
 	protected Message handleClash() {
-		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REQUEST")) {
-			Server.sessionManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
-			Place clashLocation = Server.connectionManager.getPlayerHandler(
-					message.getMessageSender()).getConnectedPlayer().getPosition();
-			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
-			for (Player receiver : receivers) {
-				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
-						Message.Type.CLASH,
-						message.getMessageSender(),
-						MessageManager.createXML(new MessageTable("header", "CLASH_REQUEST"))
-				));
-			}
-		}
-		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_ACCEPTED")) {
-			Server.sessionManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
-			if (Server.sessionManager.isClashRequestAccepted()) {
-				Server.sessionManager.denyClashRequests();
-				Place clashLocation = Server.connectionManager.getPlayerHandler(
-						message.getMessageSender()).getConnectedPlayer().getPosition();
-				List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
-				for (Player receiver : receivers) {
-					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
-							Message.Type.CLASH,
-							message.getMessageSender(),
-							MessageManager.createXML(new MessageTable("header", "CLASH_ACCEPTED"))
-					));
-				}
-			} else {
-				return null;
-			}
-		}
-		if (MessageManager.convertXML("header", message.getMessageContent()).equals("CLASH_REJECTED")) {
-			if (Server.sessionManager.isClashRequestAccepted()) {
-				Server.sessionManager.denyClashRequests();
-				Place clashLocation = Server.connectionManager.getPlayerHandler(
-						message.getMessageSender()).getConnectedPlayer().getPosition();
-				List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
-				for (Player receiver : receivers) {
-					Server.connectionManager.sendMessageToPlayer(receiver, new Message(
-							Message.Type.CLASH,
-							receiver,
-							MessageManager.createXML(new MessageTable("header", "CLASH_REJECTED"))
-					));
-				}
-			} else {
-				return null;
-			}
-		}
-		if (MessageManager.convertXML("header", message.getMessageContent()).equals("START_CLASH")) {
-			ClashManager currentClash = new ClashManager();
-			Place clashLocation = Server.connectionManager.getPlayerHandler(
-					message.getMessageSender()).getConnectedPlayer().getPosition();
-			List<Player> attackers = null;
-			List<Player> defenders = null;
-			if (message.getMessageSender().getTeam().equals(Player.Team.GOOD)) {
-				attackers = clashLocation.getGoodPlayers();
-				defenders = clashLocation.getBadPlayers();
-			} else if (message.getMessageSender().getTeam().equals(Player.Team.BAD)) {
-				attackers = clashLocation.getBadPlayers();
-				defenders = clashLocation.getGoodPlayers();
-			}
-			assert attackers != null;
-			assert defenders != null;
-			ClashManager.Winners winners = currentClash.clash(attackers, defenders);
-			StringBuilder attackResults = new StringBuilder();
-			for (Integer result : currentClash.getAttackResult()) {
-				attackResults.append(String.valueOf(result));
-			}
-			StringBuilder defenseResult = new StringBuilder();
-			for (Integer result : currentClash.getDefenseResult()) {
-				defenseResult.append(String.valueOf(result));
-			}
-			if (winners.equals(ClashManager.Winners.ATTACK)) {
-				for (Player winner : attackers) {
-					MessageTable messageTable = new MessageTable();
-					messageTable.put("header", "CLASH_WON");
-					messageTable.put("attack", attackResults.toString());
-					messageTable.put("defense", defenseResult.toString());
-					messageTable.put("prize", String.valueOf(PointsManager.getPrize(defenders)));
-					Server.connectionManager.sendMessageToPlayer(winner, new Message(
-							Message.Type.CLASH,
-							winner,
-							MessageManager.createXML(messageTable)
-					));
-				}
-				for (Player looser : defenders) {
-					MessageTable messageTable = new MessageTable();
-					messageTable.put("header", "CLASH_LOST");
-					messageTable.put("attack", attackResults.toString());
-					messageTable.put("defense", defenseResult.toString());
-					Server.connectionManager.sendMessageToPlayer(looser, new Message(
-						Message.Type.CLASH,
-						looser,
-						MessageManager.createXML(messageTable)
-					));
-				}
-			}
-			else if (winners.equals(ClashManager.Winners.DEFENSE)) {
-				for (Player winner : defenders) {
-					MessageTable messageTable = new MessageTable();
-					messageTable.put("header", "CLASH_WON");
-					messageTable.put("attack", attackResults.toString());
-					messageTable.put("defense", defenseResult.toString());
-					Server.connectionManager.sendMessageToPlayer(winner, new Message(
-							Message.Type.CLASH,
-							winner,
-							MessageManager.createXML(messageTable)
-					));
-				}
-				for (Player looser : attackers) {
-					MessageTable messageTable = new MessageTable();
-					messageTable.put("header", "CLASH_LOST");
-					messageTable.put("attack", attackResults.toString());
-					messageTable.put("defense", defenseResult.toString());
-					messageTable.put("prize", String.valueOf(PointsManager.getPrize(attackers)));
-					Server.connectionManager.sendMessageToPlayer(looser, new Message(
-							Message.Type.CLASH,
-							looser,
-							MessageManager.createXML(messageTable)
-					));
-				}
-			}
+		switch (MessageManager.convertXML("header", message.getMessageContent())) {
+			case "CLASH_REQUEST":
+				manageClashRequest();
+				break;
+			case "CLASH_ACCEPTED":
+				manageAcceptedClash();
+				break;
+			case "CLASH_REJECTED":
+				manageRejectedClash();
+				break;
+			case "START_CLASH":
+				manageClashStart();
+				break;
+			default:
+				throw new HandlerException("Invalid message type encountered");
 		}
 		return null;
 	}
