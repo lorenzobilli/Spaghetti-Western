@@ -61,8 +61,8 @@ public class SessionManager {
 			Server.setScenery(new SmallScenery());
 			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.SmallScenery");
 			MessageTable messageTable = new MessageTable();
-			messageTable.put("header", "CHOOSEN_SCENERY");
-			messageTable.put("content", "shared.scenery.SmallScenery");
+			messageTable.put("header", "CHOSEN_SCENERY");
+			messageTable.put("content", "SmallScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
@@ -72,8 +72,8 @@ public class SessionManager {
 			Server.setScenery(new MediumScenery());
 			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.MediumScenery");
 			MessageTable messageTable = new MessageTable();
-			messageTable.put("header", "CHOOSEN_SCENERY");
-			messageTable.put("content", "shared.scenery.MediumScenery");
+			messageTable.put("header", "CHOSEN_SCENERY");
+			messageTable.put("content", "MediumScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
@@ -83,8 +83,8 @@ public class SessionManager {
 			Server.setScenery(new LargeScenery());
 			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.LargeScenery");
 			MessageTable messageTable = new MessageTable();
-			messageTable.put("header", "CHOOSEN_SCENERY");
-			messageTable.put("content", "shared.scenery.LargeScenery");
+			messageTable.put("header", "CHOSEN_SCENERY");
+			messageTable.put("content", "LargeScenery");
 			Server.connectionManager.broadcastMessage(new Message(
 					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
