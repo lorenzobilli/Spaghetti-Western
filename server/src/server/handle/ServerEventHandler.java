@@ -31,9 +31,13 @@ public class ServerEventHandler extends EventHandler {
         super(message);
     }
 
-    private Message manageSessionStart() {
+	/**
+	 * Manages session start conditions.
+	 * @return A message with all the correct result.
+	 */
+	private Message manageSessionStart() {
 	    PlayerManager.Status userManagerStatus = PlayerManager.addPlayer(message.getMessageSender());
-	    MessageTable result = null;
+	    MessageTable result;
 	    switch (userManagerStatus) {
 		    case SUCCESS:
 			    result = new MessageTable("header", "ACCEPTED");
@@ -57,7 +61,11 @@ public class ServerEventHandler extends EventHandler {
 	    );
     }
 
-    private Message manageSessionStop() {
+	/**
+	 * Manages session stop condition.
+	 * @return A message with the configured shutdown request.
+	 */
+	private Message manageSessionStop() {
 	    //TODO: implement stop session request from a client
 	    if (!PlayerManager.removePlayer(message.getMessageSender())) {
 		    throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");
@@ -136,7 +144,11 @@ public class ServerEventHandler extends EventHandler {
         return null;
     }
 
-    private Message managePlayerMovement() {
+	/**
+	 * Manages all possible player moves.
+	 * @return A configured message with the result of the operation.
+	 */
+	private Message managePlayerMovement() {
 	    Place origin = Server.connectionManager.getPlayerHandler(
 	    		message.getMessageSender()).getConnectedPlayer().getPosition();
 	    Place destination = Server.getScenery().getNamePlaces().get(
@@ -227,6 +239,9 @@ public class ServerEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Manages received clash requests.
+	 */
 	private void manageClashRequest() {
 		Server.sessionManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
 		Place clashLocation = Server.connectionManager.getPlayerHandler(
@@ -241,6 +256,9 @@ public class ServerEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Manages accepted clash requests.
+	 */
 	private void manageAcceptedClash() {
 		Server.sessionManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
 		if (Server.sessionManager.isClashRequestAccepted()) {
@@ -258,6 +276,9 @@ public class ServerEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Manages rejected clash requests.
+	 */
 	private void manageRejectedClash() {
 		if (Server.sessionManager.isClashRequestAccepted()) {
 			Server.sessionManager.denyClashRequests();
@@ -274,6 +295,13 @@ public class ServerEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Sends a message to the winners of a clash.
+	 * @param winners List of winning players.
+	 * @param attack Total attack score.
+	 * @param defense Total defense score.
+	 * @param prize Prize quantity for each player.
+	 */
 	private void sendWinningMessage(List<Player> winners, String attack, String defense, String prize) {
 		if (winners == null) {
 			throw new InvalidParameterException("Winners players list cannot be null");
@@ -303,6 +331,12 @@ public class ServerEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Send a message to the losers of a clash.
+	 * @param losers List of losing players.
+	 * @param attack Total attack score.
+	 * @param defense Total defense score.
+	 */
 	private void sendLoosingMessage(List<Player> losers, String attack, String defense) {
 		if (losers == null) {
 			throw new InvalidParameterException("Losers players list cannot be null");
@@ -328,6 +362,9 @@ public class ServerEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Manages start of a clash.
+	 */
 	private void manageClashStart() {
 
 		ClashManager currentClash = new ClashManager();

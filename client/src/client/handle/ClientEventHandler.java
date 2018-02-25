@@ -25,7 +25,6 @@ public class ClientEventHandler extends EventHandler {
 
 	/**
 	 * Creates new client.Client Event Handler.
-	 *
 	 * @param message shared.messaging.Message to be handled.
 	 */
 	public ClientEventHandler(Message message) {
@@ -38,8 +37,7 @@ public class ClientEventHandler extends EventHandler {
 	 * - ALREADY_CONNECTED: A client is already registered with the same username.
 	 * - MAX_NUM_REACHED: Maximum number of connected clients reached, no more clients accepted by the server.
 	 * - SESSION_RUNNING: A play session is already running, no client registrations allowed.
-	 *
-	 * @return The message containing the response result, a null message if the request is not recognised.
+	 * @return The message containing the response result.
 	 */
 	@Override
 	protected Message handleSession() {
@@ -59,7 +57,6 @@ public class ClientEventHandler extends EventHandler {
 	 * - WAIT_REMAINING: Updates about remaining time until a new session is started.
 	 * - WAIT_TIMEOUT: Remaining time is up, a session start is imminent.
 	 * - PLAY_SESSION_START: A session is starting up.
-	 *
 	 * @return A null message, since all events are handled inside this method.
 	 */
 	@Override
@@ -89,7 +86,6 @@ public class ClientEventHandler extends EventHandler {
 	/**
 	 * Handle all chat-related messages.
 	 * Every received message is shown in the chat window.
-	 *
 	 * @return A null message.
 	 */
 	@Override
@@ -98,6 +94,9 @@ public class ClientEventHandler extends EventHandler {
 		return null;
 	}
 
+	/**
+	 * Set corresponding scenery and map based upon the content of the message.
+	 */
 	private void setSelectedScenery() {
 		switch (MessageManager.convertXML("content", message.getMessageContent())) {
 			case "SmallScenery":
@@ -117,6 +116,9 @@ public class ClientEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Insert a player in the scenery and in the map in a specific place.
+	 */
 	private void insertPlayer() {
 		Player player = new Player(
 				MessageManager.convertXML("player_name", message.getMessageContent()),
@@ -135,6 +137,9 @@ public class ClientEventHandler extends EventHandler {
 		}
 	}
 
+	/**
+	 * Move a player in the scenery and in the map from one place to another.
+	 */
 	private void moveOtherPlayer() {
 		Player player = new Player(
 				MessageManager.convertXML("player_name", message.getMessageContent()),
@@ -179,6 +184,9 @@ public class ClientEventHandler extends EventHandler {
 		return null;
 	}
 
+	/**
+	 * Move the current player from one place to another.
+	 */
 	private void moveCurrentPlayer() {
 		Place origin = Client.getScenery().getNamePlaces().get(
 				MessageManager.convertXML("origin", message.getMessageContent())
@@ -214,6 +222,10 @@ public class ClientEventHandler extends EventHandler {
 		return null;
 	}
 
+	/**
+	 * Show a prompt for choosing to accept or reject a clash to the user.
+	 * @return A message configured with the selected result from the player.
+	 */
 	private Message selectClashRequest() {
 		Object[] options = {"Accept", "Reject"};
 
@@ -238,6 +250,10 @@ public class ClientEventHandler extends EventHandler {
 		return new Message(Message.Type.CLASH, Client.getPlayer(), MessageManager.createXML(result));
 	}
 
+	/**
+	 * Manages the case when the user accepts a clash.
+	 * @return A formed message with the start clash request.
+	 */
 	private Message manageAcceptedClash() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
@@ -251,6 +267,9 @@ public class ClientEventHandler extends EventHandler {
 		);
 	}
 
+	/**
+	 * Manages the case when the user rejects a clash.
+	 */
 	private void manageRejectedClash() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
@@ -259,6 +278,9 @@ public class ClientEventHandler extends EventHandler {
 		);    //TODO: Consider auto closeable message option
 	}
 
+	/**
+	 * Manages the case when a clash is won.
+	 */
 	private void manageWonClash() {
 		String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
 		String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
@@ -274,6 +296,9 @@ public class ClientEventHandler extends EventHandler {
 		System.err.println("Added " + prize + " bullets to current player!");
 	}
 
+	/**
+	 * Manages the case when a clash is lost.
+	 */
 	private void manageLostClash() {
 		String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
 		String defenseResult = MessageManager.convertXML("defense", message.getMessageContent());
