@@ -77,6 +77,14 @@ public class ClientEventHandler extends EventHandler {
 				Client.getMap().populate(Client.mapWindow);
 				Client.chatWindow = new ChatWindow();    // Spawning chat window
 				break;
+			case "PLAY_REMAINING":
+				// This message is unused, for now...
+				break;
+			case "TURN_REMAINING":
+				break;
+			case "PLAY_TIMEOUT":
+				// This message is unused, for now...
+				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");
 		}

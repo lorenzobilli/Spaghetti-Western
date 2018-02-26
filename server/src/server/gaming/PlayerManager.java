@@ -47,6 +47,7 @@ public class PlayerManager {
                 return Status.MAX_NUM_REACHED;
             }
             connectedPlayers.add(player);
+            Server.turnScheduler.addScheduledElement(player);
             return Status.SUCCESS;
         }
         return Status.ALREADY_REGISTERED;
@@ -63,6 +64,7 @@ public class PlayerManager {
         }
         if (isPlayerConnected(player)) {
             connectedPlayers.remove(player);
+            Server.turnScheduler.removeScheduledElement(player);
             return true;
         }
         return false;

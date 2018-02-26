@@ -4,6 +4,8 @@ import server.connection.ServerConnectionManager;
 import server.gaming.SessionManager;
 import server.gaming.TimeManager;
 import server.gui.MainWindow;
+import server.scheduler.RoundRobinScheduler;
+import server.scheduler.Scheduler;
 import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;
@@ -52,6 +54,8 @@ public class Server {
 	 */
     public static TimeManager timeManager;
 
+    public static Scheduler turnScheduler;
+
 	/**
 	 * Stores the corresponding loaded scenery
 	 */
@@ -76,6 +80,7 @@ public class Server {
         serverWindow = new MainWindow("Spaghetti Western server");
         connectionManager = new ServerConnectionManager();
         sessionManager = new SessionManager();
+        turnScheduler = new RoundRobinScheduler();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
     }
