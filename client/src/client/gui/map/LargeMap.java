@@ -477,6 +477,8 @@ public class LargeMap extends Map {
 	public void populate(MapWindow map) {
 
 		// Adding global button and labels
+		super.configureTotalTimeLabel(map);
+		super.configureTurnTimeLabel(map);
 		super.configureBulletLabel(map);
 		super.configureClashButton(map);
 

@@ -37,6 +37,10 @@ public abstract class Map {
 	 */
 	protected final int labelClusterSize = 3;
 
+	private JLabel totalTimeLabel;
+
+	private JLabel turnTimeLabel;
+
 	/**
 	 * Label used to show bullet number.
 	 */
@@ -165,6 +169,30 @@ public abstract class Map {
 				label.setVisible(false);
 			}
 		}
+	}
+
+	protected void configureTotalTimeLabel(MapWindow map) {
+		totalTimeLabel = new JLabel("Total time remaining: XX:XX");
+		Dimension totalTimeLabelDimension = totalTimeLabel.getPreferredSize();
+		map.add(totalTimeLabel, totalTimeLabelDimension, new Point(
+				map.margins.width, map.margins.height
+		));
+	}
+
+	public void updateTotalTimeLabel(MapWindow map, int totalSeconds) {
+
+	}
+
+	protected void configureTurnTimeLabel(MapWindow map) {
+		turnTimeLabel = new JLabel("Time remaining to move: XX:XX");
+		Dimension turnTimeLabelDimension = turnTimeLabel.getPreferredSize();
+		map.add(turnTimeLabel, turnTimeLabelDimension, new Point(
+				map.size.width - map.margins.width - turnTimeLabelDimension.width, map.margins.height
+		));
+	}
+
+	public void updateTurnTimeLabel(MapWindow map, int totalSeconds) {
+
 	}
 
 	/**
