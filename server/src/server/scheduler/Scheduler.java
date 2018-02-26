@@ -45,4 +45,10 @@ public interface Scheduler {
 	 * Schedules next selected element from the scheduler.
 	 */
 	public void scheduleNext();
+
+	/**
+	 * Gets currently scheduled element.
+	 * @return The currently active scheduled Player.
+	 */
+	public Player getScheduledElement();
 }

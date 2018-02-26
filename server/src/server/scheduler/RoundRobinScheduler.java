@@ -20,12 +20,12 @@ public class RoundRobinScheduler implements Scheduler {
 	/**
 	 * List of schedulable players belonging to the good team.
 	 */
-	private ArrayList<ConnectionHandler> goodScheduledPlayers = new ArrayList<>();
+	private ArrayList<Player> goodScheduledPlayers = new ArrayList<>();
 
 	/**
 	 * List of schedulabel players belonging to the bad team.
 	 */
-	private ArrayList<ConnectionHandler> badScheduledPlayers = new ArrayList<>();
+	private ArrayList<Player> badScheduledPlayers = new ArrayList<>();
 
 	/**
 	 * Keeps track of the last scheduled team by the scheduler.
@@ -41,6 +41,8 @@ public class RoundRobinScheduler implements Scheduler {
 	 * Keeps track of the last scheduled player by the scheduler belonging to the bad team.
 	 */
 	private int lastBadScheduledPlayerIndex;
+
+	private Player currentlyScheduledPlayer;
 
 	/**
 	 * Enables the scheduler.
@@ -100,10 +102,10 @@ public class RoundRobinScheduler implements Scheduler {
 		}
 		switch (scheduledPlayer.getTeam()) {
 			case GOOD:
-				goodScheduledPlayers.add(Server.connectionManager.getPlayerHandler(scheduledPlayer));
+				goodScheduledPlayers.add(scheduledPlayer);
 				break;
 			case BAD:
-				badScheduledPlayers.add(Server.connectionManager.getPlayerHandler(scheduledPlayer));
+				badScheduledPlayers.add(scheduledPlayer);
 				break;
 			default:
 				throw new InvalidParameterException("Bad scheduled player given");
@@ -121,10 +123,10 @@ public class RoundRobinScheduler implements Scheduler {
 		}
 		switch (scheduledPlayer.getTeam()) {
 			case GOOD:
-				goodScheduledPlayers.remove(Server.connectionManager.getPlayerHandler(scheduledPlayer));
+				goodScheduledPlayers.remove(scheduledPlayer);
 				break;
 			case BAD:
-				badScheduledPlayers.remove(Server.connectionManager.getPlayerHandler(scheduledPlayer));
+				badScheduledPlayers.remove(scheduledPlayer);
 				break;
 			default:
 				throw new InvalidParameterException("Bad scheduled player given");
@@ -137,7 +139,10 @@ public class RoundRobinScheduler implements Scheduler {
 	private void scheduleGood() {
 		if (lastGoodScheduledPlayerIndex == goodScheduledPlayers.size() - 1) {
 			lastGoodScheduledPlayerIndex = 0;
+		} else {
+			lastGoodScheduledPlayerIndex++;
 		}
+		currentlyScheduledPlayer = goodScheduledPlayers.get(lastGoodScheduledPlayerIndex);
 	}
 
 	/**
@@ -146,7 +151,10 @@ public class RoundRobinScheduler implements Scheduler {
 	private void scheduleBad() {
 		if (lastBadScheduledPlayerIndex == badScheduledPlayers.size() - 1) {
 			lastBadScheduledPlayerIndex = 0;
+		} else {
+			lastBadScheduledPlayerIndex++;
 		}
+		currentlyScheduledPlayer = badScheduledPlayers.get(lastBadScheduledPlayerIndex);
 	}
 
 	/**
@@ -164,5 +172,10 @@ public class RoundRobinScheduler implements Scheduler {
 				lastScheduledTeam = Player.Team.GOOD;
 				break;
 		}
+	}
+
+	@Override
+	public Player getScheduledElement() {
+		return currentlyScheduledPlayer;
 	}
 }
