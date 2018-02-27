@@ -2,7 +2,6 @@ package server;
 
 import server.connection.ServerConnectionManager;
 import server.gaming.SessionManager;
-import server.gaming.TimeManager;
 import server.gui.MainWindow;
 import server.scheduler.RoundRobinScheduler;
 import server.scheduler.Scheduler;
@@ -48,11 +47,6 @@ public class Server {
 	 * Global cached thread pool used by the server for most multithreaded operations.
 	 */
 	public static ExecutorService globalThreadPool;
-
-	/**
-	 * Handles all time-related aspects of the program
-	 */
-    public static TimeManager timeManager;
 
     public static Scheduler turnScheduler;
 
