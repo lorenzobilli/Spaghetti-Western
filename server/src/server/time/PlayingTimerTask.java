@@ -59,7 +59,6 @@ public class PlayingTimerTask implements Callable<Void> {
 
 				if (turnDuration.minus(playDuration).isZero() || turnDuration.minus(playDuration).equals(TURN)) {
 					if (Server.turnScheduler.isSchedulerEnabled()) {
-						System.out.println("Mufasa in casa");
 						Server.turnScheduler.scheduleNext();
 					}
 					turnDuration = playDuration;
