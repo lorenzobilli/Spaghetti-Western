@@ -11,6 +11,7 @@ import shared.scenery.Place;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
@@ -36,6 +37,10 @@ public abstract class Map {
 	 * This value should be equal to half the maximum allowed players per node.
 	 */
 	protected final int labelClusterSize = 3;
+
+	private JLabel totalTimeLabel;
+
+	private JLabel turnTimeLabel;
 
 	/**
 	 * Label used to show bullet number.
@@ -165,6 +170,36 @@ public abstract class Map {
 				label.setVisible(false);
 			}
 		}
+	}
+
+	protected void configureTotalTimeLabel(MapWindow map) {
+		totalTimeLabel = new JLabel("Total time remaining: XX:XX");
+		Dimension totalTimeLabelDimension = totalTimeLabel.getPreferredSize();
+		map.add(totalTimeLabel, totalTimeLabelDimension, new Point(
+				map.margins.width, map.margins.height
+		));
+	}
+
+	public void updateTotalTimeLabel(MapWindow map, int totalSeconds) {
+		int minutesRemaining = totalSeconds / 60;
+		int secondsRemaining = totalSeconds - (minutesRemaining * 60);
+		totalTimeLabel.setText("Total time remaining: " + minutesRemaining + ":" + secondsRemaining);
+		map.update(totalTimeLabel, totalTimeLabel.getPreferredSize());
+	}
+
+	protected void configureTurnTimeLabel(MapWindow map) {
+		turnTimeLabel = new JLabel("Time remaining to move: XX:XX");
+		Dimension turnTimeLabelDimension = turnTimeLabel.getPreferredSize();
+		map.add(turnTimeLabel, turnTimeLabelDimension, new Point(
+				map.size.width - map.margins.width - turnTimeLabelDimension.width, map.margins.height
+		));
+	}
+
+	public void updateTurnTimeLabel(MapWindow map, int totalSeconds) {
+		int minutesRemaining = totalSeconds / 60;
+		int secondsRemaining = totalSeconds - (minutesRemaining * 60);
+		turnTimeLabel.setText("Time remaining to move: " + minutesRemaining + ":" + secondsRemaining);
+		map.update(turnTimeLabel, turnTimeLabel.getPreferredSize());
 	}
 
 	/**

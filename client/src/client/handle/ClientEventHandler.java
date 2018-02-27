@@ -63,10 +63,10 @@ public class ClientEventHandler extends EventHandler {
 	protected Message handleTime() {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "WAIT_REMAINING":
-				int secondsRemaining = Integer.parseInt(
+				int waitSecondsRemaining = Integer.parseInt(
 						MessageManager.convertXML("content", message.getMessageContent())
 				);
-				Client.clientWindow.updateWaitingCountdown((secondsRemaining / 60) + 1); // +1 avoids round down
+				Client.clientWindow.updateWaitingCountdown((waitSecondsRemaining / 60) + 1); // +1 avoids round down
 				break;
 			case "WAIT_TIMEOUT":
 				Client.clientWindow.showSessionReadyAdvice();
@@ -76,6 +76,21 @@ public class ClientEventHandler extends EventHandler {
 				Client.mapWindow = new MapWindow(Client.getMap().getMapBackground());    // Loading map
 				Client.getMap().populate(Client.mapWindow);
 				Client.chatWindow = new ChatWindow();    // Spawning chat window
+				break;
+			case "PLAY_REMAINING":
+				int playSecondsRemaining = Integer.parseInt(
+						MessageManager.convertXML("content", message.getMessageContent())
+				);
+				Client.getMap().updateTotalTimeLabel(Client.mapWindow, playSecondsRemaining);
+				break;
+			case "TURN_REMAINING":
+				int turnSecondsRemaining = Integer.parseInt(
+						MessageManager.convertXML("content", message.getMessageContent())
+				);
+				Client.getMap().updateTurnTimeLabel(Client.mapWindow, turnSecondsRemaining);
+				break;
+			case "PLAY_TIMEOUT":
+				// This message is unused, for now...
 				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");

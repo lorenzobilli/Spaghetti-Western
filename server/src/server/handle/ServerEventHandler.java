@@ -2,7 +2,7 @@ package server.handle;
 
 import server.Server;
 import server.gaming.PlayerManager;
-import server.gaming.TimeManager;
+import server.time.TimeManager;
 import shared.gaming.ClashManager;
 import shared.gaming.Player;
 import shared.gaming.PointsManager;
@@ -113,8 +113,7 @@ public class ServerEventHandler extends EventHandler {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "WAIT_START_REQUEST":
 				if (PlayerManager.getConnectedPlayersNumber() == 1) {     // First client connected to the server
-					Server.timeManager = new TimeManager();
-					Server.globalThreadPool.submit(Server.timeManager);     // Start time manager
+					TimeManager.launchWaitingTimer();
 				}
 				break;
 			default:
