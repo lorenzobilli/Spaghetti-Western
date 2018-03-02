@@ -84,8 +84,12 @@ public class ClientEventHandler extends EventHandler {
 				Client.getMap().updateTotalTimeLabel(Client.mapWindow, playSecondsRemaining);
 				break;
 			case "TURN_BEGIN":
+				Client.getMap().enableUserCommands();
+				Client.getMap().enableTurnTimeLabel();
 				break;
 			case "TURN_END":
+				Client.getMap().disableUserCommands();
+				Client.getMap().disableTurnTimeLabel();
 				break;
 			case "TURN_REMAINING":
 				int turnSecondsRemaining = Integer.parseInt(

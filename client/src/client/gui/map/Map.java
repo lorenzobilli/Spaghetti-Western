@@ -204,9 +204,18 @@ public abstract class Map {
 		map.update(totalTimeLabel, totalTimeLabel.getPreferredSize());
 	}
 
+	public void enableTurnTimeLabel() {
+		turnTimeLabel.setVisible(true);
+	}
+
+	public void disableTurnTimeLabel() {
+		turnTimeLabel.setVisible(false);
+	}
+
 	protected void configureTurnTimeLabel(MapWindow map) {
 		turnTimeLabel = new JLabel("Time remaining to move: XX:XX");
 		Dimension turnTimeLabelDimension = turnTimeLabel.getPreferredSize();
+		turnTimeLabel.setVisible(false);
 		map.add(turnTimeLabel, turnTimeLabelDimension, new Point(
 				map.size.width - map.margins.width - turnTimeLabelDimension.width, map.margins.height
 		));
