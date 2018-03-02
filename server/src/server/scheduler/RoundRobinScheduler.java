@@ -1,7 +1,6 @@
 package server.scheduler;
 
 import server.Server;
-import server.connection.ConnectionHandler;
 import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
@@ -45,8 +44,14 @@ public class RoundRobinScheduler implements Scheduler {
 	 */
 	private int lastBadScheduledPlayerIndex;
 
+	/**
+	 * Latest scheduled player.
+	 */
 	private Player previouslyScheduledPlayer;
 
+	/**
+	 * Currently scheduled player.
+	 */
 	private Player currentlyScheduledPlayer;
 
 	/**
@@ -169,6 +174,9 @@ public class RoundRobinScheduler implements Scheduler {
 		currentlyScheduledPlayer = badScheduledPlayers.get(lastBadScheduledPlayerIndex);
 	}
 
+	/**
+	 * Send a message to the new scheduled player that his turn has begun.
+	 */
 	private void notifyTurnBegin() {
 		if (currentlyScheduledPlayer == null) {
 			throw new IllegalStateException("Currently scheduled player still set as null");
@@ -180,6 +188,9 @@ public class RoundRobinScheduler implements Scheduler {
 		));
 	}
 
+	/**
+	 * Send a message to the previously scheduled player that his turn has ended.
+	 */
 	private void notifyTurnEnd() {
 		if (previouslyScheduledPlayer == null) {
 			throw new IllegalStateException("Previously scheduled player still set as null");
@@ -192,7 +203,7 @@ public class RoundRobinScheduler implements Scheduler {
 	}
 
 	/**
-	 * Schedules next selected element from the scheduler.
+	 * Schedules next selected element.
 	 */
 	@Override
 	public void scheduleNext() {
@@ -217,6 +228,10 @@ public class RoundRobinScheduler implements Scheduler {
 		notifyTurnBegin();
 	}
 
+	/**
+	 * Gets currently scheduled element.
+	 * @return Latest scheduled element.
+	 */
 	@Override
 	public Player getScheduledElement() {
 		return currentlyScheduledPlayer;

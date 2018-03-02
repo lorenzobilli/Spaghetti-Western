@@ -189,6 +189,10 @@ public abstract class Map {
 		}
 	}
 
+	/**
+	 * Configures the total time remaining label, then puts it in the map.
+	 * @param map Map on which the label should be placed.
+	 */
 	protected void configureTotalTimeLabel(MapWindow map) {
 		totalTimeLabel = new JLabel("Total time remaining: XX:XX");
 		Dimension totalTimeLabelDimension = totalTimeLabel.getPreferredSize();
@@ -197,6 +201,11 @@ public abstract class Map {
 		));
 	}
 
+	/**
+	 * Updates the total time remaining label inside the given map with a new value.
+	 * @param map Map on which the label that should be updated is.
+	 * @param totalSeconds Value of the remaining time that the label should show.
+	 */
 	public void updateTotalTimeLabel(MapWindow map, int totalSeconds) {
 		int minutesRemaining = totalSeconds / 60;
 		int secondsRemaining = totalSeconds - (minutesRemaining * 60);
@@ -207,14 +216,24 @@ public abstract class Map {
 		map.update(totalTimeLabel, totalTimeLabel.getPreferredSize());
 	}
 
+	/**
+	 * Makes the turn time label visible.
+	 */
 	public void enableTurnTimeLabel() {
 		turnTimeLabel.setVisible(true);
 	}
 
+	/**
+	 * Makes the turn time label invisible.
+	 */
 	public void disableTurnTimeLabel() {
 		turnTimeLabel.setVisible(false);
 	}
 
+	/**
+	 * Configures the turn time label, then puts it in the map.
+	 * @param map Map on which the label should be placed.
+	 */
 	protected void configureTurnTimeLabel(MapWindow map) {
 		turnTimeLabel = new JLabel("Time remaining to move: XX:XX");
 		Dimension turnTimeLabelDimension = turnTimeLabel.getPreferredSize();
@@ -224,6 +243,11 @@ public abstract class Map {
 		));
 	}
 
+	/**
+	 * Updates the turn time label inside the given map with a new value.
+	 * @param map Map on which the label that should be updated is.
+	 * @param totalSeconds Value of the remaining time that the label should show.
+	 */
 	public void updateTurnTimeLabel(MapWindow map, int totalSeconds) {
 		int minutesRemaining = totalSeconds / 60;
 		int secondsRemaining = totalSeconds - (minutesRemaining * 60);
