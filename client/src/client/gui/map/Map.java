@@ -200,7 +200,10 @@ public abstract class Map {
 	public void updateTotalTimeLabel(MapWindow map, int totalSeconds) {
 		int minutesRemaining = totalSeconds / 60;
 		int secondsRemaining = totalSeconds - (minutesRemaining * 60);
-		totalTimeLabel.setText("Total time remaining: " + minutesRemaining + ":" + secondsRemaining);
+		totalTimeLabel.setText("Total time remaining: " +
+				(minutesRemaining < 10 ? "0" + minutesRemaining : minutesRemaining) +
+				":" +
+				(secondsRemaining < 10 ? "0" + secondsRemaining : secondsRemaining));
 		map.update(totalTimeLabel, totalTimeLabel.getPreferredSize());
 	}
 
@@ -224,7 +227,10 @@ public abstract class Map {
 	public void updateTurnTimeLabel(MapWindow map, int totalSeconds) {
 		int minutesRemaining = totalSeconds / 60;
 		int secondsRemaining = totalSeconds - (minutesRemaining * 60);
-		turnTimeLabel.setText("Time remaining to move: " + minutesRemaining + ":" + secondsRemaining);
+		turnTimeLabel.setText("Time remaining to move: " +
+				(minutesRemaining < 10 ? "0" + minutesRemaining : minutesRemaining) +
+				":" +
+				(secondsRemaining < 10 ? "0" + secondsRemaining : secondsRemaining));
 		map.update(turnTimeLabel, turnTimeLabel.getPreferredSize());
 	}
 

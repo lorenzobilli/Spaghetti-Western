@@ -66,7 +66,7 @@ public class ClientEventHandler extends EventHandler {
 				int waitSecondsRemaining = Integer.parseInt(
 						MessageManager.convertXML("content", message.getMessageContent())
 				);
-				Client.clientWindow.updateWaitingCountdown((waitSecondsRemaining / 60) + 1); // +1 avoids round down
+				Client.clientWindow.updateWaitingCountdown(waitSecondsRemaining);
 				break;
 			case "WAIT_TIMEOUT":
 				Client.clientWindow.showSessionReadyAdvice();

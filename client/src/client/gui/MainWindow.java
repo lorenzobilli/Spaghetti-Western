@@ -82,16 +82,16 @@ public class MainWindow {
 
 	/**
 	 * Update the countdown with a new value.
-	 * @param minutes Minutes remaining of the countdown.
+	 * @param totalSeconds Seconds remaining of the countdown.
 	 */
-	public void updateWaitingCountdown(int minutes) {
-		String label;
-		if (minutes > 1) {
-			label = "minutes";
-		} else {
-			label = "minute";
-		}
-		countdown.setText(String.valueOf(minutes) + " " + label);
+	public void updateWaitingCountdown(int totalSeconds) {
+		int minutesRemaining = totalSeconds / 60;
+		int secondsRemaining = totalSeconds - (minutesRemaining * 60);
+		countdown.setText(
+				(minutesRemaining < 10 ? "0" + minutesRemaining : minutesRemaining) +
+				":" +
+				(secondsRemaining < 10 ? "0" + secondsRemaining : secondsRemaining)
+		);
 	}
 
 	/**
