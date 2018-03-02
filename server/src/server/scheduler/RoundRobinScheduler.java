@@ -196,15 +196,20 @@ public class RoundRobinScheduler implements Scheduler {
 	 */
 	@Override
 	public void scheduleNext() {
-		switch (lastScheduledTeam) {
-			case GOOD:
-				scheduleBad();
-				lastScheduledTeam = Player.Team.BAD;
-				break;
-			case BAD:
-				scheduleGood();
-				lastScheduledTeam = Player.Team.GOOD;
-				break;
+		if (goodScheduledPlayers.size() + badScheduledPlayers.size() == 1) {    // Single user mode
+			currentlyScheduledPlayer = goodScheduledPlayers.isEmpty() ?
+					badScheduledPlayers.get(0) : goodScheduledPlayers.get(0);
+		} else {
+			switch (lastScheduledTeam) {
+				case GOOD:
+					scheduleBad();
+					lastScheduledTeam = Player.Team.BAD;
+					break;
+				case BAD:
+					scheduleGood();
+					lastScheduledTeam = Player.Team.GOOD;
+					break;
+			}
 		}
 		if (previouslyScheduledPlayer != null) {
 			notifyTurnEnd();
