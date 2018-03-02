@@ -130,6 +130,22 @@ public abstract class Map {
 	}
 
 	/**
+	 * Enables a button.
+	 * @param button Button to be enabled.
+	 */
+	protected void enableButton(JButton button) {
+		button.setEnabled(true);
+	}
+
+	/**
+	 * Disables a button.
+	 * @param button Button to be disabled.
+	 */
+	protected void disableButton(JButton button) {
+		button.setEnabled(false);
+	}
+
+	/**
 	 * Configures a button by making it invisible and assigning its action to the sendPlayerMove() method.
 	 * @param button Button to be configured.
 	 * @param position Corresponding position of the button in the map.
@@ -142,6 +158,7 @@ public abstract class Map {
 			button.setBorderPainted(false);
 		}
 		button.addActionListener(e -> sendPlayerMove(position));
+		enableButton(button);   // Make sure that JButton is really enabled
 	}
 
 	/**
@@ -327,6 +344,16 @@ public abstract class Map {
 	 * @param map Instance of MapWindow to be populated.
 	 */
 	public abstract void populate(MapWindow map);
+
+	/**
+	 * Quickly enables all clickable user commands.
+	 */
+	public abstract void enableUserCommands();
+
+	/**
+	 * Quickly disables all clickable user commands.
+	 */
+	public abstract void disableUserCommands();
 
 	public void updateMap(Player player, Place place) {
 		if (player.equals(Client.getPlayer())) {

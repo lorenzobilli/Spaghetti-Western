@@ -286,4 +286,28 @@ public class SmallMap extends Map {
 			);
 		}
 	}
+
+	/**
+	 * Quickly enables all clickable user commands.
+	 */
+	@Override
+	public void enableUserCommands() {
+		enableButton(santaFeButton);
+		enableButton(sanRafaelButton);
+		enableButton(valverdeButton);
+		enableButton(watermillButton);
+		enableButton(desertButton);
+	}
+
+	/**
+	 * Quickly disables all clickable user commands.
+	 */
+	@Override
+	public void disableUserCommands() {
+		disableButton(santaFeButton);
+		disableButton(sanRafaelButton);
+		disableButton(valverdeButton);
+		disableButton(watermillButton);
+		disableButton(desertButton);
+	}
 }

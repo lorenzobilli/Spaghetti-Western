@@ -717,4 +717,48 @@ public class LargeMap extends Map {
 			);
 		}
 	}
+
+	/**
+	 * Quickly enables all clickable user commands.
+	 */
+	@Override
+	public void enableUserCommands() {
+		enableButton(santaFeButton);
+		enableButton(sanRafaelButton);
+		enableButton(valverdeButton);
+		enableButton(watermillButton);
+		enableButton(desertButton);
+		enableButton(canyonDiabloButton);
+		enableButton(phoenixButton);
+		enableButton(tucsonButton);
+		enableButton(elPasoButton);
+		enableButton(santaAnaButton);
+		enableButton(langstoneBridgeButton);
+		enableButton(sadHillGraveyardButton);
+		enableButton(confederatePrisonButton);
+		enableButton(unionPrisonButton);
+		enableButton(saintAnthonyMissionButton);
+	}
+
+	/**
+	 * Quickly disables all clickable user commands.
+	 */
+	@Override
+	public void disableUserCommands() {
+		disableButton(santaFeButton);
+		disableButton(sanRafaelButton);
+		disableButton(valverdeButton);
+		disableButton(watermillButton);
+		disableButton(desertButton);
+		disableButton(canyonDiabloButton);
+		disableButton(phoenixButton);
+		disableButton(tucsonButton);
+		disableButton(elPasoButton);
+		disableButton(santaAnaButton);
+		disableButton(langstoneBridgeButton);
+		disableButton(sadHillGraveyardButton);
+		disableButton(confederatePrisonButton);
+		disableButton(unionPrisonButton);
+		disableButton(saintAnthonyMissionButton);
+	}
 }

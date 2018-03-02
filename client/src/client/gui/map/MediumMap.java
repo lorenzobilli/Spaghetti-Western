@@ -501,4 +501,38 @@ public class MediumMap extends Map {
 			);
 		}
 	}
+
+	/**
+	 * Quickly enables all clickable user commands.
+	 */
+	@Override
+	public void enableUserCommands() {
+		enableButton(santaFeButton);
+		enableButton(sanRafaelButton);
+		enableButton(valverdeButton);
+		enableButton(watermillButton);
+		enableButton(desertButton);
+		enableButton(canyonDiabloButton);
+		enableButton(phoenixButton);
+		enableButton(tucsonButton);
+		enableButton(elPasoButton);
+		enableButton(unionPrisonButton);
+	}
+
+	/**
+	 * Quickly disables all clickable user commands.
+	 */
+	@Override
+	public void disableUserCommands() {
+		disableButton(santaFeButton);
+		disableButton(sanRafaelButton);
+		disableButton(valverdeButton);
+		disableButton(watermillButton);
+		disableButton(desertButton);
+		disableButton(canyonDiabloButton);
+		disableButton(phoenixButton);
+		disableButton(tucsonButton);
+		disableButton(elPasoButton);
+		disableButton(unionPrisonButton);
+	}
 }
