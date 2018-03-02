@@ -83,6 +83,10 @@ public class ClientEventHandler extends EventHandler {
 				);
 				Client.getMap().updateTotalTimeLabel(Client.mapWindow, playSecondsRemaining);
 				break;
+			case "TURN_BEGIN":
+				break;
+			case "TURN_END":
+				break;
 			case "TURN_REMAINING":
 				int turnSecondsRemaining = Integer.parseInt(
 						MessageManager.convertXML("content", message.getMessageContent())

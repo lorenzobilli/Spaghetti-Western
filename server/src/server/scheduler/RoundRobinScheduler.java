@@ -3,6 +3,9 @@ package server.scheduler;
 import server.Server;
 import server.connection.ConnectionHandler;
 import shared.gaming.Player;
+import shared.messaging.Message;
+import shared.messaging.MessageManager;
+import shared.messaging.MessageTable;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -41,6 +44,8 @@ public class RoundRobinScheduler implements Scheduler {
 	 * Keeps track of the last scheduled player by the scheduler belonging to the bad team.
 	 */
 	private int lastBadScheduledPlayerIndex;
+
+	private Player previouslyScheduledPlayer;
 
 	private Player currentlyScheduledPlayer;
 
@@ -89,6 +94,7 @@ public class RoundRobinScheduler implements Scheduler {
 				throw new InvalidParameterException("Invalid team given to the scheduler");
 		}
 		lastGoodScheduledPlayerIndex = lastBadScheduledPlayerIndex = 0;
+		previouslyScheduledPlayer = currentlyScheduledPlayer = null;
 	}
 
 	/**
@@ -142,6 +148,9 @@ public class RoundRobinScheduler implements Scheduler {
 		} else {
 			lastGoodScheduledPlayerIndex++;
 		}
+		if (currentlyScheduledPlayer != null) {     // Null only on first run
+			previouslyScheduledPlayer = currentlyScheduledPlayer;
+		}
 		currentlyScheduledPlayer = goodScheduledPlayers.get(lastGoodScheduledPlayerIndex);
 	}
 
@@ -154,7 +163,32 @@ public class RoundRobinScheduler implements Scheduler {
 		} else {
 			lastBadScheduledPlayerIndex++;
 		}
+		if (currentlyScheduledPlayer != null) {     // Null only on first run
+			previouslyScheduledPlayer = currentlyScheduledPlayer;
+		}
 		currentlyScheduledPlayer = badScheduledPlayers.get(lastBadScheduledPlayerIndex);
+	}
+
+	private void notifyTurnBegin() {
+		if (currentlyScheduledPlayer == null) {
+			throw new IllegalStateException("Currently scheduled player still set as null");
+		}
+		Server.connectionManager.sendMessageToPlayer(currentlyScheduledPlayer, new Message(
+				Message.Type.TIME,
+				new Player("SERVER", Player.Team.SERVER),
+				MessageManager.createXML(new MessageTable("header", "TURN_BEGIN"))
+		));
+	}
+
+	private void notifyTurnEnd() {
+		if (previouslyScheduledPlayer == null) {
+			throw new IllegalStateException("Previously scheduled player still set as null");
+		}
+		Server.connectionManager.sendMessageToPlayer(previouslyScheduledPlayer, new Message(
+				Message.Type.TIME,
+				new Player("SERVER", Player.Team.SERVER),
+				MessageManager.createXML(new MessageTable("header", "TURN_END"))
+		));
 	}
 
 	/**
@@ -172,6 +206,10 @@ public class RoundRobinScheduler implements Scheduler {
 				lastScheduledTeam = Player.Team.GOOD;
 				break;
 		}
+		if (previouslyScheduledPlayer != null) {
+			notifyTurnEnd();
+		}
+		notifyTurnBegin();
 	}
 
 	@Override
