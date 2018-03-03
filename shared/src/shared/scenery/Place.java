@@ -48,6 +48,11 @@ public class Place {
 	private List<Player> badPlayers;
 
 	/**
+	 * Checks if the special ugly player is present in the current place.
+	 */
+	private boolean isUglyPresent;
+
+	/**
 	 * Used to determine if the current place is eligible for clashes.
 	 */
     private boolean clashEnabled;
@@ -139,6 +144,8 @@ public class Place {
                     playerAdded = true;
                 }
                 break;
+	        case UGLY:
+	        	isUglyPresent = true;
         }
         return playerAdded;
     }
@@ -167,6 +174,8 @@ public class Place {
                     playerRemoved = true;
                 }
                 break;
+	        case UGLY:
+	        	isUglyPresent = false;
         }
         return playerRemoved;
     }
@@ -193,6 +202,8 @@ public class Place {
                     playerFound = true;
                 }
                 break;
+	        case UGLY:
+	        	playerFound = isUglyPresent;
         }
         return playerFound;
     }
