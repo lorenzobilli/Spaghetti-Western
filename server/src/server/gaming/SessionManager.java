@@ -94,7 +94,27 @@ public class SessionManager {
 	}
 
 	/**
-	 * Initialize the game by randomly putting players in the choosen scenery.
+	 * Randomly put the ugly player in the chosen scenery.
+	 */
+	private void putUglyPlayer() {
+		int randomId = Randomizer.getRandomInteger(Server.getScenery().getPlacesNumber());
+		Player ugly = new Player("UGLY", Player.Team.UGLY);
+		Place randomPlace = Server.getScenery().getIdPlaces().get(randomId);
+		Server.getScenery().insertPlayer(ugly, randomPlace);    // No checks here since the ugly is always inserted
+		MessageTable messageTable = new MessageTable();
+		messageTable.put("header", "PLAYER_INSERTED");
+		messageTable.put("player_name", ugly.getName());
+		messageTable.put("player_team", ugly.getTeamAsString());
+		messageTable.put("position", randomPlace.getPlaceName());
+		Server.connectionManager.broadcastMessage(new Message(
+				Message.Type.SCENERY,
+				new Player("SERVER", Player.Team.SERVER),
+				MessageManager.createXML(messageTable)
+		));
+	}
+
+	/**
+	 * Initialize the game by randomly putting players in the chosen scenery.
 	 */
 	public void putPlayers() {
 		int totalPlayersNumber = PlayerManager.getConnectedPlayersNumber();
@@ -119,6 +139,7 @@ public class SessionManager {
 				));
 			}
 		}
+		putUglyPlayer();
 	}
 
 	/**
