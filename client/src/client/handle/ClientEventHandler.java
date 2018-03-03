@@ -151,7 +151,10 @@ public class ClientEventHandler extends EventHandler {
 		Place position = Client.getScenery().getNamePlaces().get(
 				MessageManager.convertXML("position", message.getMessageContent())
 		);
-		Client.setPosition(position);
+
+		if (player.equals(Client.getPlayer())) {    // Received message regarding current player
+			Client.setPosition(position);
+		}
 
 		Client.getScenery().insertPlayer(player, position);
 		Client.getMap().updateMap(player, position);
