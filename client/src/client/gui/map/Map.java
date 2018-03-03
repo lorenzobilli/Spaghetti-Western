@@ -397,10 +397,17 @@ public abstract class Map {
 	public void updateMap(Player player, Place place) {
 		if (player.equals(Client.getPlayer())) {
 			populatePlayerLabel(place);
-		} else if (player.getTeam().equals(Player.Team.GOOD)) {
-			populateGoodLabel(place);
-		} else if (player.getTeam().equals(Player.Team.BAD)) {
-			populateBadLabel(place);
+		} else {
+			switch (player.getTeam()) {
+				case GOOD:
+					populateGoodLabel(place);
+					break;
+				case BAD:
+					populateBadLabel(place);
+					break;
+				case UGLY:
+					break;
+			}
 		}
 	}
 
