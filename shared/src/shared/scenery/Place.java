@@ -146,6 +146,7 @@ public class Place {
                 break;
 	        case UGLY:
 	        	isUglyPresent = true;
+	        	playerAdded = true;
         }
         return playerAdded;
     }
