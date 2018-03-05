@@ -5,6 +5,7 @@ import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
+import shared.utils.Randomizer;
 
 import java.time.Duration;
 import java.util.Timer;
@@ -20,14 +21,21 @@ public class PlayingTimerTask implements Callable<Void> {
 
 	private Duration playDuration;
 	private Duration turnDuration;
+	private Duration uglyMovement;
 	private Timer playTimer;
 	private TimerTask playCountdown;
 
 	public PlayingTimerTask() {
 		playDuration = PLAY;
 		turnDuration = playDuration;
+		selectRandomUglyDuration();
 		playTimer = new Timer();
 		playTimerRoutine();
+	}
+
+	private void selectRandomUglyDuration() {
+		long randomSeconds = Randomizer.getRandomLong(turnDuration.getSeconds() * 3);
+		uglyMovement = Duration.ofSeconds(randomSeconds);
 	}
 
 	private void playTimerRoutine() {
@@ -64,6 +72,11 @@ public class PlayingTimerTask implements Callable<Void> {
 					turnDuration = playDuration;
 				}
 
+				if (uglyMovement.isZero()) {
+					//TODO: Add here ugly player movement
+					selectRandomUglyDuration();
+				}
+
 				if (Server.turnScheduler.isSchedulerEnabled()) {
 					MessageTable turnRemainingMessageTable = new MessageTable();
 					turnRemainingMessageTable.put("header", "TURN_REMAINING");
@@ -80,6 +93,7 @@ public class PlayingTimerTask implements Callable<Void> {
 				}
 
 				playDuration = playDuration.minusSeconds(1);
+				uglyMovement = uglyMovement.minusSeconds(1);
 
 				if (playDuration.isZero()) {
 					this.cancel();
