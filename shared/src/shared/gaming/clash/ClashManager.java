@@ -45,14 +45,14 @@ public class ClashManager {
 	/**
 	 * Accepts a new doClash request in a thread-safe manner.
 	 */
-	public static synchronized void acceptClashRequests() {
+	public synchronized void acceptClashRequests() {
 		clashRequestAccepted = true;
 	}
 
 	/**
 	 * Denies a new doClash request in a thread-safe manner.
 	 */
-	public static synchronized void denyClashRequests() {
+	public synchronized void denyClashRequests() {
 		clashRequestAccepted = false;
 	}
 
@@ -60,21 +60,21 @@ public class ClashManager {
 	 * Checks if a doClash request has been already accepted by another player in a thread-safe manner.
 	 * @return True if request has been already accepted, false if not.
 	 */
-	public static synchronized boolean isClashRequestAccepted() {
+	public synchronized boolean isClashRequestAccepted() {
 		return clashRequestAccepted;
 	}
 
 	/**
 	 * Accepts a new attack request in a thread-safe manner.
 	 */
-	public static synchronized void acceptAttackRequests() {
+	public synchronized void acceptAttackRequests() {
 		attackRequestAccepted = true;
 	}
 
 	/**
 	 * Denies a new attack request in a thread-safe manner.
 	 */
-	public static synchronized void denyAttackRequests() {
+	public synchronized void denyAttackRequests() {
 		attackRequestAccepted = false;
 	}
 
@@ -82,7 +82,7 @@ public class ClashManager {
 	 * Checks if an attack request has been already accepted by another player in a thread-safe manner.
 	 * @return True if request has been already accepted, false if not.
 	 */
-	public static synchronized boolean isAttackRequestAccepted() {
+	public synchronized boolean isAttackRequestAccepted() {
 		return attackRequestAccepted;
 	}
 }

@@ -241,11 +241,10 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Manages received clash requests.
+	 * @param clashLocation Place where clash will be executed.
 	 */
-	private void manageClashRequest() {
-		ClashManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
-		Place clashLocation = Server.connectionManager.getPlayerHandler(
-				message.getMessageSender()).getConnectedPlayer().getPosition();
+	private void manageClashRequest(Place clashLocation) {
+		clashLocation.getClashManager().acceptClashRequests();  // Make sure that requests are unlocked for future uses
 		List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
 		for (Player receiver : receivers) {
 			Server.connectionManager.sendMessageToPlayer(receiver, new Message(
@@ -258,13 +257,12 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Manages accepted clash requests.
+	 * @param clashLocation Place where clash will be executed.
 	 */
-	private void manageAcceptedClash() {
-		ClashManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
-		if (ClashManager.isClashRequestAccepted()) {
-			ClashManager.denyClashRequests();
-			Place clashLocation = Server.connectionManager.getPlayerHandler(
-					message.getMessageSender()).getConnectedPlayer().getPosition();
+	private void manageAcceptedClash(Place clashLocation) {
+		clashLocation.getClashManager().acceptAttackRequests();  // Make sure that requests are unlocked for future uses
+		if (clashLocation.getClashManager().isClashRequestAccepted()) {
+			clashLocation.getClashManager().denyClashRequests();
 			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
 			for (Player receiver : receivers) {
 				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
@@ -278,12 +276,11 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Manages rejected clash requests.
+	 * @param clashLocation Place where clash will be executed.
 	 */
-	private void manageRejectedClash() {
-		if (ClashManager.isClashRequestAccepted()) {
-			ClashManager.denyClashRequests();
-			Place clashLocation = Server.connectionManager.getPlayerHandler(
-					message.getMessageSender()).getConnectedPlayer().getPosition();
+	private void manageRejectedClash(Place clashLocation) {
+		if (clashLocation.getClashManager().isClashRequestAccepted()) {
+			clashLocation.getClashManager().denyClashRequests();
 			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
 			for (Player receiver : receivers) {
 				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
@@ -364,12 +361,11 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Manages start of a doClash.
+	 * @param clashLocation Place where clash will be executed.
 	 */
-	private void manageClashStart() {
+	private void manageClashStart(Place clashLocation) {
 
 		Clash currentClash = new Clash();
-		Place clashLocation = Server.connectionManager.getPlayerHandler(
-				message.getMessageSender()).getConnectedPlayer().getPosition();
 		List<Player> attackers = null;
 		List<Player> defenders = null;
 
@@ -397,28 +393,20 @@ public class ServerEventHandler extends EventHandler {
 
 		if (winners.equals(Clash.Winners.ATTACK)) {
 			sendWinningMessage(
-					attackers,
-					attackResults.toString(),
-					defenseResult.toString(),
+					attackers, attackResults.toString(), defenseResult.toString(),
 					String.valueOf(PointsManager.getPrize(defenders))
 			);
 			sendLoosingMessage(
-					defenders,
-					attackResults.toString(),
-					defenseResult.toString()
+					defenders, attackResults.toString(), defenseResult.toString()
 			);
 		}
 		else if (winners.equals(Clash.Winners.DEFENSE)) {
 			sendWinningMessage(
-					defenders,
-					attackResults.toString(),
-					defenseResult.toString(),
+					defenders, attackResults.toString(), defenseResult.toString(),
 					String.valueOf(PointsManager.getPrize(attackers))
 			);
 			sendLoosingMessage(
-					attackers,
-					attackResults.toString(),
-					defenseResult.toString()
+					attackers, attackResults.toString(), defenseResult.toString()
 			);
 		}
 	}
@@ -433,18 +421,20 @@ public class ServerEventHandler extends EventHandler {
 	 */
 	@Override
 	protected Message handleClash() {
+		Place clashLocation = Server.connectionManager.getPlayerHandler(message.getMessageSender())
+				.getConnectedPlayer().getPosition();
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "CLASH_REQUEST":
-				manageClashRequest();
+				manageClashRequest(clashLocation);
 				break;
 			case "CLASH_ACCEPTED":
-				manageAcceptedClash();
+				manageAcceptedClash(clashLocation);
 				break;
 			case "CLASH_REJECTED":
-				manageRejectedClash();
+				manageRejectedClash(clashLocation);
 				break;
 			case "START_CLASH":
-				manageClashStart();
+				manageClashStart(clashLocation);
 				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");

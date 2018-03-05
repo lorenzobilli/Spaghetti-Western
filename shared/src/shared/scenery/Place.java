@@ -227,12 +227,12 @@ public class Place {
 	}
 
 	/**
-	 * Checks if clashes are enabled in the current place.
-	 * @return True if clashes are enabled, false if not.
+	 * Gets reference to the current instance of the clash manager.
+	 * @return Instance of the current clash manager.
 	 */
-    public boolean isClashEnabled() {
-        return clashManager.isClashEnabled();
-    }
+	public ClashManager getClashManager() {
+		return clashManager;
+	}
 
 	/**
 	 * Check wherever to enable or disable clashes.
