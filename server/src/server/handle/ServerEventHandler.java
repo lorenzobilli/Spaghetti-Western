@@ -257,6 +257,7 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Manages accepted clash requests.
+	 * Only first arriving response is accepted, other responses are discarded.
 	 * @param clashLocation Place where clash will be executed.
 	 */
 	private void manageAcceptedClash(Place clashLocation) {
@@ -276,6 +277,7 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Manages rejected clash requests.
+	 * Only first arriving response is accepted, other responses are discarded.
 	 * @param clashLocation Place where clash will be executed.
 	 */
 	private void manageRejectedClash(Place clashLocation) {
@@ -360,54 +362,57 @@ public class ServerEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Manages start of a doClash.
+	 * Manages start of a clash.
+	 * Clash is started when first START_CLASH message arrives. All other messages are discarded.
 	 * @param clashLocation Place where clash will be executed.
 	 */
 	private void manageClashStart(Place clashLocation) {
+		if (clashLocation.getClashManager().isAttackRequestAccepted()) {
+			clashLocation.getClashManager().denyAttackRequests();
 
-		Clash currentClash = new Clash();
-		List<Player> attackers = null;
-		List<Player> defenders = null;
+			Clash clash = new Clash();
+			List<Player> attackers = null;
+			List<Player> defenders = null;
 
-		if (message.getMessageSender().getTeam().equals(Player.Team.GOOD)) {
-			attackers = clashLocation.getGoodPlayers();
-			defenders = clashLocation.getBadPlayers();
-		} else if (message.getMessageSender().getTeam().equals(Player.Team.BAD)) {
-			attackers = clashLocation.getBadPlayers();
-			defenders = clashLocation.getGoodPlayers();
-		}
+			if (message.getMessageSender().getTeam().equals(Player.Team.GOOD)) {
+				attackers = clashLocation.getGoodPlayers();
+				defenders = clashLocation.getBadPlayers();
+			} else if (message.getMessageSender().getTeam().equals(Player.Team.BAD)) {
+				attackers = clashLocation.getBadPlayers();
+				defenders = clashLocation.getGoodPlayers();
+			}
 
-		assert attackers != null;
-		assert defenders != null;
+			assert attackers != null;
+			assert defenders != null;
 
-		Clash.Winners winners = currentClash.doClash(attackers, defenders);
+			Clash.Winners winners = clash.doClash(attackers, defenders);
 
-		StringBuilder attackResults = new StringBuilder();
-		for (Integer result : currentClash.getAttackResult()) {
-			attackResults.append(String.valueOf(result));
-		}
-		StringBuilder defenseResult = new StringBuilder();
-		for (Integer result : currentClash.getDefenseResult()) {
-			defenseResult.append(String.valueOf(result));
-		}
+			StringBuilder attackResults = new StringBuilder();
+			for (Integer result : clash.getAttackResult()) {
+				attackResults.append(String.valueOf(result));
+			}
+			StringBuilder defenseResult = new StringBuilder();
+			for (Integer result : clash.getDefenseResult()) {
+				defenseResult.append(String.valueOf(result));
+			}
 
-		if (winners.equals(Clash.Winners.ATTACK)) {
-			sendWinningMessage(
-					attackers, attackResults.toString(), defenseResult.toString(),
-					String.valueOf(PointsManager.getPrize(defenders))
-			);
-			sendLoosingMessage(
-					defenders, attackResults.toString(), defenseResult.toString()
-			);
-		}
-		else if (winners.equals(Clash.Winners.DEFENSE)) {
-			sendWinningMessage(
-					defenders, attackResults.toString(), defenseResult.toString(),
-					String.valueOf(PointsManager.getPrize(attackers))
-			);
-			sendLoosingMessage(
-					attackers, attackResults.toString(), defenseResult.toString()
-			);
+			if (winners.equals(Clash.Winners.ATTACK)) {
+				sendWinningMessage(
+						attackers, attackResults.toString(), defenseResult.toString(),
+						String.valueOf(PointsManager.getPrize(defenders))
+				);
+				sendLoosingMessage(
+						defenders, attackResults.toString(), defenseResult.toString()
+				);
+			} else if (winners.equals(Clash.Winners.DEFENSE)) {
+				sendWinningMessage(
+						defenders, attackResults.toString(), defenseResult.toString(),
+						String.valueOf(PointsManager.getPrize(attackers))
+				);
+				sendLoosingMessage(
+						attackers, attackResults.toString(), defenseResult.toString()
+				);
+			}
 		}
 	}
 
