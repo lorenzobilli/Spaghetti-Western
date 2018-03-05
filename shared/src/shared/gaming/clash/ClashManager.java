@@ -6,6 +6,11 @@ package shared.gaming.clash;
 public class ClashManager {
 
 	/**
+	 * Internal field used for determining whether clash is enabled.
+	 */
+	private boolean clashEnabled;
+
+	/**
 	 * Internal field used for synchronizing doClash requests.
 	 */
 	private static boolean clashRequestAccepted;
@@ -14,6 +19,28 @@ public class ClashManager {
 	 * Internal field used for synchronizing attack requests.
 	 */
 	private static boolean attackRequestAccepted;
+
+	/**
+	 * Enables clash.
+	 */
+	public synchronized void enableClash() {
+		clashEnabled = true;
+	}
+
+	/**
+	 * Disables clash.
+	 */
+	public synchronized void disableClash() {
+		clashEnabled = false;
+	}
+
+	/**
+	 * Gets current internal clash status.
+	 * @return True if clash is enabled, false if not.
+	 */
+	public synchronized boolean isClashEnabled() {
+		return clashEnabled;
+	}
 
 	/**
 	 * Accepts a new doClash request in a thread-safe manner.

@@ -1,6 +1,7 @@
 package shared.scenery;
 
 import shared.gaming.Player;
+import shared.gaming.clash.ClashManager;
 import shared.utils.Randomizer;
 
 import java.security.InvalidParameterException;
@@ -53,9 +54,9 @@ public class Place {
 	private boolean isUglyPresent;
 
 	/**
-	 * Used to determine if the current place is eligible for clashes.
+	 * Handle all data-racing critical operation about clashes.
 	 */
-    private boolean clashEnabled;
+	private ClashManager clashManager;
 
 	/**
 	 * Number of bullets present in the place.
@@ -81,7 +82,7 @@ public class Place {
         this.placeId = placeId;
         goodPlayers = new ArrayList<>();
         badPlayers = new ArrayList<>();
-        clashEnabled = false;
+        clashManager = new ClashManager();
         bullets = Randomizer.getRandomInteger(MAX_BULLETS);
     }
 
@@ -227,16 +228,20 @@ public class Place {
 
 	/**
 	 * Checks if clashes are enabled in the current place.
-	 * @return True if clashes are enabled, fase if not.
+	 * @return True if clashes are enabled, false if not.
 	 */
     public boolean isClashEnabled() {
-        return clashEnabled;
+        return clashManager.isClashEnabled();
     }
 
 	/**
 	 * Check wherever to enable or disable clashes.
 	 */
 	private void checkClash() {
-        clashEnabled = goodPlayers.size() > 0 && badPlayers.size() > 0;
+        if (goodPlayers.size() > 0 && badPlayers.size() > 0) {
+        	clashManager.enableClash();
+        } else {
+        	clashManager.disableClash();
+        }
     }
 }
