@@ -5,7 +5,6 @@ import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
-import shared.scenery.Place;
 import shared.utils.Randomizer;
 
 import java.time.Duration;
@@ -37,6 +36,48 @@ public class PlayingTimerTask implements Callable<Void> {
 	private void selectRandomUglyDuration() {
 		long randomSeconds = Randomizer.getRandomLong(turnDuration.getSeconds() * 3);
 		uglyMovement = Duration.ofSeconds(randomSeconds);
+	}
+
+	private void moveUglyPlayer() {
+		MessageTable messageTable = Server.sessionManager.chooseAndMoveUglyPlayer(Server.uglyPlayer);
+		Server.getScenery().movePlayer(
+				Server.uglyPlayer,
+				Server.getScenery().getNamePlaces().get(messageTable.get("origin")),
+				Server.getScenery().getNamePlaces().get(messageTable.get("destination"))
+		);
+		messageTable.put("header", "PLAYER_MOVED");
+		Server.connectionManager.broadcastMessage(new Message(
+				Message.Type.SCENERY,
+				new Player("SERVER", Player.Team.SERVER),
+				MessageManager.createXML(messageTable)
+		));
+		selectRandomUglyDuration();
+	}
+
+	private void sendRemainingTurnTime() {
+		MessageTable turnRemainingMessageTable = new MessageTable();
+		turnRemainingMessageTable.put("header", "TURN_REMAINING");
+		turnRemainingMessageTable.put("content", String.valueOf(
+				(TURN.minus(turnDuration.minus(playDuration))).getSeconds()
+		));
+		Server.connectionManager.sendMessageToPlayer(Server.turnScheduler.getScheduledElement(),
+				new Message(
+						Message.Type.TIME,
+						new Player("SERVER", Player.Team.SERVER),
+						MessageManager.createXML(turnRemainingMessageTable)
+				)
+		);
+	}
+
+	private void sendTimeOutSignal() {
+		Server.connectionManager.broadcastMessage(new Message(
+				Message.Type.TIME,
+				new Player("SERVER", Player.Team.SERVER),
+				MessageManager.createXML(new MessageTable("header", "PLAY_TIMEOUT"))
+		));
+		Server.sessionManager.setSessionState(false);
+		Server.consolePrintLine("[*] Session play waitTimer expired");
+		//TODO: Add here winners declaration
 	}
 
 	private void playTimerRoutine() {
@@ -74,34 +115,11 @@ public class PlayingTimerTask implements Callable<Void> {
 				}
 
 				if (uglyMovement.isZero()) {
-					MessageTable messageTable = Server.sessionManager.chooseAndMoveUglyPlayer(Server.uglyPlayer);
-					Server.getScenery().movePlayer(
-							Server.uglyPlayer,
-							Server.getScenery().getNamePlaces().get(messageTable.get("origin")),
-							Server.getScenery().getNamePlaces().get(messageTable.get("destination"))
-					);
-					messageTable.put("header", "PLAYER_MOVED");
-					Server.connectionManager.broadcastMessage(new Message(
-							Message.Type.SCENERY,
-							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML(messageTable)
-					));
-					selectRandomUglyDuration();
+					moveUglyPlayer();
 				}
 
 				if (Server.turnScheduler.isSchedulerEnabled()) {
-					MessageTable turnRemainingMessageTable = new MessageTable();
-					turnRemainingMessageTable.put("header", "TURN_REMAINING");
-					turnRemainingMessageTable.put("content", String.valueOf(
-							(TURN.minus(turnDuration.minus(playDuration))).getSeconds()
-					));
-					Server.connectionManager.sendMessageToPlayer(Server.turnScheduler.getScheduledElement(),
-							new Message(
-									Message.Type.TIME,
-									new Player("SERVER", Player.Team.SERVER),
-									MessageManager.createXML(turnRemainingMessageTable)
-							)
-					);
+					sendRemainingTurnTime();
 				}
 
 				playDuration = playDuration.minusSeconds(1);
@@ -109,14 +127,7 @@ public class PlayingTimerTask implements Callable<Void> {
 
 				if (playDuration.isZero()) {
 					this.cancel();
-					Server.connectionManager.broadcastMessage(new Message(
-							Message.Type.TIME,
-							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML(new MessageTable("header", "PLAY_TIMEOUT"))
-					));
-					Server.sessionManager.setSessionState(false);
-					Server.consolePrintLine("[*] Session play waitTimer expired");
-					//TODO: Add here winners declaration
+					sendTimeOutSignal();
 				}
 			}
 		};
