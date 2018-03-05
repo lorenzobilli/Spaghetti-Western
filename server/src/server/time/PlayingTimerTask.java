@@ -5,6 +5,7 @@ import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
+import shared.scenery.Place;
 import shared.utils.Randomizer;
 
 import java.time.Duration;
@@ -73,7 +74,12 @@ public class PlayingTimerTask implements Callable<Void> {
 				}
 
 				if (uglyMovement.isZero()) {
-					MessageTable messageTable = Server.getScenery().moveUglyPlayer(Server.uglyPlayer);
+					MessageTable messageTable = Server.sessionManager.chooseAndMoveUglyPlayer(Server.uglyPlayer);
+					Server.getScenery().movePlayer(
+							Server.uglyPlayer,
+							Server.getScenery().getNamePlaces().get(messageTable.get("origin")),
+							Server.getScenery().getNamePlaces().get(messageTable.get("destination"))
+					);
 					messageTable.put("header", "PLAYER_MOVED");
 					Server.connectionManager.broadcastMessage(new Message(
 							Message.Type.SCENERY,
