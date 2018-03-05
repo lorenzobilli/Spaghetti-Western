@@ -3,9 +3,12 @@ package shared.scenery;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import shared.gaming.Player;
+import shared.messaging.MessageTable;
+import shared.utils.Randomizer;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Base class for all sceneries implementations.
@@ -72,6 +75,15 @@ public abstract class Scenery {
 	}
 
 	/**
+	 * Gets all paths starting from given place.
+	 * @param departure Place where paths start.
+	 * @return A set containing all selected paths that start from given place.
+	 */
+	private Set<Path> getAllPaths(Place departure) {
+		return sceneryGraph.edgesOf(departure);
+	}
+
+	/**
 	 * Insert a player in the scenery.
 	 * @param player Player to be added to the scenery.
 	 * @param place Place where the player should be added.
@@ -115,5 +127,37 @@ public abstract class Scenery {
         } else {
             return SceneryEvent.DESTINATION_BUSY;
         }
+    }
+
+	/**
+	 * Move the ugly player randomly inside the scenery.
+	 * The ugly player can be moved only between two linked places, as any other player in the scenery.
+	 * @param uglyPlayer Reference to the moving ugly player.
+	 * @return A MessageTable containing ugly player's place origin and final destination.
+	 */
+	public MessageTable moveUglyPlayer(Player uglyPlayer) {
+		if (uglyPlayer == null) {
+			throw new InvalidParameterException("Ugly player cannot be null");
+		}
+		if (!uglyPlayer.equals(new Player("UGLY", Player.Team.UGLY))) {
+			throw new InvalidParameterException("Only an ugly player reference is allowed");
+		}
+
+		Set<Path> destinationPaths = getAllPaths(uglyPlayer.getPosition());
+		int randomValue = Randomizer.getRandomInteger(destinationPaths.size());
+		Path selectedPath = null;
+		int current = 1;
+		for (Path path : destinationPaths) {
+			if (current == randomValue) {
+				selectedPath = path;
+				break;
+			}
+			current++;
+		}
+		movePlayer(uglyPlayer, sceneryGraph.getEdgeSource(selectedPath), sceneryGraph.getEdgeTarget(selectedPath));
+		MessageTable messageTable = new MessageTable();
+		messageTable.put("origin", sceneryGraph.getEdgeSource(selectedPath).toString());
+		messageTable.put("destination", sceneryGraph.getEdgeTarget(selectedPath).toString());
+		return messageTable;
     }
 }

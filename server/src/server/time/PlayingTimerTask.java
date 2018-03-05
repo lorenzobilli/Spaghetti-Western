@@ -73,7 +73,13 @@ public class PlayingTimerTask implements Callable<Void> {
 				}
 
 				if (uglyMovement.isZero()) {
-					//TODO: Add here ugly player movement
+					MessageTable messageTable = Server.getScenery().moveUglyPlayer(Server.uglyPlayer);
+					messageTable.put("header", "PLAYER_MOVED");
+					Server.connectionManager.broadcastMessage(new Message(
+							Message.Type.SCENERY,
+							new Player("SERVER", Player.Team.SERVER),
+							MessageManager.createXML(messageTable)
+					));
 					selectRandomUglyDuration();
 				}
 
