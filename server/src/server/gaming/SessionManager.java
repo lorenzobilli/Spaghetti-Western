@@ -98,13 +98,13 @@ public class SessionManager {
 	 */
 	private void putUglyPlayer() {
 		int randomId = Randomizer.getRandomInteger(Server.getScenery().getPlacesNumber());
-		Player ugly = new Player("UGLY", Player.Team.UGLY);
+		Server.uglyPlayer = new Player("UGLY", Player.Team.UGLY);
 		Place randomPlace = Server.getScenery().getIdPlaces().get(randomId);
-		Server.getScenery().insertPlayer(ugly, randomPlace);    // No checks here since the ugly is always inserted
+		Server.getScenery().insertPlayer(Server.uglyPlayer, randomPlace);    // No checks here since the ugly is always inserted
 		MessageTable messageTable = new MessageTable();
 		messageTable.put("header", "PLAYER_INSERTED");
-		messageTable.put("player_name", ugly.getName());
-		messageTable.put("player_team", ugly.getTeamAsString());
+		messageTable.put("player_name", Server.uglyPlayer.getName());
+		messageTable.put("player_team", Server.uglyPlayer.getTeamAsString());
 		messageTable.put("position", randomPlace.getPlaceName());
 		Server.connectionManager.broadcastMessage(new Message(
 				Message.Type.SCENERY,
