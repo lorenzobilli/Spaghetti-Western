@@ -3,9 +3,10 @@ package server.handle;
 import server.Server;
 import server.gaming.PlayerManager;
 import server.time.TimeManager;
-import shared.gaming.ClashManager;
+import shared.gaming.clash.Clash;
 import shared.gaming.Player;
 import shared.gaming.PointsManager;
+import shared.gaming.clash.ClashManager;
 import shared.handle.EventHandler;
 import shared.handle.HandlerException;
 import shared.messaging.Message;
@@ -218,7 +219,7 @@ public class ServerEventHandler extends EventHandler {
 	/**
 	 * Get the corresponding fighters in a place given the opposite players' team.
 	 * @param player shared.gaming.Player used as reference for retrieving the fighting team.
-	 * @param position shared.scenery.Scenery place where clash will be made.
+	 * @param position shared.scenery.Scenery place where doClash will be made.
 	 * @return List of opponent players.
 	 */
 	private List<Player> getOppositeFighters(Player player, Place position) {
@@ -242,7 +243,7 @@ public class ServerEventHandler extends EventHandler {
 	 * Manages received clash requests.
 	 */
 	private void manageClashRequest() {
-		Server.sessionManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
+		ClashManager.acceptClashRequests();	// Make sure that requests are unlocked for future uses
 		Place clashLocation = Server.connectionManager.getPlayerHandler(
 				message.getMessageSender()).getConnectedPlayer().getPosition();
 		List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
@@ -259,9 +260,9 @@ public class ServerEventHandler extends EventHandler {
 	 * Manages accepted clash requests.
 	 */
 	private void manageAcceptedClash() {
-		Server.sessionManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
-		if (Server.sessionManager.isClashRequestAccepted()) {
-			Server.sessionManager.denyClashRequests();
+		ClashManager.acceptAttackRequests();	// Make sure that requests are unlocked for future uses
+		if (ClashManager.isClashRequestAccepted()) {
+			ClashManager.denyClashRequests();
 			Place clashLocation = Server.connectionManager.getPlayerHandler(
 					message.getMessageSender()).getConnectedPlayer().getPosition();
 			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
@@ -279,8 +280,8 @@ public class ServerEventHandler extends EventHandler {
 	 * Manages rejected clash requests.
 	 */
 	private void manageRejectedClash() {
-		if (Server.sessionManager.isClashRequestAccepted()) {
-			Server.sessionManager.denyClashRequests();
+		if (ClashManager.isClashRequestAccepted()) {
+			ClashManager.denyClashRequests();
 			Place clashLocation = Server.connectionManager.getPlayerHandler(
 					message.getMessageSender()).getConnectedPlayer().getPosition();
 			List<Player> receivers = getOppositeFighters(message.getMessageSender(), clashLocation);
@@ -295,7 +296,7 @@ public class ServerEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Sends a message to the winners of a clash.
+	 * Sends a message to the winners of a doClash.
 	 * @param winners List of winning players.
 	 * @param attack Total attack score.
 	 * @param defense Total defense score.
@@ -331,7 +332,7 @@ public class ServerEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Send a message to the losers of a clash.
+	 * Send a message to the losers of a doClash.
 	 * @param losers List of losing players.
 	 * @param attack Total attack score.
 	 * @param defense Total defense score.
@@ -362,11 +363,11 @@ public class ServerEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Manages start of a clash.
+	 * Manages start of a doClash.
 	 */
 	private void manageClashStart() {
 
-		ClashManager currentClash = new ClashManager();
+		Clash currentClash = new Clash();
 		Place clashLocation = Server.connectionManager.getPlayerHandler(
 				message.getMessageSender()).getConnectedPlayer().getPosition();
 		List<Player> attackers = null;
@@ -383,7 +384,7 @@ public class ServerEventHandler extends EventHandler {
 		assert attackers != null;
 		assert defenders != null;
 
-		ClashManager.Winners winners = currentClash.clash(attackers, defenders);
+		Clash.Winners winners = currentClash.doClash(attackers, defenders);
 
 		StringBuilder attackResults = new StringBuilder();
 		for (Integer result : currentClash.getAttackResult()) {
@@ -394,7 +395,7 @@ public class ServerEventHandler extends EventHandler {
 			defenseResult.append(String.valueOf(result));
 		}
 
-		if (winners.equals(ClashManager.Winners.ATTACK)) {
+		if (winners.equals(Clash.Winners.ATTACK)) {
 			sendWinningMessage(
 					attackers,
 					attackResults.toString(),
@@ -407,7 +408,7 @@ public class ServerEventHandler extends EventHandler {
 					defenseResult.toString()
 			);
 		}
-		else if (winners.equals(ClashManager.Winners.DEFENSE)) {
+		else if (winners.equals(Clash.Winners.DEFENSE)) {
 			sendWinningMessage(
 					defenders,
 					attackResults.toString(),
@@ -423,10 +424,10 @@ public class ServerEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Handle all clash-related messages. In particular, these events are handled:
-	 *  - CLASH_REQUEST: A client requests a new clash.
-	 *  - CLASH_ACCEPTED: A clash request has been accepted by the system.
-	 *  - CLASH_REJECTED: A clash request has been rejected by the system.
+	 * Handle all doClash-related messages. In particular, these events are handled:
+	 *  - CLASH_REQUEST: A client requests a new doClash.
+	 *  - CLASH_ACCEPTED: A doClash request has been accepted by the system.
+	 *  - CLASH_REJECTED: A doClash request has been rejected by the system.
 	 *  - START_CLASH: Clash start request.
 	 * @return A null message only, since all events are handled internally by the method.
 	 */

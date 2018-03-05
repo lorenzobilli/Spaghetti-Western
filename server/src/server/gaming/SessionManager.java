@@ -17,7 +17,7 @@ import java.util.Set;
  * - Checking if a session is running
  * - Choosing the scenery based on number of connected clients
  * - Randomly putting players inside the scenery
- * - Handling in a thread-safe manner some time critical routines such as clash/attack requests synchronization
+ * - Handling in a thread-safe manner some time critical routines such as doClash/attack requests synchronization
  */
 public class SessionManager {
 
@@ -25,16 +25,6 @@ public class SessionManager {
 	 * Stores current state of the session
 	 */
 	private boolean sessionRunning = false;
-
-	/**
-	 * Internal field used for synchronizing clash requests.
-	 */
-	private boolean clashRequestAccepted;
-
-	/**
-	 * Internal field used for synchronizing attack requests.
-	 */
-	private boolean attackRequestAccepted;
 
 	/**
 	 * Get state of the current session.
@@ -174,49 +164,5 @@ public class SessionManager {
 		messageTable.put("origin", Server.getScenery().getDeparture(selectedPath).toString());
 		messageTable.put("destination", Server.getScenery().getDestination(selectedPath).toString());
 		return messageTable;
-	}
-
-	/**
-	 * Accepts a new clash request in a thread-safe manner.
-	 */
-	public synchronized void acceptClashRequests() {
-		clashRequestAccepted = true;
-	}
-
-	/**
-	 * Denies a new clash request in a thread-safe manner.
-	 */
-	public synchronized void denyClashRequests() {
-		clashRequestAccepted = false;
-	}
-
-	/**
-	 * Checks if a clash request has been already accepted by another player in a thread-safe manner.
-	 * @return True if request has been already accepted, false if not.
-	 */
-	public synchronized boolean isClashRequestAccepted() {
-		return clashRequestAccepted;
-	}
-
-	/**
-	 * Accepts a new attack request in a thread-safe manner.
-	 */
-	public synchronized void acceptAttackRequests() {
-		attackRequestAccepted = true;
-	}
-
-	/**
-	 * Denies a new attack request in a thread-safe manner.
-	 */
-	public synchronized void denyAttackRequests() {
-		attackRequestAccepted = false;
-	}
-
-	/**
-	 * Checks if an attack request has been already accepted by another player in a thread-safe manner.
-	 * @return True if request has been already accepted, false if not.
-	 */
-	public synchronized boolean isAttackRequestAccepted() {
-		return attackRequestAccepted;
 	}
 }

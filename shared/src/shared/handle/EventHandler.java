@@ -97,7 +97,7 @@ public abstract class EventHandler implements Callable<Message> {
 	protected abstract Message handleMove();
 
 	/**
-	 * Abstract declaration for clash-related events handler.
+	 * Abstract declaration for doClash-related events handler.
 	 * @return A new resulting message with further handling operations. Please note that the resulting message may be
 	 * null if no further operations are required.
 	 */
