@@ -242,6 +242,8 @@ public class ClientEventHandler extends EventHandler {
 			case "PLAYER_MOVED":
 				moveCurrentPlayer();
 				break;
+			case "PLAYER_NOT_MOVED":
+				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");
 		}
