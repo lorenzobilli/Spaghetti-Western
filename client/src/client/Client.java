@@ -53,6 +53,8 @@ public class Client {
 	 */
 	private static Player player;
 
+	public static Player uglyPlayer = new Player("UGLY", Player.Team.UGLY);
+
 	/**
 	 * Stores current player position in the scenery.
 	 */

@@ -5,6 +5,7 @@ import server.gaming.SessionManager;
 import server.gui.MainWindow;
 import server.scheduler.RoundRobinScheduler;
 import server.scheduler.Scheduler;
+import shared.gaming.Player;
 import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;
@@ -42,6 +43,8 @@ public class Server {
     public static ServerConnectionManager connectionManager;
 
     public static SessionManager sessionManager;
+
+    public static Player uglyPlayer;
 
 	/**
 	 * Global cached thread pool used by the server for most multithreaded operations.

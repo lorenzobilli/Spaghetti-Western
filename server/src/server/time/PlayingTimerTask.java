@@ -5,8 +5,12 @@ import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
+import shared.scenery.Place;
+import shared.scenery.Scenery;
+import shared.utils.Randomizer;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -20,14 +24,78 @@ public class PlayingTimerTask implements Callable<Void> {
 
 	private Duration playDuration;
 	private Duration turnDuration;
+	private Duration uglyMovement;
 	private Timer playTimer;
 	private TimerTask playCountdown;
 
 	public PlayingTimerTask() {
 		playDuration = PLAY;
 		turnDuration = playDuration;
+		selectRandomUglyDuration();
 		playTimer = new Timer();
 		playTimerRoutine();
+	}
+
+	private void selectRandomUglyDuration() {
+		long randomSeconds = Randomizer.getRandomLong(turnDuration.getSeconds() * 3);
+		uglyMovement = Duration.ofSeconds(randomSeconds);
+	}
+
+	private void moveUglyPlayer() {
+
+		MessageTable messageTable = Server.sessionManager.chooseAndMoveUglyPlayer(Server.uglyPlayer);
+		Place origin = Server.getScenery().getNamePlaces().get(messageTable.get("origin"));
+		Place destination = Server.getScenery().getNamePlaces().get(messageTable.get("destination"));
+
+		Scenery.SceneryEvent result = Server.getScenery().movePlayer(Server.uglyPlayer, origin,destination);
+
+		if (result == Scenery.SceneryEvent.PLAYER_MOVED) {
+			messageTable.put("header", "PLAYER_MOVED");
+			Server.connectionManager.broadcastMessage(new Message(
+					Message.Type.SCENERY,
+					new Player("SERVER", Player.Team.SERVER),
+					MessageManager.createXML(messageTable)
+			));
+
+			List<Player> victims = destination.getAllPlayers();
+			for (Player player : victims) {
+				Server.connectionManager.sendMessageToPlayer(player, new Message(
+						Message.Type.CLASH,
+						new Player("SERVER", Player.Team.SERVER),
+						player,
+						MessageManager.createXML(new MessageTable("header", "UGLY_VISIT"))
+				));
+				Server.connectionManager.getPlayerHandler(player).getConnectedPlayer().removeBullets();
+			}
+		}
+
+		selectRandomUglyDuration();
+	}
+
+	private void sendRemainingTurnTime() {
+		MessageTable turnRemainingMessageTable = new MessageTable();
+		turnRemainingMessageTable.put("header", "TURN_REMAINING");
+		turnRemainingMessageTable.put("content", String.valueOf(
+				(TURN.minus(turnDuration.minus(playDuration))).getSeconds()
+		));
+		Server.connectionManager.sendMessageToPlayer(Server.turnScheduler.getScheduledElement(),
+				new Message(
+						Message.Type.TIME,
+						new Player("SERVER", Player.Team.SERVER),
+						MessageManager.createXML(turnRemainingMessageTable)
+				)
+		);
+	}
+
+	private void sendTimeOutSignal() {
+		Server.connectionManager.broadcastMessage(new Message(
+				Message.Type.TIME,
+				new Player("SERVER", Player.Team.SERVER),
+				MessageManager.createXML(new MessageTable("header", "PLAY_TIMEOUT"))
+		));
+		Server.sessionManager.setSessionState(false);
+		Server.consolePrintLine("[*] Session play waitTimer expired");
+		//TODO: Add here winners declaration
 	}
 
 	private void playTimerRoutine() {
@@ -64,33 +132,20 @@ public class PlayingTimerTask implements Callable<Void> {
 					turnDuration = playDuration;
 				}
 
+				if (uglyMovement.isZero()) {
+					moveUglyPlayer();
+				}
+
 				if (Server.turnScheduler.isSchedulerEnabled()) {
-					MessageTable turnRemainingMessageTable = new MessageTable();
-					turnRemainingMessageTable.put("header", "TURN_REMAINING");
-					turnRemainingMessageTable.put("content", String.valueOf(
-							(TURN.minus(turnDuration.minus(playDuration))).getSeconds()
-					));
-					Server.connectionManager.sendMessageToPlayer(Server.turnScheduler.getScheduledElement(),
-							new Message(
-									Message.Type.TIME,
-									new Player("SERVER", Player.Team.SERVER),
-									MessageManager.createXML(turnRemainingMessageTable)
-							)
-					);
+					sendRemainingTurnTime();
 				}
 
 				playDuration = playDuration.minusSeconds(1);
+				uglyMovement = uglyMovement.minusSeconds(1);
 
 				if (playDuration.isZero()) {
 					this.cancel();
-					Server.connectionManager.broadcastMessage(new Message(
-							Message.Type.TIME,
-							new Player("SERVER", Player.Team.SERVER),
-							MessageManager.createXML(new MessageTable("header", "PLAY_TIMEOUT"))
-					));
-					Server.sessionManager.setSessionState(false);
-					Server.consolePrintLine("[*] Session play waitTimer expired");
-					//TODO: Add here winners declaration
+					sendTimeOutSignal();
 				}
 			}
 		};

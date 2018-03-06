@@ -48,7 +48,7 @@ public abstract class Map {
 	private JLabel bulletLabel;
 
 	/**
-	 * Button used to send a clash request.
+	 * Button used to send a doClash request.
 	 */
 	private JButton clashButton;
 
@@ -281,8 +281,8 @@ public abstract class Map {
 	}
 
 	/**
-	 * Configures the clash button.
-	 * @param map Instance of MapWindow where the clash button should be configured.
+	 * Configures the doClash button.
+	 * @param map Instance of MapWindow where the doClash button should be configured.
 	 */
 	protected void configureClashButton(MapWindow map) {
 		clashButton = new JButton("CLASH!");
@@ -305,7 +305,7 @@ public abstract class Map {
 	}
 
 	/**
-	 * Toggle clash button visibility/invisibility.
+	 * Toggle doClash button visibility/invisibility.
 	 */
 	public void toggleClashButton() {
 		clashButton.setVisible(!clashButton.isVisible());
@@ -397,10 +397,17 @@ public abstract class Map {
 	public void updateMap(Player player, Place place) {
 		if (player.equals(Client.getPlayer())) {
 			populatePlayerLabel(place);
-		} else if (player.getTeam().equals(Player.Team.GOOD)) {
-			populateGoodLabel(place);
-		} else if (player.getTeam().equals(Player.Team.BAD)) {
-			populateBadLabel(place);
+		} else {
+			switch (player.getTeam()) {
+				case GOOD:
+					populateGoodLabel(place);
+					break;
+				case BAD:
+					populateBadLabel(place);
+					break;
+				case UGLY:
+					break;
+			}
 		}
 	}
 

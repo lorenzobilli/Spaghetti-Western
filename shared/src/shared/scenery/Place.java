@@ -1,6 +1,7 @@
 package shared.scenery;
 
 import shared.gaming.Player;
+import shared.gaming.clash.ClashManager;
 import shared.utils.Randomizer;
 
 import java.security.InvalidParameterException;
@@ -48,9 +49,14 @@ public class Place {
 	private List<Player> badPlayers;
 
 	/**
-	 * Used to determine if the current place is eligible for clashes.
+	 * Checks if the special ugly player is present in the current place.
 	 */
-    private boolean clashEnabled;
+	private boolean isUglyPresent;
+
+	/**
+	 * Handle all data-racing critical operation about clashes.
+	 */
+	private ClashManager clashManager;
 
 	/**
 	 * Number of bullets present in the place.
@@ -76,7 +82,7 @@ public class Place {
         this.placeId = placeId;
         goodPlayers = new ArrayList<>();
         badPlayers = new ArrayList<>();
-        clashEnabled = false;
+        clashManager = new ClashManager();
         bullets = Randomizer.getRandomInteger(MAX_BULLETS);
     }
 
@@ -123,6 +129,10 @@ public class Place {
             throw new InvalidParameterException("shared.gaming.Player to be added cannot be null");
         }
 
+        if (clashManager.isClashRunning()) {
+        	return false;
+        }
+
         boolean playerAdded = false;
         switch (player.getTeam()) {
             case GOOD:
@@ -139,6 +149,9 @@ public class Place {
                     playerAdded = true;
                 }
                 break;
+	        case UGLY:
+	        	isUglyPresent = true;
+	        	playerAdded = true;
         }
         return playerAdded;
     }
@@ -151,6 +164,10 @@ public class Place {
 	public boolean removePlayer(Player player) {
         if (player == null) {
             throw new InvalidParameterException("shared.gaming.Player to be removed cannot be null");
+        }
+
+        if (clashManager.isClashRunning()) {
+        	return false;
         }
 
         boolean playerRemoved = false;
@@ -167,6 +184,8 @@ public class Place {
                     playerRemoved = true;
                 }
                 break;
+	        case UGLY:
+	        	isUglyPresent = false;
         }
         return playerRemoved;
     }
@@ -193,6 +212,8 @@ public class Place {
                     playerFound = true;
                 }
                 break;
+	        case UGLY:
+	        	playerFound = isUglyPresent;
         }
         return playerFound;
     }
@@ -214,17 +235,32 @@ public class Place {
 	}
 
 	/**
-	 * Checks if clashes are enabled in the current place.
-	 * @return True if clashes are enabled, fase if not.
+	 * Gets all players present in the current place.
+	 * @return List of present players.
 	 */
-    public boolean isClashEnabled() {
-        return clashEnabled;
-    }
+	public List<Player> getAllPlayers() {
+		List<Player> players = new ArrayList<>();
+		players.addAll(goodPlayers);
+		players.addAll(badPlayers);
+		return players;
+	}
+
+	/**
+	 * Gets reference to the current instance of the clash manager.
+	 * @return Instance of the current clash manager.
+	 */
+	public ClashManager getClashManager() {
+		return clashManager;
+	}
 
 	/**
 	 * Check wherever to enable or disable clashes.
 	 */
 	private void checkClash() {
-        clashEnabled = goodPlayers.size() > 0 && badPlayers.size() > 0;
+        if (goodPlayers.size() > 0 && badPlayers.size() > 0) {
+        	clashManager.enableClash();
+        } else {
+        	clashManager.disableClash();
+        }
     }
 }

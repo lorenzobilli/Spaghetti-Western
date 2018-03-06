@@ -3,9 +3,12 @@ package shared.scenery;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import shared.gaming.Player;
+import shared.messaging.MessageTable;
+import shared.utils.Randomizer;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Base class for all sceneries implementations.
@@ -69,6 +72,42 @@ public abstract class Scenery {
 	 */
 	public int getPlacesNumber() {
 		return namePlaces.size();
+	}
+
+	/**
+	 * Gets all paths starting from given place.
+	 * @param departure Place where paths start.
+	 * @return A set containing all selected paths that start from given place.
+	 */
+	public Set<Path> getAllPaths(Place departure) {
+		if (departure == null) {
+			throw new InvalidParameterException("Departure place cannot be null");
+		}
+		return sceneryGraph.edgesOf(departure);
+	}
+
+	/**
+	 * Gets the starting point of a given path.
+	 * @param path Path whose departure point should be calculated.
+	 * @return Departure place of the given path.
+	 */
+	public Place getDeparture(Path path) {
+		if (path == null) {
+			throw new InvalidParameterException("Given path cannot be null");
+		}
+		return sceneryGraph.getEdgeSource(path);
+	}
+
+	/**
+	 * Gets the arriving point of a given path.
+	 * @param path Path whose destination point should be calculated.
+	 * @return Destination place of the given path.
+	 */
+	public Place getDestination(Path path) {
+		if (path == null) {
+			throw new InvalidParameterException("Given path cannot be null");
+		}
+		return sceneryGraph.getEdgeTarget(path);
 	}
 
 	/**

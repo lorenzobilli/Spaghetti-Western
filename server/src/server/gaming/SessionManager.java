@@ -8,13 +8,16 @@ import shared.messaging.MessageTable;
 import shared.scenery.*;
 import shared.utils.Randomizer;
 
+import java.security.InvalidParameterException;
+import java.util.Set;
+
 /**
  * This class is responsible for basic game related controls and checks, such as:
  * - Marking a session as running
  * - Checking if a session is running
  * - Choosing the scenery based on number of connected clients
  * - Randomly putting players inside the scenery
- * - Handling in a thread-safe manner some time critical routines such as clash/attack requests synchronization
+ * - Handling in a thread-safe manner some time critical routines such as doClash/attack requests synchronization
  */
 public class SessionManager {
 
@@ -22,16 +25,6 @@ public class SessionManager {
 	 * Stores current state of the session
 	 */
 	private boolean sessionRunning = false;
-
-	/**
-	 * Internal field used for synchronizing clash requests.
-	 */
-	private boolean clashRequestAccepted;
-
-	/**
-	 * Internal field used for synchronizing attack requests.
-	 */
-	private boolean attackRequestAccepted;
 
 	/**
 	 * Get state of the current session.
@@ -94,7 +87,27 @@ public class SessionManager {
 	}
 
 	/**
-	 * Initialize the game by randomly putting players in the choosen scenery.
+	 * Randomly put the ugly player in the chosen scenery.
+	 */
+	private void putUglyPlayer() {
+		int randomId = Randomizer.getRandomInteger(Server.getScenery().getPlacesNumber());
+		Server.uglyPlayer = new Player("UGLY", Player.Team.UGLY);
+		Place randomPlace = Server.getScenery().getIdPlaces().get(randomId);
+		Server.getScenery().insertPlayer(Server.uglyPlayer, randomPlace);    // No checks here since the ugly is always inserted
+		MessageTable messageTable = new MessageTable();
+		messageTable.put("header", "PLAYER_INSERTED");
+		messageTable.put("player_name", Server.uglyPlayer.getName());
+		messageTable.put("player_team", Server.uglyPlayer.getTeamAsString());
+		messageTable.put("position", randomPlace.getPlaceName());
+		Server.connectionManager.broadcastMessage(new Message(
+				Message.Type.SCENERY,
+				new Player("SERVER", Player.Team.SERVER),
+				MessageManager.createXML(messageTable)
+		));
+	}
+
+	/**
+	 * Initialize the game by randomly putting players in the chosen scenery.
 	 */
 	public void putPlayers() {
 		int totalPlayersNumber = PlayerManager.getConnectedPlayersNumber();
@@ -119,49 +132,37 @@ public class SessionManager {
 				));
 			}
 		}
+		putUglyPlayer();
 	}
 
 	/**
-	 * Accepts a new clash request in a thread-safe manner.
+	 * Selects a proper destination then moves the ugly player randomly inside the scenery.
+	 * The ugly player can be moved only between two linked places, as any other player in the scenery.
+	 * @param uglyPlayer Reference to the moving ugly player.
+	 * @return A MessageTable containing ugly player's place origin and final destination.
 	 */
-	public synchronized void acceptClashRequests() {
-		clashRequestAccepted = true;
-	}
+	public MessageTable chooseAndMoveUglyPlayer(Player uglyPlayer) {
+		if (uglyPlayer == null) {
+			throw new InvalidParameterException("Ugly player cannot be null");
+		}
+		if (!uglyPlayer.equals(new Player("UGLY", Player.Team.UGLY))) {
+			throw new InvalidParameterException("Only an ugly player reference is allowed");
+		}
 
-	/**
-	 * Denies a new clash request in a thread-safe manner.
-	 */
-	public synchronized void denyClashRequests() {
-		clashRequestAccepted = false;
-	}
-
-	/**
-	 * Checks if a clash request has been already accepted by another player in a thread-safe manner.
-	 * @return True if request has been already accepted, false if not.
-	 */
-	public synchronized boolean isClashRequestAccepted() {
-		return clashRequestAccepted;
-	}
-
-	/**
-	 * Accepts a new attack request in a thread-safe manner.
-	 */
-	public synchronized void acceptAttackRequests() {
-		attackRequestAccepted = true;
-	}
-
-	/**
-	 * Denies a new attack request in a thread-safe manner.
-	 */
-	public synchronized void denyAttackRequests() {
-		attackRequestAccepted = false;
-	}
-
-	/**
-	 * Checks if an attack request has been already accepted by another player in a thread-safe manner.
-	 * @return True if request has been already accepted, false if not.
-	 */
-	public synchronized boolean isAttackRequestAccepted() {
-		return attackRequestAccepted;
+		Set<Path> destinationPaths = Server.getScenery().getAllPaths(uglyPlayer.getPosition());
+		int randomValue = Randomizer.getRandomInteger(destinationPaths.size());
+		Path selectedPath = null;
+		int current = 1;
+		for (Path path : destinationPaths) {
+			if (current == randomValue) {
+				selectedPath = path;
+				break;
+			}
+			current++;
+		}
+		MessageTable messageTable = new MessageTable();
+		messageTable.put("origin", Server.getScenery().getDeparture(selectedPath).toString());
+		messageTable.put("destination", Server.getScenery().getDestination(selectedPath).toString());
+		return messageTable;
 	}
 }

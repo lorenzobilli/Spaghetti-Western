@@ -1,5 +1,6 @@
-package shared.gaming;
+package shared.gaming.clash;
 
+import shared.gaming.Player;
 import shared.utils.Dice;
 
 import java.util.ArrayList;
@@ -7,9 +8,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * Manages all clash-related routines, such as clash creation, deciding winners and losers, and getting clash results.
+ * Manages all doClash-related routines, such as doClash creation, deciding winners and losers, and getting doClash results.
  */
-public class ClashManager {
+public class Clash {
 
 	/**
 	 * Enumeration used to determine which team is the winner, either attackers or defenders.
@@ -40,12 +41,12 @@ public class ClashManager {
 	private List<Integer> defenseResult = new ArrayList<>();
 
 	/**
-	 * Creates a new clash and determines the winners by throwing the correct number of dice.
+	 * Creates a new doClash and determines the winners by throwing the correct number of dice.
 	 * @param attackers List of attacking players.
 	 * @param defenders List of defending players.
 	 * @return The winners, using a Winners enumeration.
 	 */
-	public Winners clash(List<Player> attackers, List<Player> defenders) {
+	public Winners doClash(List<Player> attackers, List<Player> defenders) {
 
 		int attackDiceNumber = attackers.size();
 		int defenseDiceNumber = defenders.size();
@@ -76,7 +77,7 @@ public class ClashManager {
 	}
 
 	/**
-	 * Internal method which determines who is the winning team of the clash.
+	 * Internal method which determines who is the winning team of the doClash.
 	 * Points are given in the same manner as in the Risiko game:
 	 *  - shared.utils.Dice are sorted in descending order.
 	 *  - Each attack dice is compared in order to the corresponding defense dice, the higher dice gets the point.

@@ -23,11 +23,28 @@ public class Randomizer {
 
 	/**
 	 * Gets a random integer value between 1 (inclusive) and given bound (inclusive).
-	 * @param bound Maximum inclusive value considered in the randomic number generator.
+	 * @param bound Maximum value considered in the random number generator.
 	 * @return A random integer value between 1 (inclusive) and given bound (inclusive).
 	 */
 	public static int getRandomInteger(int bound) {
-		return random.nextInt(bound) + 1;	// Zero exclusive, bound number inclusive
+		return random.nextInt(bound) + 1;
+	}
+
+	/**
+	 * Gets a random long value.
+	 * @return A random long value.
+	 */
+	public static long getRandomLong() {
+		return random.nextLong();
+	}
+
+	/**
+	 * Gets a random long value between 1 (inclusive) and given bound (inclusive).
+	 * @param bound Maximum value considered in the random number generator.
+	 * @return A random long value between 1 (inclusive) and given bound (inclusive).
+	 */
+	public static long getRandomLong(long bound) {
+		return (long) random.nextInt((int) bound) + 1;
 	}
 
 	/**

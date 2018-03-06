@@ -9,8 +9,8 @@ import java.util.List;
 public class PointsManager {
 
 	/**
-	 * Get total amount of prize of the clash.
-	 * @param losers List of players who had lost the clash.
+	 * Get total amount of prize of the doClash.
+	 * @param losers List of players who had lost the doClash.
 	 * @return Number of bullets representing the prize.
 	 */
 	public static int getPrize(List<Player> losers) {
@@ -44,8 +44,8 @@ public class PointsManager {
 
 	/**
 	 * Gives an equal part of the total prize to each winner.
-	 * @param winners List of players who had won the clash.
-	 * @param totalPrize Total amount of prize of the clash.
+	 * @param winners List of players who had won the doClash.
+	 * @param totalPrize Total amount of prize of the doClash.
 	 */
 	public static void distributePrize(List<Player> winners, int totalPrize) {
 		if (winners == null) {
