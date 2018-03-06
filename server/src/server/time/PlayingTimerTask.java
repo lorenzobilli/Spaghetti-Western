@@ -15,20 +15,58 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
+/**
+ * This timers implements the playing timer.
+ * The playing timer controls how much should the playing session lasts.
+ */
 public class PlayingTimerTask implements Callable<Void> {
 
+	/**
+	 * Enables debugging mode.
+	 */
 	private final boolean DEBUG_MODE = false;
 
+	/**
+	 * Determines how much this timer should last.
+	 */
 	private final Duration PLAY = Duration.ofMinutes(10);
+
+	/**
+	 * Determines turn interval time.
+	 * This value must always assert this statement: PLAY % TURN == 0.
+	 */
 	private final Duration TURN = Duration.ofSeconds(15);   //FIXME: Exact value to be defined
 
+	/**
+	 * Duration value used by the timer.
+	 */
 	private Duration playDuration;
+
+	/**
+	 * Duration value used to determine the turns.
+	 */
 	private Duration turnDuration;
+
+	/**
+	 * Value of waiting before the ugly player can be moved in the scenery.
+	 */
 	private Duration uglyMovement;
+
+	/**
+	 * Internal timer object.
+	 */
 	private Timer playTimer;
+
+	/**
+	 * Internal timer task used for all timers operations.
+	 */
 	private TimerTask playCountdown;
 
+	/**
+	 * Creates a new playing timer.
+	 */
 	public PlayingTimerTask() {
+		assert PLAY.getSeconds() % TURN.getSeconds() == 0;
 		playDuration = PLAY;
 		turnDuration = playDuration;
 		selectRandomUglyDuration();
@@ -36,11 +74,17 @@ public class PlayingTimerTask implements Callable<Void> {
 		playTimerRoutine();
 	}
 
+	/**
+	 * Randomly choose a value for the uglyMovement duration.
+	 */
 	private void selectRandomUglyDuration() {
 		long randomSeconds = Randomizer.getRandomLong(turnDuration.getSeconds() * 3);
 		uglyMovement = Duration.ofSeconds(randomSeconds);
 	}
 
+	/**
+	 * Moves the ugly player.
+	 */
 	private void moveUglyPlayer() {
 
 		MessageTable messageTable = Server.sessionManager.chooseAndMoveUglyPlayer(Server.uglyPlayer);
@@ -72,6 +116,9 @@ public class PlayingTimerTask implements Callable<Void> {
 		selectRandomUglyDuration();
 	}
 
+	/**
+	 * Sends to the scheduled player a message containing the remaining time.
+	 */
 	private void sendRemainingTurnTime() {
 		MessageTable turnRemainingMessageTable = new MessageTable();
 		turnRemainingMessageTable.put("header", "TURN_REMAINING");
@@ -87,6 +134,9 @@ public class PlayingTimerTask implements Callable<Void> {
 		);
 	}
 
+	/**
+	 * Broadcasts that the timer is up.
+	 */
 	private void sendTimeOutSignal() {
 		Server.connectionManager.broadcastMessage(new Message(
 				Message.Type.TIME,
@@ -98,6 +148,10 @@ public class PlayingTimerTask implements Callable<Void> {
 		//TODO: Add here winners declaration
 	}
 
+	/**
+	 * Broadcasts a message with the total left time amount, then when the turn period is up, schedules a new player
+	 * for the turn.
+	 */
 	private void playTimerRoutine() {
 		Server.consolePrintLine("[*] Starting new gaming session...");
 		Server.connectionManager.broadcastMessage(new Message(
@@ -151,6 +205,10 @@ public class PlayingTimerTask implements Callable<Void> {
 		};
 	}
 
+	/**
+	 * Strokes the seconds used by the timer.
+	 * @return This method returns no value.
+	 */
 	@Override
 	public Void call() {
 		// Repeat this every second

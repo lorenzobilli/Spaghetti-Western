@@ -12,16 +12,41 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
+/**
+ * This timer implements the waiting timer.
+ * The waiting timer controls how much time should pass before starting the gaming session. During this period, players
+ * can join the next playing session.
+ */
 public class WaitingTimerTask implements Callable<Void> {
 
+	/**
+	 * Enables debugging mode.
+	 */
 	private final boolean DEBUG_MODE = true;
 
+	/**
+	 * Determines how much this timer should last.
+	 */
 	private final Duration WAIT = Duration.ofMinutes(5);
 
+	/**
+	 * Duration value used by the timer.
+	 */
 	private Duration waitDuration;
+
+	/**
+	 * Internal timer object.
+	 */
 	private Timer waitTimer;
+
+	/**
+	 * Internal timer task used for all timers operations.
+	 */
 	private TimerTask waitCountdown;
 
+	/**
+	 * Creates a new waiting timer.
+	 */
 	public WaitingTimerTask() {
 		if (DEBUG_MODE) {
 			waitDuration = Duration.ofSeconds(30);
@@ -32,6 +57,10 @@ public class WaitingTimerTask implements Callable<Void> {
 		waitTimerRoutine();
 	}
 
+	/**
+	 * Broadcasts a message with the left time amount, then when timer is up, it initializes the scenery and the
+	 * scheduler.
+	 */
 	private void waitTimerRoutine() {
 		Server.consolePrintLine("[*] Session wait timer started");
 		waitCountdown = new TimerTask() {
@@ -69,6 +98,10 @@ public class WaitingTimerTask implements Callable<Void> {
 		};
 	}
 
+	/**
+	 * Strokes the seconds used by the timer.
+	 * @return This method returns no value.
+	 */
 	@Override
 	public Void call() {
 		// Repeat this every second
