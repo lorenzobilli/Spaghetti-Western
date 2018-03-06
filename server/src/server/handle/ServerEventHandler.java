@@ -428,11 +428,18 @@ public class ServerEventHandler extends EventHandler {
 	protected Message handleClash() {
 		Place clashLocation = Server.connectionManager.getPlayerHandler(message.getMessageSender())
 				.getConnectedPlayer().getPosition();
+		/*
+		 * Calls before manageAcceptedClash() and after manageClashStart() are needed in order to preventing other
+		 * players to enter in the clashLocation place while a clash is running. This simplifies a lot the whole
+		 * situation preventing potential race conditions (in particular with the ugly player that moves randomly in
+		 * the scenery.
+		 */
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "CLASH_REQUEST":
 				manageClashRequest(clashLocation);
 				break;
 			case "CLASH_ACCEPTED":
+				clashLocation.getClashManager().signalClashStart();  // Other players cannot enter here during clashes
 				manageAcceptedClash(clashLocation);
 				break;
 			case "CLASH_REJECTED":
@@ -440,6 +447,7 @@ public class ServerEventHandler extends EventHandler {
 				break;
 			case "START_CLASH":
 				manageClashStart(clashLocation);
+				clashLocation.getClashManager().signalClashEnding();  // Recover normal behaviour
 				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");

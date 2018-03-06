@@ -10,6 +10,8 @@ public class ClashManager {
 	 */
 	private boolean clashEnabled;
 
+	private boolean clashRunning;
+
 	/**
 	 * Internal field used for synchronizing doClash requests.
 	 */
@@ -32,6 +34,28 @@ public class ClashManager {
 	 */
 	public synchronized void disableClash() {
 		clashEnabled = false;
+	}
+
+	/**
+	 * Signals the start of a clash.
+	 */
+	public synchronized void signalClashStart() {
+		clashRunning = true;
+	}
+
+	/**
+	 * Signals the end of a clash.
+	 */
+	public synchronized void signalClashEnding() {
+		clashRunning = false;
+	}
+
+	/**
+	 * Checks if a clash is running.
+	 * @return True if a clash is running, false if not.
+	 */
+	public synchronized boolean isClashRunning() {
+		return clashRunning;
 	}
 
 	/**

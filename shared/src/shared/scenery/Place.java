@@ -129,6 +129,10 @@ public class Place {
             throw new InvalidParameterException("shared.gaming.Player to be added cannot be null");
         }
 
+        if (clashManager.isClashRunning()) {
+        	return false;
+        }
+
         boolean playerAdded = false;
         switch (player.getTeam()) {
             case GOOD:
@@ -160,6 +164,10 @@ public class Place {
 	public boolean removePlayer(Player player) {
         if (player == null) {
             throw new InvalidParameterException("shared.gaming.Player to be removed cannot be null");
+        }
+
+        if (clashManager.isClashRunning()) {
+        	return false;
         }
 
         boolean playerRemoved = false;

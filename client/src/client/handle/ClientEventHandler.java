@@ -357,19 +357,27 @@ public class ClientEventHandler extends EventHandler {
 	 */
 	@Override
 	protected Message handleClash() {
+		/*
+		 * Calls inserted here for preventing other players to enter this node are not necessary, since this scenery
+		 * is not shared among other players. However calls have been added to prevent state errors in the current
+		 * instance of the scenery (some methods inside Place class do check if there are clashes running).
+		 */
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "CLASH_REQUEST":
 				return selectClashRequest();
 			case "CLASH_ACCEPTED":
+				Client.getPosition().getClashManager().signalClashStart();
 				return manageAcceptedClash();
 			case "CLASH_REJECTED":
 				manageRejectedClash();
 				break;
 			case "CLASH_WON":
 				manageWonClash();
+				Client.getPosition().getClashManager().signalClashEnding();
 				break;
 			case "CLASH_LOST":
 				manageLostClash();
+				Client.getPosition().getClashManager().signalClashEnding();
 				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");
