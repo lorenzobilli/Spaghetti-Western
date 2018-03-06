@@ -158,7 +158,7 @@ public class ClientEventHandler extends EventHandler {
 
 		Client.getScenery().insertPlayer(player, position);
 		Client.getMap().updateMap(player, position);
-		if (Client.getPosition().isClashEnabled()) {
+		if (Client.getPosition().getClashManager().isClashEnabled()) {
 			Client.getMap().toggleClashButton();        //TODO: Add here turn-checking
 		}
 	}
@@ -225,7 +225,7 @@ public class ClientEventHandler extends EventHandler {
 		Client.getMap().updateMap(Client.getPlayer(), origin, destination);
 		Client.setBullets(destination.pickBullets());
 		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
-		if (Client.getPosition().isClashEnabled()) {
+		if (Client.getPosition().getClashManager().isClashEnabled()) {
 			Client.getMap().toggleClashButton();
 		}
 	}
@@ -249,7 +249,7 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Show a prompt for choosing to accept or reject a clash to the user.
+	 * Show a prompt for choosing to accept or reject a doClash to the user.
 	 * @return A message configured with the selected result from the player.
 	 */
 	private Message selectClashRequest() {
@@ -257,7 +257,7 @@ public class ClientEventHandler extends EventHandler {
 
 		int selected = JOptionPane.showOptionDialog(Client.mapWindow.getWindow(),
 				"Hey " + Client.getPlayer().getName() + "! " +
-						message.getMessageSender().getName() + " has sent a clash request! Accept request?",
+						message.getMessageSender().getName() + " has sent a doClash request! Accept request?",
 				"Clash request", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				options, options[1]
 		);
@@ -277,13 +277,13 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Manages the case when the user accepts a clash.
-	 * @return A formed message with the start clash request.
+	 * Manages the case when the user accepts a doClash.
+	 * @return A formed message with the start doClash request.
 	 */
 	private Message manageAcceptedClash() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
-				message.getMessageSender().getName() + " has accepted the clash!",
+				message.getMessageSender().getName() + " has accepted the doClash!",
 				"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
 		);    //TODO: Consider auto closeable message option
 		return new Message(
@@ -294,18 +294,18 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Manages the case when the user rejects a clash.
+	 * Manages the case when the user rejects a doClash.
 	 */
 	private void manageRejectedClash() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
-				message.getMessageSender().getName() + " has rejected the clash!",
+				message.getMessageSender().getName() + " has rejected the doClash!",
 				"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
 		);    //TODO: Consider auto closeable message option
 	}
 
 	/**
-	 * Manages the case when a clash is won.
+	 * Manages the case when a doClash is won.
 	 */
 	private void manageWonClash() {
 		String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
@@ -323,7 +323,7 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Manages the case when a clash is lost.
+	 * Manages the case when a doClash is lost.
 	 */
 	private void manageLostClash() {
 		String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
@@ -340,36 +340,44 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Handle all clash-related messages. In particular, these events are handled:
-	 * - CLASH_REQUEST: Another client has sent a clash request to the current client.
-	 * - CLASH_ACCEPTED: Another client has accepted a clash request sent by the current client.
-	 * - CLASH_REJECTED: Another client has rejected a clash request sent by the current client.
-	 * - CLASH_WON: Current client has won a clash.
-	 * - CLASH_LOST: Current client has lost a clash.
+	 * Handle all doClash-related messages. In particular, these events are handled:
+	 * - CLASH_REQUEST: Another client has sent a doClash request to the current client.
+	 * - CLASH_ACCEPTED: Another client has accepted a doClash request sent by the current client.
+	 * - CLASH_REJECTED: Another client has rejected a doClash request sent by the current client.
+	 * - CLASH_WON: Current client has won a doClash.
+	 * - CLASH_LOST: Current client has lost a doClash.
 	 *
 	 * @return A new message with the request result.
 	 * Possible results for CLASH_REQUEST are:
-	 * - CLASH_ACCEPTED: The client has accepted the clash request.
-	 * - CLASH_REJECTED: The client has rejected the clash request.
+	 * - CLASH_ACCEPTED: The client has accepted the doClash request.
+	 * - CLASH_REJECTED: The client has rejected the doClash request.
 	 * Possible results for CLASH_ACCEPTED are:
-	 * - START_CLASH: Signal for clash starting.
+	 * - START_CLASH: Signal for doClash starting.
 	 * If no other options are recognized, a null message is returned.
 	 */
 	@Override
 	protected Message handleClash() {
+		/*
+		 * Calls inserted here for preventing other players to enter this node are not necessary, since this scenery
+		 * is not shared among other players. However calls have been added to prevent state errors in the current
+		 * instance of the scenery (some methods inside Place class do check if there are clashes running).
+		 */
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "CLASH_REQUEST":
 				return selectClashRequest();
 			case "CLASH_ACCEPTED":
+				Client.getPosition().getClashManager().signalClashStart();
 				return manageAcceptedClash();
 			case "CLASH_REJECTED":
 				manageRejectedClash();
 				break;
 			case "CLASH_WON":
 				manageWonClash();
+				Client.getPosition().getClashManager().signalClashEnding();
 				break;
 			case "CLASH_LOST":
 				manageLostClash();
+				Client.getPosition().getClashManager().signalClashEnding();
 				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");
