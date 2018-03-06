@@ -5,9 +5,12 @@ import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
 import shared.messaging.MessageTable;
+import shared.scenery.Place;
+import shared.scenery.Scenery;
 import shared.utils.Randomizer;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Callable;
@@ -39,18 +42,33 @@ public class PlayingTimerTask implements Callable<Void> {
 	}
 
 	private void moveUglyPlayer() {
+
 		MessageTable messageTable = Server.sessionManager.chooseAndMoveUglyPlayer(Server.uglyPlayer);
-		Server.getScenery().movePlayer(
-				Server.uglyPlayer,
-				Server.getScenery().getNamePlaces().get(messageTable.get("origin")),
-				Server.getScenery().getNamePlaces().get(messageTable.get("destination"))
-		);
-		messageTable.put("header", "PLAYER_MOVED");
-		Server.connectionManager.broadcastMessage(new Message(
-				Message.Type.SCENERY,
-				new Player("SERVER", Player.Team.SERVER),
-				MessageManager.createXML(messageTable)
-		));
+		Place origin = Server.getScenery().getNamePlaces().get(messageTable.get("origin"));
+		Place destination = Server.getScenery().getNamePlaces().get(messageTable.get("destination"));
+
+		Scenery.SceneryEvent result = Server.getScenery().movePlayer(Server.uglyPlayer, origin,destination);
+
+		if (result == Scenery.SceneryEvent.PLAYER_MOVED) {
+			messageTable.put("header", "PLAYER_MOVED");
+			Server.connectionManager.broadcastMessage(new Message(
+					Message.Type.SCENERY,
+					new Player("SERVER", Player.Team.SERVER),
+					MessageManager.createXML(messageTable)
+			));
+
+			List<Player> victims = destination.getAllPlayers();
+			for (Player player : victims) {
+				Server.connectionManager.sendMessageToPlayer(player, new Message(
+						Message.Type.CLASH,
+						new Player("SERVER", Player.Team.SERVER),
+						player,
+						MessageManager.createXML(new MessageTable("header", "UGLY_VISIT"))
+				));
+				Server.connectionManager.getPlayerHandler(player).getConnectedPlayer().removeBullets();
+			}
+		}
+
 		selectRandomUglyDuration();
 	}
 

@@ -235,6 +235,17 @@ public class Place {
 	}
 
 	/**
+	 * Gets all players present in the current place.
+	 * @return List of present players.
+	 */
+	public List<Player> getAllPlayers() {
+		List<Player> players = new ArrayList<>();
+		players.addAll(goodPlayers);
+		players.addAll(badPlayers);
+		return players;
+	}
+
+	/**
 	 * Gets reference to the current instance of the clash manager.
 	 * @return Instance of the current clash manager.
 	 */

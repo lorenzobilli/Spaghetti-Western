@@ -315,7 +315,7 @@ public class ClientEventHandler extends EventHandler {
 				"Attack: " + attackResult + " - " +
 						"Defense: " + defenseResult,
 				"YOU WON!", JOptionPane.INFORMATION_MESSAGE
-		);    //TODO: Consider auto closeable message option
+		);
 		// Get prize and add corresponding points to the current user, since he has won
 		int prize = Integer.parseInt(MessageManager.convertXML("prize", message.getMessageContent()));
 		Client.getPlayer().addBullets(prize);
@@ -333,10 +333,19 @@ public class ClientEventHandler extends EventHandler {
 				"Attack: " + attackResult + " - " +
 						"Defense: " + defenseResult,
 				"YOU LOOSE!", JOptionPane.INFORMATION_MESSAGE
-		);    //TODO: Consider auto closeable message option
+		);
 		// Remove points from current user, since he has lost
 		Client.getPlayer().removeBullets();
 		System.err.println("Removed present bullets from current player!");
+	}
+
+	private void manageUglyVisit() {
+		JOptionPane.showMessageDialog(
+				Client.mapWindow.getWindow(),
+				"The ugly has just stolen all your bullets!",
+				"UH OH!", JOptionPane.WARNING_MESSAGE
+		);
+		Client.getPlayer().removeBullets();
 	}
 
 	/**
@@ -379,6 +388,8 @@ public class ClientEventHandler extends EventHandler {
 				manageLostClash();
 				Client.getPosition().getClashManager().signalClashEnding();
 				break;
+			case "UGLY_VISIT":
+				manageUglyVisit();
 			default:
 				throw new HandlerException("Invalid message type encountered");
 		}
