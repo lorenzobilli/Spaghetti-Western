@@ -29,7 +29,8 @@ public class PlayingTimerTask implements Callable<Void> {
 	/**
 	 * Determines how much this timer should last.
 	 */
-	private final Duration PLAY = Duration.ofMinutes(10);
+	//private final Duration PLAY = Duration.ofMinutes(10);
+	private final Duration PLAY = Duration.ofMinutes(1);
 
 	/**
 	 * Determines turn interval time.
@@ -145,7 +146,7 @@ public class PlayingTimerTask implements Callable<Void> {
 		));
 		Server.sessionManager.setSessionState(false);
 		Server.consolePrintLine("[*] Session play waitTimer expired");
-		//TODO: Add here winners declaration
+		Server.sessionManager.declareWinners();
 	}
 
 	/**

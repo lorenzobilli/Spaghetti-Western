@@ -31,6 +31,53 @@ public class ClientEventHandler extends EventHandler {
 		super(message);
 	}
 
+	private void showFinalMessage() {
+		switch (MessageManager.convertXML("winners", message.getMessageContent())) {
+			case "DRAW":
+				JOptionPane.showMessageDialog(
+						Client.mapWindow.getWindow(),
+						"It seems no one has won this time...",
+						"DRAW!",
+						JOptionPane.INFORMATION_MESSAGE
+				);
+				break;
+			case "GOOD":
+				if (Client.getPlayer().getTeamAsString().equals("GOOD")) {
+					JOptionPane.showMessageDialog(
+							Client.mapWindow.getWindow(),
+							"Team Good has won!",
+							"YOU WON!",
+							JOptionPane.INFORMATION_MESSAGE
+					);
+				} else {
+					JOptionPane.showMessageDialog(
+							Client.mapWindow.getWindow(),
+							"Team Bad has lost!",
+							"YOU LOSE!",
+							JOptionPane.INFORMATION_MESSAGE
+					);
+				}
+				break;
+			case "BAD":
+				if (Client.getPlayer().getTeamAsString().equals("BAD")) {
+					JOptionPane.showMessageDialog(
+							Client.mapWindow.getWindow(),
+							"Team Bad has won!",
+							"YOU WON!",
+							JOptionPane.INFORMATION_MESSAGE
+					);
+				} else {
+					JOptionPane.showMessageDialog(
+							Client.mapWindow.getWindow(),
+							"Team Good has lost!",
+							"YOU LOSE!",
+							JOptionPane.INFORMATION_MESSAGE
+					);
+				}
+				break;
+		}
+	}
+
 	/**
 	 * Handle all session-related messages. In particular, these events are handled:
 	 * - ACCEPTED: Request has been accepted and client has been registered.
@@ -47,9 +94,13 @@ public class ClientEventHandler extends EventHandler {
 			case "MAX_NUM_REACHED":
 			case "SESSION_RUNNING":
 				return message;
+			case "SESSION_ENDED":
+				showFinalMessage();
+				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");
 		}
+		return null;
 	}
 
 	/**

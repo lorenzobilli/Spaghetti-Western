@@ -165,4 +165,21 @@ public class SessionManager {
 		messageTable.put("destination", Server.getScenery().getDestination(selectedPath).toString());
 		return messageTable;
 	}
+
+	public void declareWinners() {
+		MessageTable messageTable = new MessageTable();
+		messageTable.put("header", "SESSION_ENDED");
+		if (Server.getGoodTeamBullets() == Server.getBadTeamBullets()) {
+			messageTable.put("winners", "DRAW");
+		} else if (Server.getGoodTeamBullets() > Server.getBadTeamBullets()) {
+			messageTable.put("winners", "GOOD");
+		} else if (Server.getGoodTeamBullets() < Server.getBadTeamBullets()) {
+			messageTable.put("winners", "BAD");
+		}
+		Server.connectionManager.broadcastMessage(new Message(
+				Message.Type.SESSION,
+				new Player("SERVER", Player.Team.SERVER),
+				MessageManager.createXML(messageTable)
+		));
+	}
 }
