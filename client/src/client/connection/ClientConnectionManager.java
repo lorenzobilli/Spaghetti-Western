@@ -50,6 +50,11 @@ public class ClientConnectionManager implements Runnable {
 	private BufferedReader receiveStream;
 
 	/**
+	 * Signals when the client should continue to talk with the server.
+	 */
+	private volatile boolean keepAlive;
+
+	/**
 	 * Initializes the internal socket and sending/receiving streams, then passes control to methods for actual
 	 * connection initialization and enters in the "big loop" (listens for messages and sends responses accordingly).
 	 * When the client exists from the loop, this method will initiate the shutdown routine.
@@ -57,6 +62,7 @@ public class ClientConnectionManager implements Runnable {
     @Override
     public void run() {
         try {
+        	keepAlive = true;
             socket = new Socket(HOSTNAME, PORT_NUMBER);
             sendStream = new PrintWriter(socket.getOutputStream(), true);
             receiveStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -77,6 +83,7 @@ public class ClientConnectionManager implements Runnable {
 	    Client.clientWindow.createWaitingCountdown();
 
         talkWithServer();
+
         shutdownClient();
     }
 
@@ -94,6 +101,13 @@ public class ClientConnectionManager implements Runnable {
 	 */
 	public synchronized BufferedReader getReceiveStream() {
         return receiveStream;
+    }
+
+	/**
+	 * Signal that this client is ready to terminate the connection with the server.
+	 */
+	public void signalConnectionTermination() {
+		keepAlive = false;
     }
 
     private void invokeLoginDialog() {
@@ -192,7 +206,7 @@ public class ClientConnectionManager implements Runnable {
 	 * asynchronously to the server. Finally, the client enters the listening state again, and the loop repeats.
 	 */
 	private void talkWithServer() {
-        while (true) {  //TODO: implement here loop exit for correct client shutdown
+        while (keepAlive) {
             try {
                 // Wait for a message and pass it to the handler
                 Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));

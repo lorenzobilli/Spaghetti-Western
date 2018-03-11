@@ -45,7 +45,7 @@ public class ServerConnectionManager implements Runnable {
 	/**
 	 * Flag used to shutdown the connection
 	 */
-    private volatile boolean keepServerAlive = true;    //TODO: Reimplement shutdown procedure
+    private volatile boolean keepAlive = true;
 
 	/**
 	 * Initializes the internal socket and start listening for incoming connections.
@@ -60,6 +60,7 @@ public class ServerConnectionManager implements Runnable {
             e.printStackTrace();
         }
         acceptIncomingConnections();
+        executeServerShutdown();
     }
 
 	/**
@@ -68,7 +69,7 @@ public class ServerConnectionManager implements Runnable {
 	 */
 	private void acceptIncomingConnections() {
             Server.consolePrintLine("[*] server.Server is ready for connection requests");
-        while (keepServerAlive) {
+        while (keepAlive) {
             try {
                 connectionHandlers.add(new ConnectionHandler(socket.accept()));
                 clientThreads.add(new Thread(connectionHandlers.get(connectionHandlers.size() - 1)));
@@ -152,12 +153,21 @@ public class ServerConnectionManager implements Runnable {
         }
     }
 
+    public void terminateConnection(Player player) {
+		getPlayerHandler(player).signalConnectionTermination();
+    }
+
+    public void terminateAllConnections() {
+		for (ConnectionHandler connection : connectionHandlers) {
+			connection.signalConnectionTermination();
+		}
+    }
+
 	/**
 	 * Shuts down the server.
 	 */
-    public void shutdown() {
-        keepServerAlive = false;
-        executeServerShutdown();
+    public void signalServerTermination() {
+        keepAlive = false;
     }
 
 	/**
@@ -167,9 +177,7 @@ public class ServerConnectionManager implements Runnable {
 	private void executeServerShutdown() {
         Server.consolePrintLine("[!] Initiating server shutdown");
         Server.consolePrintLine("[*] Sending terminating messages to all clients...");
-        for (ConnectionHandler handler : connectionHandlers) {
-            handler.terminateUserConnection();
-        }
+        terminateAllConnections();
         for (Thread thread : clientThreads) {
             try {
                 thread.join();
@@ -179,7 +187,7 @@ public class ServerConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
-        Server.consolePrintLine("[*] server.Server is shutting down...");
+        Server.consolePrintLine("[*] Server is shutting down...");
         try {
             socket.close();
         } catch (IOException e) {
@@ -187,6 +195,6 @@ public class ServerConnectionManager implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
-        Server.consolePrintLine("[*] server.Server has been shut down correctly");
+        Server.consolePrintLine("[*] Server has been shut down correctly");
     }
 }

@@ -110,7 +110,7 @@ public class Server {
 	 */
 	//TODO: Implement correct server shutdown.
 	public static void stopServer() {
-        connectionManager.shutdown();
+        connectionManager.signalServerTermination();
         try {
             connectionThread.join();
         } catch (InterruptedException e) {

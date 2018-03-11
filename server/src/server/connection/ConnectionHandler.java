@@ -1,6 +1,7 @@
 package server.connection;
 
 import server.Server;
+import server.gaming.PlayerManager;
 import server.handle.ServerEventHandler;
 import shared.communication.Receiver;
 import shared.communication.Sender;
@@ -64,6 +65,7 @@ public class ConnectionHandler implements Runnable {
 	@Override
     public void run() {
         try {
+        	keepAlive = true;
             sendStream = new PrintWriter(connection.getOutputStream(), true);
             receiveStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         } catch (IOException e) {
@@ -74,6 +76,7 @@ public class ConnectionHandler implements Runnable {
         Server.consolePrintLine("[*] A client has connected to the server");
         initUserConnection();
         talkWithClient();
+        shutdownConnection();
     }
 
 	/**
@@ -98,6 +101,13 @@ public class ConnectionHandler implements Runnable {
 	 */
 	public synchronized BufferedReader getReceiveStream() {
         return receiveStream;
+    }
+
+	/**
+	 * Signal that this connection thread is ready to terminate the connection with the server.
+	 */
+	public void signalConnectionTermination() {
+		keepAlive = false;
     }
 
     private boolean checkConnectionResponse(Message message) {
@@ -160,7 +170,7 @@ public class ConnectionHandler implements Runnable {
 	 * asynchronously to the client. Finally, the server enters the listening state again, and the loop repeats.
 	 */
 	private void talkWithClient() {
-        while (true) {  //TODO: implement here loop exit for correct connection shutdown
+        while (keepAlive) {
             try {
                 // Wait for a message and pass it to the handler
                 Future<Message> receive = Server.globalThreadPool.submit(new Receiver(getReceiveStream()));
@@ -179,11 +189,26 @@ public class ConnectionHandler implements Runnable {
                 e.printStackTrace();
             }
         }
-        shutdownConnection();
     }
 
     private void shutdownConnection() {
-        Server.consolePrintLine("[*] Shutting down connection with " + connectedPlayer.getName() + "...");
+		Server.consolePrintLine("Sending terminating message to " + connectedPlayer.getName());
+		Future sendTerminatingConnectionMessage = Server.globalThreadPool.submit(new Sender(
+				new Message(
+						Message.Type.SESSION,
+						new Player("SERVER", Player.Team.SERVER),
+						connectedPlayer,
+						MessageManager.createXML(new MessageTable("header", "SESSION_TERMINATED"))
+				), getSendStream()
+		));
+	    try {
+		    sendTerminatingConnectionMessage.get();
+	    } catch (InterruptedException | ExecutionException e) {
+		    e.printStackTrace();
+	    }
+	    Server.consolePrintLine("Removing current user from connected players...");
+	    PlayerManager.removePlayer(connectedPlayer);
+	    Server.consolePrintLine("[*] Shutting down connection with " + connectedPlayer.getName() + "...");
         try {
             connection.shutdownInput();
             connection.shutdownOutput();
@@ -194,26 +219,5 @@ public class ConnectionHandler implements Runnable {
             e.printStackTrace();
         }
         Server.consolePrintLine("[*] Connection with " + connectedPlayer.getName() + " closed");
-    }
-
-    //TODO: Implement this the proper way
-    public void terminateUserConnection() {
-        Message notifyConnectionTerm = new Message(
-                Message.Type.SESSION,
-                new Player("SERVER", Player.Team.SERVER),
-                connectedPlayer,
-		        MessageManager.createXML(new MessageTable("header", "DISCONNECTED"))
-        );
-        Server.consolePrintLine("[*] Sending terminating message to: " + connectedPlayer.getName());
-            //TODO: Check if an async call is a better option...
-        Future send = Server.globalThreadPool.submit(new Sender(notifyConnectionTerm, getSendStream()));
-        keepAlive = false;
-        try {
-            connection.close();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
     }
 }
