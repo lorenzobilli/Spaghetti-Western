@@ -102,22 +102,21 @@ public class Server {
 	 * Starts the server by executing the internal connection thread.
 	 */
 	public static void startServer() {
+		serverWindow.disableClosingButton();
         connectionThread.start();
     }
 
 	/**
 	 * Stop the server by calling shutdown() on the internal ConnectionManager
 	 */
-	//TODO: Implement correct server shutdown.
 	public static void stopServer() {
         connectionManager.signalServerTermination();
-        try {
-            connectionThread.join();
-        } catch (InterruptedException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
+		try {
+			connectionThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		serverWindow.enableClosingButton();
     }
 
 	/**

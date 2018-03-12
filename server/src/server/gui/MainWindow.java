@@ -11,6 +11,8 @@ import java.security.InvalidParameterException;
  */
 public class MainWindow {
 
+	private static JFrame window;
+
 	/**
 	 * Text area used for showing console output.
 	 */
@@ -26,7 +28,7 @@ public class MainWindow {
         }
 
         // Window settings
-        JFrame window = new JFrame(title);
+        window = new JFrame(title);
         window.setSize(800, 600);
 
         // Setting JFrame main layout manager
@@ -63,6 +65,20 @@ public class MainWindow {
         window.setResizable(true);
         window.setLocation(10, 10);
         window.setVisible(true);
+    }
+
+	/**
+	 * Enables the closing button of the server window.
+	 */
+	public void enableClosingButton() {
+    	window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+	/**
+	 * Disables the closing button of the server window.
+	 */
+	public void disableClosingButton() {
+		window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     }
 
 	/**

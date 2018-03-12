@@ -7,6 +7,7 @@ import shared.communication.Sender;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -74,7 +75,16 @@ public class ServerConnectionManager implements Runnable {
                 connectionHandlers.add(new ConnectionHandler(socket.accept()));
                 clientThreads.add(new Thread(connectionHandlers.get(connectionHandlers.size() - 1)));
                 clientThreads.get(clientThreads.size() - 1).start();
-            } catch (IOException e) {
+            } catch (SocketException e) {
+            	if (e.getMessage().equals("socket closed")) {   // Socket may be closed by the signal termination
+            		Server.consolePrintLine("Server socket closed due to termination signal");
+	            } else {
+            		e.getMessage();
+            		e.getCause();
+            		e.printStackTrace();
+	            }
+            }
+            catch (IOException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
@@ -168,6 +178,7 @@ public class ServerConnectionManager implements Runnable {
 	 */
     public void signalServerTermination() {
         keepAlive = false;
+        executeServerShutdown();
     }
 
 	/**
