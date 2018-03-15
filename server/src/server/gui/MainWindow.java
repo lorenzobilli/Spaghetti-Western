@@ -34,29 +34,16 @@ public class MainWindow {
         content.setLayout(new BorderLayout());
 
         // Configuring central part of the window
-        JPanel upperPanel = new JPanel();
-        upperPanel.setLayout(new GridLayout());
-        content.add(upperPanel, BorderLayout.CENTER);
-
-        // Configuring lower part of the window
-        JPanel lowerPanel = new JPanel();
-        lowerPanel.setLayout(new FlowLayout());
-        content.add(lowerPanel, BorderLayout.PAGE_END);
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new GridLayout());
+        content.add(contentPanel, BorderLayout.CENTER);
 
         // Setting up the console
         consoleOutput = new JTextArea();
         consoleOutput.setBackground(Color.BLACK);
         consoleOutput.setForeground(Color.WHITE);
         JScrollPane consoleScroll = new JScrollPane(consoleOutput);
-        upperPanel.add(consoleScroll);
-
-        // Setting up buttons
-        JButton startButton = new JButton("START");
-        startButton.addActionListener(e -> Server.startServer());
-        JButton stopButton = new JButton("STOP");
-        stopButton.addActionListener(e -> Server.stopServer());
-        lowerPanel.add(startButton);
-        lowerPanel.add(stopButton);
+        contentPanel.add(consoleScroll);
 
         // Setting latest JFrame options before launch
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

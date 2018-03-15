@@ -1,6 +1,7 @@
 package server;
 
 import server.connection.ServerConnectionManager;
+import server.gaming.PlayerManager;
 import server.gaming.SessionManager;
 import server.gui.MainWindow;
 import server.scheduler.RoundRobinScheduler;
@@ -20,12 +21,12 @@ public class Server {
 	/**
 	 * Defines the name of the game.
 	 */
-	public final String GAME_NAME = "Spaghetti Western";
+	private static final String GAME_NAME = "Spaghetti Western";
 
 	/**
 	 * Defines maximum number of concurrently connected players.
 	 */
-    public final static int MAX_PLAYERS = 30;
+    public static final int MAX_PLAYERS = 30;
 
 	/**
 	 * Main window used by the server.
@@ -61,12 +62,12 @@ public class Server {
 	/**
 	 * Stores the current number of bullets for the "good" team.
 	 */
-    private static int goodTeamBullets = 0;
+    private static int goodTeamBullets;
 
 	/**
 	 * Stores the current number of bullets for the "bad" team.
 	 */
-	private static int badTeamBullets = 0;
+	private static int badTeamBullets;
 
 	/**
 	 * Main method of server.Server.
@@ -74,12 +75,13 @@ public class Server {
 	 * @param args Main method's arguments. Not used here.
 	 */
     public static void main(String[] args) {
-        serverWindow = new MainWindow("Spaghetti Western server");
-        connectionManager = new ServerConnectionManager();
-        sessionManager = new SessionManager();
-        turnScheduler = new RoundRobinScheduler();
-        connectionThread = new Thread(connectionManager);
+        serverWindow = new MainWindow(GAME_NAME);
         globalThreadPool = Executors.newCachedThreadPool();
+
+        configureServerObjects();
+        configureConnection();
+
+        startServer();
     }
 
 	/**
@@ -98,26 +100,45 @@ public class Server {
         serverWindow.appendText(message + "\n");
     }
 
+	private static void configureServerObjects() {
+		consolePrintLine("Configuring server objects...");
+		sessionManager = new SessionManager();
+		turnScheduler = new RoundRobinScheduler();
+		badTeamBullets = 0;
+		goodTeamBullets = 0;
+	}
+
+	private static void configureConnection() {
+		consolePrint("Creating new connection thread...");
+		connectionManager = new ServerConnectionManager();
+		connectionThread = new Thread(connectionManager);
+		consolePrintLine("...Done.");
+	}
+
 	/**
 	 * Starts the server by executing the internal connection thread.
 	 */
-	public static void startServer() {
+	private static void startServer() {
+		consolePrintLine("[!] Server is starting up...");
+		consolePrintLine("\nWelcome to " + GAME_NAME + "!\n");
         connectionThread.start();
     }
 
-	/**
-	 * Stop the server by calling shutdown() on the internal ConnectionManager
-	 */
-	//TODO: Implement correct server shutdown.
-	public static void stopServer() {
-        connectionManager.shutdown();
-        try {
-            connectionThread.join();
-        } catch (InterruptedException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
+    public static void resetServer() {
+		consolePrintLine("[!] Initiating server reset...");
+
+		consolePrint("Killing all connections...");
+		connectionManager.resetAllConnections();
+		consolePrintLine("...Done.");
+		consolePrint("Killing connection thread...");
+		connectionThread.interrupt();
+		consolePrintLine("...Done.");
+
+		configureServerObjects();
+		configureConnection();
+	    PlayerManager.removeAllPlayers();
+
+	    startServer();
     }
 
 	/**
