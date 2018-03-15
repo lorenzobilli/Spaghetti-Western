@@ -71,6 +71,15 @@ public class PlayerManager {
     }
 
 	/**
+	 * Removes all players from the system.
+	 */
+	public static void removeAllPlayers() {
+		for (Player player : connectedPlayers) {
+			connectedPlayers.remove(player);
+		}
+    }
+
+	/**
 	 * Gets player with the given index in the connected player list.
 	 * @param index Index of the player.
 	 * @return Player corresponding to the given index in the list.
