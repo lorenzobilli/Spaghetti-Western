@@ -94,6 +94,8 @@ public class SessionManager {
 		Server.uglyPlayer = new Player("UGLY", Player.Team.UGLY);
 		Place randomPlace = Server.getScenery().getIdPlaces().get(randomId);
 		Server.getScenery().insertPlayer(Server.uglyPlayer, randomPlace);    // No checks here since the ugly is always inserted
+		Server.uglyPlayer.setPosition(randomPlace);
+		Server.consolePrintLine("Ugly player inserted inside scenery place \"" + randomPlace.getPlaceName() + "\"");
 		MessageTable messageTable = new MessageTable();
 		messageTable.put("header", "PLAYER_INSERTED");
 		messageTable.put("player_name", Server.uglyPlayer.getName());
@@ -161,8 +163,8 @@ public class SessionManager {
 			current++;
 		}
 		MessageTable messageTable = new MessageTable();
-		messageTable.put("origin", Server.getScenery().getDeparture(selectedPath).toString());
-		messageTable.put("destination", Server.getScenery().getDestination(selectedPath).toString());
+		messageTable.put("origin", Server.getScenery().getDeparture(selectedPath).getPlaceName());
+		messageTable.put("destination", Server.getScenery().getDestination(selectedPath).getPlaceName());
 		return messageTable;
 	}
 
