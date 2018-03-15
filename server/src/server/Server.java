@@ -80,6 +80,7 @@ public class Server {
         turnScheduler = new RoundRobinScheduler();
         connectionThread = new Thread(connectionManager);
         globalThreadPool = Executors.newCachedThreadPool();
+        startServer();
     }
 
 	/**
@@ -102,7 +103,6 @@ public class Server {
 	 * Starts the server by executing the internal connection thread.
 	 */
 	public static void startServer() {
-		serverWindow.disableClosingButton();
         connectionThread.start();
     }
 
