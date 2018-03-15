@@ -3,8 +3,6 @@ package shared.scenery;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import shared.gaming.Player;
-import shared.messaging.MessageTable;
-import shared.utils.Randomizer;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -117,6 +115,13 @@ public abstract class Scenery {
 	 * @return A SceneryEvent containing the result of the operation.
 	 */
 	public SceneryEvent insertPlayer(Player player, Place place) {
+		if (player == null) {
+			throw new InvalidParameterException("Player cannot be null");
+		}
+		if (place == null) {
+			throw new InvalidParameterException("Place cannot be null");
+		}
+
 		if (!sceneryGraph.containsVertex(place)) {
 			throw new InvalidParameterException("Specified place doesn't exist inside scenery");
 		}
@@ -135,6 +140,16 @@ public abstract class Scenery {
 	 * @return A SceneryEvent containing the result of the operation.
 	 */
 	public SceneryEvent movePlayer(Player player, Place origin, Place destination) {
+		if (player == null) {
+			throw new InvalidParameterException("Player cannot be null");
+		}
+		if (origin == null) {
+			throw new InvalidParameterException("Origin place cannot be null");
+		}
+		if (destination == null) {
+			throw new InvalidParameterException("Destination place cannot be null");
+		}
+
 		if (!origin.isPlayerPresent(player)) {
 			throw new InvalidParameterException("Specified player is not present inside scenery");
 		}

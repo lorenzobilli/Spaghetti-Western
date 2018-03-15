@@ -152,6 +152,7 @@ public class Place {
 	        case UGLY:
 	        	isUglyPresent = true;
 	        	playerAdded = true;
+	        	break;
         }
         return playerAdded;
     }
@@ -186,6 +187,7 @@ public class Place {
                 break;
 	        case UGLY:
 	        	isUglyPresent = false;
+	        	break;
         }
         return playerRemoved;
     }
@@ -214,6 +216,7 @@ public class Place {
                 break;
 	        case UGLY:
 	        	playerFound = isUglyPresent;
+	        	break;
         }
         return playerFound;
     }
