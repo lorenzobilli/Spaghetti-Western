@@ -107,19 +107,6 @@ public class Server {
     }
 
 	/**
-	 * Stop the server by calling shutdown() on the internal ConnectionManager
-	 */
-	public static void stopServer() {
-        connectionManager.signalServerTermination();
-		try {
-			connectionThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		serverWindow.enableClosingButton();
-    }
-
-	/**
 	 * Get the scenery used in the current session.
 	 * @return the used scenery.
 	 */
