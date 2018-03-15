@@ -45,11 +45,6 @@ public class ConnectionHandler implements Runnable {
     private Player connectedPlayer;
 
 	/**
-	 * Stores status of the connection
-	 */
-	private volatile boolean keepAlive = true;
-
-	/**
 	 * Creates new server.connection.ConnectionHandler by assigning the internal socket to another initialized socket.
 	 * @param connection Socket that will be used for the connection. An active client must be already assigned to this
 	 *                   socket prior run() call.
@@ -65,7 +60,6 @@ public class ConnectionHandler implements Runnable {
 	@Override
     public void run() {
         try {
-        	keepAlive = true;
             sendStream = new PrintWriter(connection.getOutputStream(), true);
             receiveStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         } catch (IOException e) {
@@ -101,13 +95,6 @@ public class ConnectionHandler implements Runnable {
 	 */
 	public synchronized BufferedReader getReceiveStream() {
         return receiveStream;
-    }
-
-	/**
-	 * Signal that this connection thread is ready to terminate the connection with the server.
-	 */
-	public void signalConnectionTermination() {
-		keepAlive = false;
     }
 
     private boolean checkConnectionResponse(Message message) {
@@ -170,7 +157,7 @@ public class ConnectionHandler implements Runnable {
 	 * asynchronously to the client. Finally, the server enters the listening state again, and the loop repeats.
 	 */
 	private void talkWithClient() {
-        while (keepAlive) {
+        while (true) {
             try {
                 // Wait for a message and pass it to the handler
                 Future<Message> receive = Server.globalThreadPool.submit(new Receiver(getReceiveStream()));

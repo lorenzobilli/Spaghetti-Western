@@ -7,7 +7,6 @@ import shared.communication.Sender;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.SocketException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -44,11 +43,6 @@ public class ServerConnectionManager implements Runnable {
 	private ArrayList<Thread> clientThreads = new ArrayList<>();
 
 	/**
-	 * Flag used to shutdown the connection
-	 */
-    private volatile boolean keepAlive = true;
-
-	/**
 	 * Initializes the internal socket and start listening for incoming connections.
 	 */
     @Override
@@ -60,8 +54,8 @@ public class ServerConnectionManager implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
+
         acceptIncomingConnections();
-        executeServerShutdown();
     }
 
 	/**
@@ -70,21 +64,12 @@ public class ServerConnectionManager implements Runnable {
 	 */
 	private void acceptIncomingConnections() {
             Server.consolePrintLine("[*] server.Server is ready for connection requests");
-        while (keepAlive) {
+        while (true) {
             try {
                 connectionHandlers.add(new ConnectionHandler(socket.accept()));
                 clientThreads.add(new Thread(connectionHandlers.get(connectionHandlers.size() - 1)));
                 clientThreads.get(clientThreads.size() - 1).start();
-            } catch (SocketException e) {
-            	if (e.getMessage().equals("socket closed")) {   // Socket may be closed by the signal termination
-            		Server.consolePrintLine("Server socket closed due to termination signal");
-	            } else {
-            		e.getMessage();
-            		e.getCause();
-            		e.printStackTrace();
-	            }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.getMessage();
                 e.getCause();
                 e.printStackTrace();
@@ -161,51 +146,5 @@ public class ServerConnectionManager implements Runnable {
         for (ConnectionHandler connectedClient : connectionHandlers) {
             Server.globalThreadPool.submit(new Sender(message, connectedClient.getSendStream()));
         }
-    }
-
-    public void terminateConnection(Player player) {
-		getPlayerHandler(player).signalConnectionTermination();
-    }
-
-    public void terminateAllConnections() {
-		for (ConnectionHandler connection : connectionHandlers) {
-			connection.signalConnectionTermination();
-		}
-    }
-
-	/**
-	 * Shuts down the server.
-	 */
-    public void signalServerTermination() {
-        keepAlive = false;
-        executeServerShutdown();
-    }
-
-	/**
-	 * Sends a notification to all connected clients about server shutting down procedure and disconnects them, finally
-	 * it closes the socket and shuts down the server.
-	 */
-	private void executeServerShutdown() {
-        Server.consolePrintLine("[!] Initiating server shutdown");
-        Server.consolePrintLine("[*] Sending terminating messages to all clients...");
-        terminateAllConnections();
-        for (Thread thread : clientThreads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-        }
-        Server.consolePrintLine("[*] Server is shutting down...");
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        Server.consolePrintLine("[*] Server has been shut down correctly");
     }
 }
