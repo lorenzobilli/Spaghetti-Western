@@ -43,11 +43,6 @@ public class ServerConnectionManager implements Runnable {
 	private ArrayList<Thread> clientThreads = new ArrayList<>();
 
 	/**
-	 * Flag used to shutdown the connection
-	 */
-    private volatile boolean keepServerAlive = true;    //TODO: Reimplement shutdown procedure
-
-	/**
 	 * Initializes the internal socket and start listening for incoming connections.
 	 */
     @Override
@@ -59,6 +54,7 @@ public class ServerConnectionManager implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
+
         acceptIncomingConnections();
     }
 
@@ -68,7 +64,7 @@ public class ServerConnectionManager implements Runnable {
 	 */
 	private void acceptIncomingConnections() {
             Server.consolePrintLine("[*] server.Server is ready for connection requests");
-        while (keepServerAlive) {
+        while (true) {
             try {
                 connectionHandlers.add(new ConnectionHandler(socket.accept()));
                 clientThreads.add(new Thread(connectionHandlers.get(connectionHandlers.size() - 1)));
@@ -152,41 +148,9 @@ public class ServerConnectionManager implements Runnable {
         }
     }
 
-	/**
-	 * Shuts down the server.
-	 */
-    public void shutdown() {
-        keepServerAlive = false;
-        executeServerShutdown();
-    }
-
-	/**
-	 * Sends a notification to all connected clients about server shutting down procedure and disconnects them, finally
-	 * it closes the socket and shuts down the server.
-	 */
-	private void executeServerShutdown() {
-        Server.consolePrintLine("[!] Initiating server shutdown");
-        Server.consolePrintLine("[*] Sending terminating messages to all clients...");
-        for (ConnectionHandler handler : connectionHandlers) {
-            handler.terminateUserConnection();
-        }
-        for (Thread thread : clientThreads) {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-        }
-        Server.consolePrintLine("[*] server.Server is shutting down...");
-        try {
-            socket.close();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        Server.consolePrintLine("[*] server.Server has been shut down correctly");
+    public void resetAllConnections() {
+		for (Thread connectionThread : clientThreads) {
+			connectionThread.interrupt();
+		}
     }
 }

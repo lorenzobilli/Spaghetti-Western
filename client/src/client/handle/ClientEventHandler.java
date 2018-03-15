@@ -18,6 +18,8 @@ import shared.scenery.SmallScenery;
 
 import javax.swing.*;
 
+import static java.lang.System.exit;
+
 /**
  * client.Client implementation of the Event Handler
  */
@@ -29,6 +31,54 @@ public class ClientEventHandler extends EventHandler {
 	 */
 	public ClientEventHandler(Message message) {
 		super(message);
+	}
+
+	private void showFinalMessage() {
+		switch (MessageManager.convertXML("winners", message.getMessageContent())) {
+			case "DRAW":
+				JOptionPane.showMessageDialog(
+						Client.mapWindow.getWindow(),
+						"It seems no one has won this time...",
+						"DRAW!",
+						JOptionPane.INFORMATION_MESSAGE
+				);
+				break;
+			case "GOOD":
+				if (Client.getPlayer().getTeamAsString().equals("GOOD")) {
+					JOptionPane.showMessageDialog(
+							Client.mapWindow.getWindow(),
+							"Team Good has won!",
+							"YOU WON!",
+							JOptionPane.INFORMATION_MESSAGE
+					);
+				} else {
+					JOptionPane.showMessageDialog(
+							Client.mapWindow.getWindow(),
+							"Team Bad has lost!",
+							"YOU LOSE!",
+							JOptionPane.INFORMATION_MESSAGE
+					);
+				}
+				break;
+			case "BAD":
+				if (Client.getPlayer().getTeamAsString().equals("BAD")) {
+					JOptionPane.showMessageDialog(
+							Client.mapWindow.getWindow(),
+							"Team Bad has won!",
+							"YOU WON!",
+							JOptionPane.INFORMATION_MESSAGE
+					);
+				} else {
+					JOptionPane.showMessageDialog(
+							Client.mapWindow.getWindow(),
+							"Team Good has lost!",
+							"YOU LOSE!",
+							JOptionPane.INFORMATION_MESSAGE
+					);
+				}
+				break;
+		}
+		exit(0);
 	}
 
 	/**
@@ -47,9 +97,13 @@ public class ClientEventHandler extends EventHandler {
 			case "MAX_NUM_REACHED":
 			case "SESSION_RUNNING":
 				return message;
+			case "SESSION_ENDED":
+				showFinalMessage();
+				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");
 		}
+		return null;
 	}
 
 	/**
@@ -241,6 +295,8 @@ public class ClientEventHandler extends EventHandler {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "PLAYER_MOVED":
 				moveCurrentPlayer();
+				break;
+			case "PLAYER_NOT_MOVED":
 				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");

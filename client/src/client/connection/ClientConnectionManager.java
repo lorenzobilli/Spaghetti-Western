@@ -77,7 +77,6 @@ public class ClientConnectionManager implements Runnable {
 	    Client.clientWindow.createWaitingCountdown();
 
         talkWithServer();
-        shutdownClient();
     }
 
 	/**
@@ -192,7 +191,7 @@ public class ClientConnectionManager implements Runnable {
 	 * asynchronously to the server. Finally, the client enters the listening state again, and the loop repeats.
 	 */
 	private void talkWithServer() {
-        while (true) {  //TODO: implement here loop exit for correct client shutdown
+        while (true) {
             try {
                 // Wait for a message and pass it to the handler
                 Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
@@ -208,38 +207,5 @@ public class ClientConnectionManager implements Runnable {
                 e.printStackTrace();
             }
         }
-    }
-
-	/**
-	 * Sends a message to the server to notify that the current client will disconnect from the system, then shuts down
-	 * the socket manually if auto-closing system fails.
-	 */
-	private void shutdownClient() {
-        System.out.println("[*] Terminating current client session...");
-        Message terminateCurrentSession = new Message(
-                Message.Type.SESSION,
-                Client.getPlayer(),
-		        MessageManager.createXML(new MessageTable("header", "SESSION_STOP_REQUEST"))
-        );
-        try {
-            Future send = Client.globalThreadPool.submit(new Sender(terminateCurrentSession, getSendStream()));
-            send.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        if (!socket.isClosed()) {   // Never trust autocloseable objects :D
-            try {
-                socket.shutdownInput();
-                socket.shutdownOutput();
-                socket.close();
-            } catch (IOException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-        }
-        System.out.println("[*] Session terminated correctly");
     }
 }

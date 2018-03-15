@@ -1,6 +1,7 @@
 package server.connection;
 
 import server.Server;
+import server.gaming.PlayerManager;
 import server.handle.ServerEventHandler;
 import shared.communication.Receiver;
 import shared.communication.Sender;
@@ -44,11 +45,6 @@ public class ConnectionHandler implements Runnable {
     private Player connectedPlayer;
 
 	/**
-	 * Stores status of the connection
-	 */
-	private volatile boolean keepAlive = true;
-
-	/**
 	 * Creates new server.connection.ConnectionHandler by assigning the internal socket to another initialized socket.
 	 * @param connection Socket that will be used for the connection. An active client must be already assigned to this
 	 *                   socket prior run() call.
@@ -72,7 +68,9 @@ public class ConnectionHandler implements Runnable {
             e.printStackTrace();
         }
         Server.consolePrintLine("[*] A client has connected to the server");
+
         initUserConnection();
+
         talkWithClient();
     }
 
@@ -160,7 +158,7 @@ public class ConnectionHandler implements Runnable {
 	 * asynchronously to the client. Finally, the server enters the listening state again, and the loop repeats.
 	 */
 	private void talkWithClient() {
-        while (true) {  //TODO: implement here loop exit for correct connection shutdown
+        while (true) {
             try {
                 // Wait for a message and pass it to the handler
                 Future<Message> receive = Server.globalThreadPool.submit(new Receiver(getReceiveStream()));
@@ -168,9 +166,6 @@ public class ConnectionHandler implements Runnable {
                 // Retrieve generated message from handle, print it on the server console and send it back
                 Message message = handle.get();
                 if (message != null) {
-                    if (MessageManager.convertXML("header", message.getMessageContent()).equals("SHUTDOWN")) {
-                        break;
-                    }
                     Server.globalThreadPool.submit(new Sender(message, getSendStream()));
                 }
             } catch (InterruptedException | ExecutionException e) {
@@ -178,42 +173,6 @@ public class ConnectionHandler implements Runnable {
                 e.getCause();
                 e.printStackTrace();
             }
-        }
-        shutdownConnection();
-    }
-
-    private void shutdownConnection() {
-        Server.consolePrintLine("[*] Shutting down connection with " + connectedPlayer.getName() + "...");
-        try {
-            connection.shutdownInput();
-            connection.shutdownOutput();
-            connection.close();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        Server.consolePrintLine("[*] Connection with " + connectedPlayer.getName() + " closed");
-    }
-
-    //TODO: Implement this the proper way
-    public void terminateUserConnection() {
-        Message notifyConnectionTerm = new Message(
-                Message.Type.SESSION,
-                new Player("SERVER", Player.Team.SERVER),
-                connectedPlayer,
-		        MessageManager.createXML(new MessageTable("header", "DISCONNECTED"))
-        );
-        Server.consolePrintLine("[*] Sending terminating message to: " + connectedPlayer.getName());
-            //TODO: Check if an async call is a better option...
-        Future send = Server.globalThreadPool.submit(new Sender(notifyConnectionTerm, getSendStream()));
-        keepAlive = false;
-        try {
-            connection.close();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
         }
     }
 }
