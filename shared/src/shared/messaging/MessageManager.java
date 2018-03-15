@@ -48,30 +48,21 @@ public class MessageManager {
 	 * @param messageTable MessageTable used for translation.
 	 * @return Translated message in XML format.
 	 */
-	public static String createXML(MessageTable messageTable) {
-    	if (messageTable == null) {
-    		throw new InvalidParameterException("shared.messaging.Message table cannot be null");
-	    }
-	    String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-    	String begin = "<message>";
-    	String end = "</message>";
-    	String elem = "";
+    public static String createXML(MessageTable messageTable) {
+		if (messageTable == null) {
+			throw new InvalidParameterException("Message table cannot be null");
+		}
+		String header = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	    String begin = "<message>";
+	    String end = "</message>";
+	    String elem = "";
 
-    	for (String value : messageTable.values()) {
-    		String key = null;
-		    Set<Map.Entry<String, String>> entries = messageTable.entrySet();
-    		for (Map.Entry<String, String> entry : entries) {
-    			if (entry.getValue().equals(value)) {
-    				key = entry.getKey();
-			    }
-		    }
-		    if (key == null) {  // A key should always be found, otherwise the hash table may not be correctly created
-    			throw new NoSuchElementException("Key-value mismatching error");
-		    }
-		    elem = elem.concat("<" + key + ">" + value + "</" + key + ">");
+	    Set<Map.Entry<String, String>> tableEntries = messageTable.entrySet();
+	    for (Map.Entry<String, String> entry : tableEntries) {
+	    	elem = elem.concat("<" + entry.getKey() + ">" + entry.getValue() + "</" + entry.getKey() + ">");
 	    }
 
-    	return header + begin + elem + end;
+	    return header + begin + elem + end;
     }
 
 	/**
