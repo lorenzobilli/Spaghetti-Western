@@ -201,6 +201,7 @@ public class PlayingTimerTask implements Callable<Void> {
 				if (playDuration.isZero()) {
 					this.cancel();
 					sendTimeOutSignal();
+					Server.resetServer();
 				}
 			}
 		};

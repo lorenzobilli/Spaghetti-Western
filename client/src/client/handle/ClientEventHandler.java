@@ -18,6 +18,8 @@ import shared.scenery.SmallScenery;
 
 import javax.swing.*;
 
+import static java.lang.System.exit;
+
 /**
  * client.Client implementation of the Event Handler
  */
@@ -76,6 +78,7 @@ public class ClientEventHandler extends EventHandler {
 				}
 				break;
 		}
+		exit(0);
 	}
 
 	/**
