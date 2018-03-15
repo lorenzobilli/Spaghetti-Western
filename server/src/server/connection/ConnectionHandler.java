@@ -68,9 +68,10 @@ public class ConnectionHandler implements Runnable {
             e.printStackTrace();
         }
         Server.consolePrintLine("[*] A client has connected to the server");
+
         initUserConnection();
+
         talkWithClient();
-        shutdownConnection();
     }
 
 	/**
@@ -165,9 +166,6 @@ public class ConnectionHandler implements Runnable {
                 // Retrieve generated message from handle, print it on the server console and send it back
                 Message message = handle.get();
                 if (message != null) {
-                    if (MessageManager.convertXML("header", message.getMessageContent()).equals("SHUTDOWN")) {
-                        break;
-                    }
                     Server.globalThreadPool.submit(new Sender(message, getSendStream()));
                 }
             } catch (InterruptedException | ExecutionException e) {
@@ -176,35 +174,5 @@ public class ConnectionHandler implements Runnable {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void shutdownConnection() {
-		Server.consolePrintLine("Sending terminating message to " + connectedPlayer.getName());
-		Future sendTerminatingConnectionMessage = Server.globalThreadPool.submit(new Sender(
-				new Message(
-						Message.Type.SESSION,
-						new Player("SERVER", Player.Team.SERVER),
-						connectedPlayer,
-						MessageManager.createXML(new MessageTable("header", "SESSION_TERMINATED"))
-				), getSendStream()
-		));
-	    try {
-		    sendTerminatingConnectionMessage.get();
-	    } catch (InterruptedException | ExecutionException e) {
-		    e.printStackTrace();
-	    }
-	    Server.consolePrintLine("Removing current user from connected players...");
-	    PlayerManager.removePlayer(connectedPlayer);
-	    Server.consolePrintLine("[*] Shutting down connection with " + connectedPlayer.getName() + "...");
-        try {
-            connection.shutdownInput();
-            connection.shutdownOutput();
-            connection.close();
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        Server.consolePrintLine("[*] Connection with " + connectedPlayer.getName() + " closed");
     }
 }

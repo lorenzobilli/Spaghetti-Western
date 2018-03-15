@@ -147,4 +147,10 @@ public class ServerConnectionManager implements Runnable {
             Server.globalThreadPool.submit(new Sender(message, connectedClient.getSendStream()));
         }
     }
+
+    public void resetAllConnections() {
+		for (Thread connectionThread : clientThreads) {
+			connectionThread.interrupt();
+		}
+    }
 }
