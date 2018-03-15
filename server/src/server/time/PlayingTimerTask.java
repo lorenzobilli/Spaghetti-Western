@@ -30,7 +30,7 @@ public class PlayingTimerTask implements Callable<Void> {
 	 * Determines how much this timer should last.
 	 */
 	//private final Duration PLAY = Duration.ofMinutes(10);
-	private final Duration PLAY = Duration.ofMinutes(1);
+	private final Duration PLAY = Duration.ofMinutes(1);    //FIXME: To be removed!
 
 	/**
 	 * Determines turn interval time.
@@ -79,8 +79,10 @@ public class PlayingTimerTask implements Callable<Void> {
 	 * Randomly choose a value for the uglyMovement duration.
 	 */
 	private void selectRandomUglyDuration() {
-		long randomSeconds = Randomizer.getRandomLong(turnDuration.getSeconds() * 3);
+		//long randomSeconds = Randomizer.getRandomLong(TURN.getSeconds() * 3);
+		long randomSeconds = Randomizer.getRandomLong(TURN.getSeconds());   //FIXME: To be removed!
 		uglyMovement = Duration.ofSeconds(randomSeconds);
+		Server.consolePrintLine("New random waiting value for ugly player selected: " + randomSeconds);
 	}
 
 	/**
@@ -92,9 +94,13 @@ public class PlayingTimerTask implements Callable<Void> {
 		Place origin = Server.getScenery().getNamePlaces().get(messageTable.get("origin"));
 		Place destination = Server.getScenery().getNamePlaces().get(messageTable.get("destination"));
 
-		Scenery.SceneryEvent result = Server.getScenery().movePlayer(Server.uglyPlayer, origin,destination);
+		Scenery.SceneryEvent result = Server.getScenery().movePlayer(Server.uglyPlayer, origin, destination);
 
 		if (result == Scenery.SceneryEvent.PLAYER_MOVED) {
+
+			Server.consolePrintLine("Ugly player moved from scenery place \"" + origin.getPlaceName() +
+					"\" to scenery place \"" + destination.getPlaceName() + "\"");
+
 			messageTable.put("header", "PLAYER_MOVED");
 			Server.connectionManager.broadcastMessage(new Message(
 					Message.Type.SCENERY,
@@ -188,6 +194,7 @@ public class PlayingTimerTask implements Callable<Void> {
 				}
 
 				if (uglyMovement.isZero()) {
+					Server.consolePrintLine("Ugly player selected for moving...");
 					moveUglyPlayer();
 				}
 
