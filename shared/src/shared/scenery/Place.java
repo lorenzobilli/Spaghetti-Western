@@ -215,8 +215,7 @@ public class Place {
                 }
                 break;
 	        case UGLY:
-	        	playerFound = isUglyPresent;
-	        	break;
+	        	return isUglyPresent;
         }
         return playerFound;
     }

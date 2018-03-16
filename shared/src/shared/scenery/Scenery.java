@@ -151,7 +151,7 @@ public abstract class Scenery {
 		}
 
 		if (!origin.isPlayerPresent(player)) {
-			throw new InvalidParameterException("Specified player is not present inside scenery");
+			throw new InvalidParameterException("Specified player is not present at the given origin place");
 		}
         if (!sceneryGraph.containsVertex(origin)) {
             throw new InvalidParameterException("Specified origin doesn't exist inside scenery");

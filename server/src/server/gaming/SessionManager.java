@@ -140,18 +140,10 @@ public class SessionManager {
 	/**
 	 * Selects a proper destination then moves the ugly player randomly inside the scenery.
 	 * The ugly player can be moved only between two linked places, as any other player in the scenery.
-	 * @param uglyPlayer Reference to the moving ugly player.
 	 * @return A MessageTable containing ugly player's place origin and final destination.
 	 */
-	public MessageTable chooseAndMoveUglyPlayer(Player uglyPlayer) {
-		if (uglyPlayer == null) {
-			throw new InvalidParameterException("Ugly player cannot be null");
-		}
-		if (!uglyPlayer.equals(new Player("UGLY", Player.Team.UGLY))) {
-			throw new InvalidParameterException("Only an ugly player reference is allowed");
-		}
-
-		Set<Path> destinationPaths = Server.getScenery().getAllPaths(uglyPlayer.getPosition());
+	public MessageTable chooseAndMoveUglyPlayer() {
+		Set<Path> destinationPaths = Server.getScenery().getAllPaths(Server.uglyPlayer.getPosition());
 		int randomValue = Randomizer.getRandomInteger(destinationPaths.size());
 		Path selectedPath = null;
 		int current = 1;
@@ -163,7 +155,7 @@ public class SessionManager {
 			current++;
 		}
 		MessageTable messageTable = new MessageTable();
-		messageTable.put("origin", Server.getScenery().getDeparture(selectedPath).getPlaceName());
+		messageTable.put("origin", Server.uglyPlayer.getPosition().getPlaceName());
 		messageTable.put("destination", Server.getScenery().getDestination(selectedPath).getPlaceName());
 		return messageTable;
 	}

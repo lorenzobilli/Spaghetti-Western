@@ -90,13 +90,15 @@ public class PlayingTimerTask implements Callable<Void> {
 	 */
 	private void moveUglyPlayer() {
 
-		MessageTable messageTable = Server.sessionManager.chooseAndMoveUglyPlayer(Server.uglyPlayer);
+		MessageTable messageTable = Server.sessionManager.chooseAndMoveUglyPlayer();
 		Place origin = Server.getScenery().getNamePlaces().get(messageTable.get("origin"));
 		Place destination = Server.getScenery().getNamePlaces().get(messageTable.get("destination"));
 
 		Scenery.SceneryEvent result = Server.getScenery().movePlayer(Server.uglyPlayer, origin, destination);
 
 		if (result == Scenery.SceneryEvent.PLAYER_MOVED) {
+
+			Server.uglyPlayer.setPosition(destination);
 
 			Server.consolePrintLine("Ugly player moved from scenery place \"" + origin.getPlaceName() +
 					"\" to scenery place \"" + destination.getPlaceName() + "\"");
