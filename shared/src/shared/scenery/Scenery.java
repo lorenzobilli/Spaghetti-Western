@@ -81,7 +81,7 @@ public abstract class Scenery {
 		if (departure == null) {
 			throw new InvalidParameterException("Departure place cannot be null");
 		}
-		return sceneryGraph.edgesOf(departure);
+		return sceneryGraph.outgoingEdgesOf(departure);
 	}
 
 	/**
@@ -89,6 +89,7 @@ public abstract class Scenery {
 	 * @param path Path whose departure point should be calculated.
 	 * @return Departure place of the given path.
 	 */
+	@Deprecated
 	public Place getDeparture(Path path) {
 		if (path == null) {
 			throw new InvalidParameterException("Given path cannot be null");
@@ -101,11 +102,26 @@ public abstract class Scenery {
 	 * @param path Path whose destination point should be calculated.
 	 * @return Destination place of the given path.
 	 */
+	@Deprecated
 	public Place getDestination(Path path) {
 		if (path == null) {
 			throw new InvalidParameterException("Given path cannot be null");
 		}
 		return sceneryGraph.getEdgeTarget(path);
+	}
+
+	public Place getPathTarget(Place origin, Path path) {
+		if (origin == null) {
+			throw new InvalidParameterException("Given origin place cannot be null");
+		}
+		if (path == null) {
+			throw new InvalidParameterException("Given path cannot be null");
+		}
+		Place target = sceneryGraph.getEdgeTarget(path);
+		if (target.equals(origin)) {
+			target = sceneryGraph.getEdgeSource(path);
+		}
+		return target;
 	}
 
 	/**

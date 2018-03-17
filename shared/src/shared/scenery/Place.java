@@ -187,6 +187,7 @@ public class Place {
                 break;
 	        case UGLY:
 	        	isUglyPresent = false;
+	        	playerRemoved = true;
 	        	break;
         }
         return playerRemoved;
@@ -264,5 +265,21 @@ public class Place {
         } else {
         	clashManager.disableClash();
         }
+    }
+
+	/**
+	 * Checks if two places are equal.
+	 * @param object Place to be compared.
+	 * @return True if the places are the same, false if not.
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (!(object instanceof Place)) {
+			return false;
+		}
+		return (placeName.equals(((Place) object).placeName) && placeId == ((Place) object).placeId);
     }
 }

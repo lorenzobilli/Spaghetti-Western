@@ -8,7 +8,6 @@ import shared.messaging.MessageTable;
 import shared.scenery.*;
 import shared.utils.Randomizer;
 
-import java.security.InvalidParameterException;
 import java.util.Set;
 
 /**
@@ -143,20 +142,27 @@ public class SessionManager {
 	 * @return A MessageTable containing ugly player's place origin and final destination.
 	 */
 	public MessageTable chooseAndMoveUglyPlayer() {
-		Set<Path> destinationPaths = Server.getScenery().getAllPaths(Server.uglyPlayer.getPosition());
-		int randomValue = Randomizer.getRandomInteger(destinationPaths.size());
+		Place origin = Server.uglyPlayer.getPosition();
+		Set<Path> destinationPaths = Server.getScenery().getAllPaths(origin);
 		Path selectedPath = null;
-		int current = 1;
-		for (Path path : destinationPaths) {
-			if (current == randomValue) {
-				selectedPath = path;
-				break;
+
+		if (destinationPaths.size() == 1) {
+			selectedPath = (Path) destinationPaths.toArray()[0];
+		} else {
+			int randomValue = Randomizer.getRandomInteger(destinationPaths.size());
+			int current = 1;
+			for (Path path : destinationPaths) {
+				if (current == randomValue) {
+					selectedPath = path;
+					break;
+				}
+				current++;
 			}
-			current++;
 		}
+
 		MessageTable messageTable = new MessageTable();
-		messageTable.put("origin", Server.uglyPlayer.getPosition().getPlaceName());
-		messageTable.put("destination", Server.getScenery().getDestination(selectedPath).getPlaceName());
+		messageTable.put("origin", origin.getPlaceName());
+		messageTable.put("destination", Server.getScenery().getPathTarget(origin, selectedPath).getPlaceName());
 		return messageTable;
 	}
 
