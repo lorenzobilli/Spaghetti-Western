@@ -104,6 +104,9 @@ public class PlayingTimerTask implements Callable<Void> {
 					"\" to scenery place \"" + destination.getPlaceName() + "\"");
 
 			messageTable.put("header", "PLAYER_MOVED");
+			messageTable.put("player_name", Server.uglyPlayer.getName());
+			messageTable.put("player_team", Server.uglyPlayer.getTeamAsString());
+
 			Server.connectionManager.broadcastMessage(new Message(
 					Message.Type.SCENERY,
 					new Player("SERVER", Player.Team.SERVER),
