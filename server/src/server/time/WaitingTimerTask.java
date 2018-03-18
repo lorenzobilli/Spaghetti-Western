@@ -49,7 +49,7 @@ public class WaitingTimerTask implements Callable<Void> {
 	 */
 	public WaitingTimerTask() {
 		if (DEBUG_MODE) {
-			waitDuration = Duration.ofSeconds(5);
+			waitDuration = Duration.ofSeconds(30);
 		} else {
 			waitDuration = WAIT;
 		}
