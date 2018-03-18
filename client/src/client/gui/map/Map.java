@@ -195,6 +195,7 @@ public abstract class Map {
 	 */
 	protected void configureTotalTimeLabel(MapWindow map) {
 		totalTimeLabel = new JLabel("Total time remaining: XX:XX");
+		totalTimeLabel.setForeground(Color.WHITE);
 		Dimension totalTimeLabelDimension = totalTimeLabel.getPreferredSize();
 		map.add(totalTimeLabel, totalTimeLabelDimension, new Point(
 				map.margins.width, map.margins.height
@@ -236,6 +237,7 @@ public abstract class Map {
 	 */
 	protected void configureTurnTimeLabel(MapWindow map) {
 		turnTimeLabel = new JLabel("Time remaining to move: XX:XX");
+		turnTimeLabel.setForeground(Color.WHITE);
 		Dimension turnTimeLabelDimension = turnTimeLabel.getPreferredSize();
 		turnTimeLabel.setVisible(false);
 		map.add(turnTimeLabel, turnTimeLabelDimension, new Point(
@@ -264,6 +266,7 @@ public abstract class Map {
 	 */
 	protected void configureBulletLabel(MapWindow map) {
 		bulletLabel = new JLabel("Bullets: " + String.valueOf(0));
+		bulletLabel.setForeground(Color.WHITE);
 		Dimension bulletLabelDimension = bulletLabel.getPreferredSize();
 		map.add(bulletLabel, bulletLabelDimension, new Point(
 				map.margins.width, map.size.height - map.margins.height - bulletLabelDimension.height
