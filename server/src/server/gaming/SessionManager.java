@@ -181,5 +181,6 @@ public class SessionManager {
 				new Player("SERVER", Player.Team.SERVER),
 				MessageManager.createXML(messageTable)
 		));
+		sessionRunning = false;
 	}
 }

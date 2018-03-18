@@ -74,9 +74,7 @@ public class PlayerManager {
 	 * Removes all players from the system.
 	 */
 	public static void removeAllPlayers() {
-		for (Player player : connectedPlayers) {
-			connectedPlayers.remove(player);
-		}
+		connectedPlayers.clear();
     }
 
 	/**

@@ -24,37 +24,39 @@ public class ServerConnectionManager implements Runnable {
 	/**
 	 * Defines port number on which the server will listen for incoming connections.
 	 */
-    private final int PORT_NUMBER = 10000;
+    private static final int PORT_NUMBER = 10000;
 
 	/**
 	 * Socket used by the server to accept incoming connections.
 	 */
-	private ServerSocket socket;
+	private static ServerSocket socket;
 
 	/**
 	 * Handlers used by the server to manage connected clients.
 	 */
-    private ArrayList<ConnectionHandler> connectionHandlers = new ArrayList<>();
+    private static ArrayList<ConnectionHandler> connectionHandlers = new ArrayList<>();
 
 	/**
 	 * Threads used for connections with clients. Each client is associated with a separate thread. Each thread executes
 	 * the corresponding server.connection.ConnectionHandler class.
 	 */
-	private ArrayList<Thread> clientThreads = new ArrayList<>();
+	private static ArrayList<Thread> clientThreads = new ArrayList<>();
+
+	static {
+		try {
+			socket = new ServerSocket(PORT_NUMBER);
+		} catch (IOException e) {
+			e.getMessage();
+			e.getCause();
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Initializes the internal socket and start listening for incoming connections.
 	 */
     @Override
     public void run() {
-        try {
-            socket = new ServerSocket(PORT_NUMBER);
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-
         acceptIncomingConnections();
     }
 
@@ -149,8 +151,11 @@ public class ServerConnectionManager implements Runnable {
     }
 
     public void resetAllConnections() {
+
 		for (Thread connectionThread : clientThreads) {
 			connectionThread.interrupt();
 		}
+		connectionHandlers.clear();
+		clientThreads.clear();
     }
 }
