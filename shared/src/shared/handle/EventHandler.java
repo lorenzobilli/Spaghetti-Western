@@ -34,7 +34,7 @@ public abstract class EventHandler implements Callable<Message> {
 	 * null if no further operations are required.
 	 */
 	@Override
-    public Message call() {
+    public Message call() throws HandlerException {
         Message result;
         switch (message.getType()) {
             case SESSION:
@@ -66,14 +66,14 @@ public abstract class EventHandler implements Callable<Message> {
 	 * @return A new resulting message with further handling operations. Please note that the resulting message may be
 	 * null if no further operations are required.
 	 */
-	protected abstract Message handleSession();
+	protected abstract Message handleSession() throws HandlerException;
 
 	/**
 	 * Abstract declaration for time-related events handler.
 	 * @return A new resulting message with further handling operations. Please note that the resulting message may be
 	 * null if no further operations are required.
 	 */
-    protected abstract Message handleTime();
+    protected abstract Message handleTime() throws HandlerException;
 
 	/**
 	 * Abstract declaration for chat-related events handler.
@@ -87,20 +87,20 @@ public abstract class EventHandler implements Callable<Message> {
 	 * @return A new resulting message with further handling operations. Please note that the resulting message may be
 	 * null if no further operations are required.
 	 */
-    protected abstract Message handleScenery();
+    protected abstract Message handleScenery() throws HandlerException;
 
 	/**
 	 * Abstract declaration for move-related events handler.
 	 * @return A new resulting message with further handling operations. Please note that the resulting message may be
 	 * null if no further operations are required.
 	 */
-	protected abstract Message handleMove();
+	protected abstract Message handleMove() throws HandlerException;
 
 	/**
 	 * Abstract declaration for doClash-related events handler.
 	 * @return A new resulting message with further handling operations. Please note that the resulting message may be
 	 * null if no further operations are required.
 	 */
-    protected abstract Message handleClash();
+    protected abstract Message handleClash() throws HandlerException;
 
 }

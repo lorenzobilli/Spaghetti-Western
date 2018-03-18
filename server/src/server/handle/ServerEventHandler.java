@@ -36,7 +36,7 @@ public class ServerEventHandler extends EventHandler {
 	 * Manages session start conditions.
 	 * @return A message with all the correct result.
 	 */
-	private Message manageSessionStart() {
+	private Message manageSessionStart() throws HandlerException {
 	    PlayerManager.Status userManagerStatus = PlayerManager.addPlayer(message.getMessageSender());
 	    MessageTable result;
 	    switch (userManagerStatus) {
@@ -93,7 +93,7 @@ public class ServerEventHandler extends EventHandler {
 	 *  - SHUTDOWN: Stop request accepted, client disconnected from the server.
 	 */
 	@Override
-    protected Message handleSession() {
+    protected Message handleSession() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "SESSION_START_REQUEST":
 				return manageSessionStart();
@@ -110,7 +110,7 @@ public class ServerEventHandler extends EventHandler {
 	 * @return A null message, since all operations are handled directly by the time manager.
 	 */
 	@Override
-    protected Message handleTime() {
+    protected Message handleTime() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "WAIT_START_REQUEST":
 				if (PlayerManager.getConnectedPlayersNumber() == 1) {     // First client connected to the server
@@ -148,7 +148,7 @@ public class ServerEventHandler extends EventHandler {
 	 * Manages all possible player moves.
 	 * @return A configured message with the result of the operation.
 	 */
-	private Message managePlayerMovement() {
+	private Message managePlayerMovement() throws HandlerException {
 	    Place origin = Server.connectionManager.getPlayerHandler(
 	    		message.getMessageSender()).getConnectedPlayer().getPosition();
 	    Place destination = Server.getScenery().getNamePlaces().get(
@@ -207,7 +207,7 @@ public class ServerEventHandler extends EventHandler {
 	 *  - DESTINATION_UNREACHABLE: The desired destination is not reachable from current client position.
 	 */
 	@Override
-	protected Message handleMove() {
+	protected Message handleMove() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "TRY_PLAYER_MOVE":
 				return managePlayerMovement();
@@ -425,7 +425,7 @@ public class ServerEventHandler extends EventHandler {
 	 * @return A null message only, since all events are handled internally by the method.
 	 */
 	@Override
-	protected Message handleClash() {
+	protected Message handleClash() throws HandlerException {
 		Place clashLocation = Server.connectionManager.getPlayerHandler(message.getMessageSender())
 				.getConnectedPlayer().getPosition();
 		/*

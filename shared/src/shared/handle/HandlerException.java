@@ -3,7 +3,7 @@ package shared.handle;
 /**
  * Exception thrown by the EventHandler if critical errors are encountered.
  */
-public class HandlerException extends RuntimeException {
+public class HandlerException extends Exception {
 
 	/**
 	 * Creates a new HandlerException with a standard generic error message.

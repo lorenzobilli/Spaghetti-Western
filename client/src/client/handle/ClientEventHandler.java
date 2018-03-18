@@ -90,7 +90,7 @@ public class ClientEventHandler extends EventHandler {
 	 * @return The message containing the response result.
 	 */
 	@Override
-	protected Message handleSession() {
+	protected Message handleSession() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "ACCEPTED":
 			case "ALREADY_CONNECTED":
@@ -114,7 +114,7 @@ public class ClientEventHandler extends EventHandler {
 	 * @return A null message, since all events are handled inside this method.
 	 */
 	@Override
-	protected Message handleTime() {
+	protected Message handleTime() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "WAIT_REMAINING":
 				int waitSecondsRemaining = Integer.parseInt(
@@ -174,7 +174,7 @@ public class ClientEventHandler extends EventHandler {
 	/**
 	 * Set corresponding scenery and map based upon the content of the message.
 	 */
-	private void setSelectedScenery() {
+	private void setSelectedScenery() throws HandlerException {
 		switch (MessageManager.convertXML("content", message.getMessageContent())) {
 			case "SmallScenery":
 				Client.setScenery(new SmallScenery());
@@ -247,7 +247,7 @@ public class ClientEventHandler extends EventHandler {
 	 * @return A null message.
 	 */
 	@Override
-	protected Message handleScenery() {
+	protected Message handleScenery() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "CHOSEN_SCENERY":
 				setSelectedScenery();
@@ -291,7 +291,7 @@ public class ClientEventHandler extends EventHandler {
 	 * @return A null message, since all operations are done inside the method.
 	 */
 	@Override
-	protected Message handleMove() {
+	protected Message handleMove() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "PLAYER_MOVED":
 				moveCurrentPlayer();
@@ -421,7 +421,7 @@ public class ClientEventHandler extends EventHandler {
 	 * If no other options are recognized, a null message is returned.
 	 */
 	@Override
-	protected Message handleClash() {
+	protected Message handleClash() throws HandlerException {
 		/*
 		 * Calls inserted here for preventing other players to enter this node are not necessary, since this scenery
 		 * is not shared among other players. However calls have been added to prevent state errors in the current
