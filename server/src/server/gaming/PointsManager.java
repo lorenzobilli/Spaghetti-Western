@@ -1,7 +1,6 @@
 package server.gaming;
 
 import server.connection.ConnectionHandler;
-import shared.gaming.Player;
 
 import java.security.InvalidParameterException;
 import java.util.List;

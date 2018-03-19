@@ -1,7 +1,8 @@
 package client.handle;
 
 import client.Client;
-import client.gui.*;
+import client.gui.ChatWindow;
+import client.gui.MapWindow;
 import client.gui.map.LargeMap;
 import client.gui.map.MediumMap;
 import client.gui.map.SmallMap;

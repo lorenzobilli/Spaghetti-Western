@@ -1,14 +1,12 @@
 package server.connection;
 
 import server.Server;
-import server.gaming.PlayerManager;
 import server.handle.ServerEventHandler;
 import shared.communication.Receiver;
 import shared.communication.Sender;
 import shared.gaming.Player;
 import shared.messaging.Message;
 import shared.messaging.MessageManager;
-import shared.messaging.MessageTable;
 
 import java.io.BufferedReader;
 import java.io.IOException;

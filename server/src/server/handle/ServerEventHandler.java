@@ -3,10 +3,10 @@ package server.handle;
 import server.Server;
 import server.connection.ConnectionHandler;
 import server.gaming.PlayerManager;
-import server.time.TimeManager;
-import shared.gaming.clash.Clash;
-import shared.gaming.Player;
 import server.gaming.PointsManager;
+import server.time.TimeManager;
+import shared.gaming.Player;
+import shared.gaming.clash.Clash;
 import shared.handle.EventHandler;
 import shared.handle.HandlerException;
 import shared.messaging.Message;
@@ -384,6 +384,9 @@ public class ServerEventHandler extends EventHandler {
 				attackingPlayers = clashLocation.getBadPlayers();
 				defendingPlayers = clashLocation.getGoodPlayers();
 			}
+
+			assert attackingPlayers != null;
+			assert defendingPlayers != null;
 
 			for (Player attacker : attackingPlayers) {
 				attackingReferences.add(Server.connectionManager.getPlayerHandler(attacker));

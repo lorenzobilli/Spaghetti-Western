@@ -1,9 +1,9 @@
 package server.connection;
 
 import server.Server;
-import shared.messaging.Message;
-import shared.gaming.Player;
 import shared.communication.Sender;
+import shared.gaming.Player;
+import shared.messaging.Message;
 
 import java.io.IOException;
 import java.net.ServerSocket;

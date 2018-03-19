@@ -11,7 +11,6 @@ import shared.scenery.Place;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
