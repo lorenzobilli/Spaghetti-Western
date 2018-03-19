@@ -119,7 +119,7 @@ public class PlayingTimerTask implements Callable<Void> {
 						player,
 						MessageManager.createXML(new MessageTable("header", "UGLY_VISIT"))
 				));
-				Server.connectionManager.getPlayerHandler(player).getConnectedPlayer().removeBullets();
+				Server.connectionManager.getPlayerHandler(player).getConnectedPlayer().stoleBullet();
 			}
 		}
 

@@ -154,6 +154,15 @@ public class Player {
 	}
 
 	/**
+	 * Removes a single bullet from the player. The bullet is not removed if bullets number is zero.
+	 */
+	public void stoleBullet() {
+		if (bullets > 0) {
+			bullets--;
+		}
+	}
+
+	/**
 	 * Translates the current team as its string representation.
 	 * @return Current team expressed as an uppercase string.
 	 */

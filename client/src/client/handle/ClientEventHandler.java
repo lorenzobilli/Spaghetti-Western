@@ -402,10 +402,10 @@ public class ClientEventHandler extends EventHandler {
 	private void manageUglyVisit() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
-				"The ugly has just stolen all your bullets!",
+				"The ugly has just stolen a bullet!",
 				"UH OH!", JOptionPane.WARNING_MESSAGE
 		);
-		Client.getPlayer().removeBullets();
+		Client.getPlayer().stoleBullet();
 		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getPlayer().getBullets());
 	}
 
