@@ -68,7 +68,6 @@ public class ServerEventHandler extends EventHandler {
 	 * @return A message with the configured shutdown request.
 	 */
 	private Message manageSessionStop() {
-	    //TODO: implement stop session request from a client
 	    if (!PlayerManager.removePlayer(message.getMessageSender())) {
 		    throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");
 	    }

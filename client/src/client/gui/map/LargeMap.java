@@ -19,8 +19,8 @@ public class LargeMap extends Map {
 		super.blackHatIcon = "shared/assets/black_hat_large.png";
 		super.buttonDimension = new Dimension(37, 37);
 		super.labelDimension = new Dimension(37, 26);
-		super.xLabelMargin = 1;	//TODO: Check this value
-		super.yLabelMargin = 1; //TODO: Check this value
+		super.xLabelMargin = 1;
+		super.yLabelMargin = 1;
 	}
 
 	// Buttons declaration:

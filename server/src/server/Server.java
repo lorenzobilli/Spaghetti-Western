@@ -34,6 +34,29 @@ public class Server {
     public static final int MAX_PLAYERS = 30;
 
 	/**
+	 * Defines duration of waiting before starting a new play session during normal use.
+	 * This value is intended to be used as minutes.
+	 */
+	public static final int WAIT_TIME = 5;
+
+	/**
+	 * Defines duration of waiting before starting a new play session during debug mode.
+	 * This value is intended to be used as seconds.
+	 */
+	public static final int WAIT_TIME_DEBUG = 30;
+
+	/**
+	 * Defines duration of each play session. This value is intended to be used as minutes.
+	 */
+    public static final int PLAY_TIME = 1;
+
+	/**
+	 * Defines duration of each turn. This value is intended to be used as seconds.
+	 * Please note that this value MUST assert the following statement: (PLAY_TIME * 60) % TURN_TIME == 0.
+	 */
+	public static final int TURN_TIME = 15;
+
+	/**
 	 * Main window used by the server.
 	 */
 	private static MainWindow serverWindow;

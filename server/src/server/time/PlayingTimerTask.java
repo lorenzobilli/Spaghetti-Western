@@ -29,14 +29,13 @@ public class PlayingTimerTask implements Callable<Void> {
 	/**
 	 * Determines how much this timer should last.
 	 */
-	//private final Duration PLAY = Duration.ofMinutes(10);
-	private final Duration PLAY = Duration.ofMinutes(1);    //FIXME: To be removed!
+	private final Duration PLAY = Duration.ofMinutes(Server.PLAY_TIME);
 
 	/**
 	 * Determines turn interval time.
 	 * This value must always assert this statement: PLAY % TURN == 0.
 	 */
-	private final Duration TURN = Duration.ofSeconds(15);   //FIXME: Exact value to be defined
+	private final Duration TURN = Duration.ofSeconds(Server.TURN_TIME);
 
 	/**
 	 * Duration value used by the timer.

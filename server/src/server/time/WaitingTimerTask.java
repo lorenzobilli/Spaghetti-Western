@@ -27,7 +27,7 @@ public class WaitingTimerTask implements Callable<Void> {
 	/**
 	 * Determines how much this timer should last.
 	 */
-	private final Duration WAIT = Duration.ofMinutes(5);
+	private final Duration WAIT = Duration.ofMinutes(Server.WAIT_TIME);
 
 	/**
 	 * Duration value used by the timer.
@@ -49,7 +49,7 @@ public class WaitingTimerTask implements Callable<Void> {
 	 */
 	public WaitingTimerTask() {
 		if (DEBUG_MODE) {
-			waitDuration = Duration.ofSeconds(30);
+			waitDuration = Duration.ofSeconds(Server.WAIT_TIME_DEBUG);
 		} else {
 			waitDuration = WAIT;
 		}
