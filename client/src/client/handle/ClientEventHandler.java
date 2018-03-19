@@ -312,10 +312,13 @@ public class ClientEventHandler extends EventHandler {
 
 		int selected = JOptionPane.showOptionDialog(Client.mapWindow.getWindow(),
 				"Hey " + Client.getPlayer().getName() + "! " +
-						message.getMessageSender().getName() + " has sent a clash request! Accept request?",
+						(Client.getPlayer().getTeam().equals(Player.Team.GOOD) ? "Team Bad" : "Team Good") +
+						" has sent a clash request! Accept request?",
 				"Clash request", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				options, options[1]
 		);
+
+		Client.getMap().disableClashButton();   // Avoid sending two clash requests without moving again
 
 		MessageTable result = null;
 		switch (selected) {
@@ -328,8 +331,6 @@ public class ClientEventHandler extends EventHandler {
 				break;
 		}
 
-		Client.getMap().disableClashButton();   // Avoid sending two clash requests without moving again
-
 		return new Message(Message.Type.CLASH, Client.getPlayer(), MessageManager.createXML(result));
 	}
 
@@ -340,7 +341,8 @@ public class ClientEventHandler extends EventHandler {
 	private Message manageAcceptedClash() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
-				message.getMessageSender().getName() + " has accepted the clash!",
+				(Client.getPlayer().getTeam().equals(Player.Team.GOOD) ? "Team Bad" : "Team Good") +
+						" has accepted the clash!",
 				"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
 		);
 		return new Message(
@@ -356,7 +358,8 @@ public class ClientEventHandler extends EventHandler {
 	private void manageRejectedClash() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
-				message.getMessageSender().getName() + " has rejected the clash!",
+				(Client.getPlayer().getTeam().equals(Player.Team.GOOD) ? "Team Bad" : "Team Good") +
+						" has rejected the clash!",
 				"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
 		);
 	}

@@ -291,7 +291,7 @@ public class ServerEventHandler extends EventHandler {
 			for (Player receiver : receivers) {
 				Server.connectionManager.sendMessageToPlayer(receiver, new Message(
 						Message.Type.CLASH,
-						receiver,
+						message.getMessageSender(),
 						MessageManager.createXML(new MessageTable("header", "CLASH_REJECTED"))
 				));
 			}
