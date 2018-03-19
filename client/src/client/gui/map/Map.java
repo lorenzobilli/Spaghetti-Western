@@ -308,10 +308,29 @@ public abstract class Map {
 	}
 
 	/**
-	 * Toggle doClash button visibility/invisibility.
+	 * Toggles clash button visibility/invisibility.
 	 */
+	@Deprecated
 	public void toggleClashButton() {
 		clashButton.setVisible(!clashButton.isVisible());
+	}
+
+	/**
+	 * Enables the clash button by making it visible on the map.
+	 */
+	public void enableClashButton() {
+		if (!clashButton.isVisible()) {
+			clashButton.setVisible(true);
+		}
+	}
+
+	/**
+	 * Disables the clash button by making it invisible on the map.
+	 */
+	public void disableClashButton() {
+		if (clashButton.isVisible()) {
+			clashButton.setVisible(false);
+		}
 	}
 
 	/**

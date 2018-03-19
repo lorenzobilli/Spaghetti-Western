@@ -144,6 +144,7 @@ public class ClientEventHandler extends EventHandler {
 			case "TURN_END":
 				Client.getMap().disableUserCommands();
 				Client.getMap().disableTurnTimeLabel();
+				Client.getMap().disableClashButton();   // Makes sure that clash button is disabled when turn is up.
 				break;
 			case "TURN_REMAINING":
 				int turnSecondsRemaining = Integer.parseInt(
@@ -212,9 +213,6 @@ public class ClientEventHandler extends EventHandler {
 
 		Client.getScenery().insertPlayer(player, position);
 		Client.getMap().updateMap(player, position);
-		if (Client.getPosition().getClashManager().isClashEnabled()) {
-			Client.getMap().toggleClashButton();        //TODO: Add here turn-checking
-		}
 	}
 
 	/**
@@ -280,7 +278,7 @@ public class ClientEventHandler extends EventHandler {
 		Client.setBullets(destination.pickBullets());
 		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
 		if (Client.getPosition().getClashManager().isClashEnabled()) {
-			Client.getMap().toggleClashButton();
+			Client.getMap().enableClashButton();
 		}
 	}
 
@@ -329,6 +327,8 @@ public class ClientEventHandler extends EventHandler {
 				break;
 		}
 
+		Client.getMap().disableClashButton();   // Avoid sending two clash requests without moving again
+
 		return new Message(Message.Type.CLASH, Client.getPlayer(), MessageManager.createXML(result));
 	}
 
@@ -341,7 +341,7 @@ public class ClientEventHandler extends EventHandler {
 				Client.mapWindow.getWindow(),
 				message.getMessageSender().getName() + " has accepted the doClash!",
 				"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
-		);    //TODO: Consider auto closeable message option
+		);
 		return new Message(
 				Message.Type.CLASH,
 				Client.getPlayer(),
@@ -357,7 +357,7 @@ public class ClientEventHandler extends EventHandler {
 				Client.mapWindow.getWindow(),
 				message.getMessageSender().getName() + " has rejected the doClash!",
 				"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
-		);    //TODO: Consider auto closeable message option
+		);
 	}
 
 	/**
@@ -375,7 +375,7 @@ public class ClientEventHandler extends EventHandler {
 		// Get prize and add corresponding points to the current user, since he has won
 		int prize = Integer.parseInt(MessageManager.convertXML("prize", message.getMessageContent()));
 		Client.getPlayer().addBullets(prize);
-		System.err.println("Added " + prize + " bullets to current player!");
+		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
 	}
 
 	/**
@@ -392,7 +392,7 @@ public class ClientEventHandler extends EventHandler {
 		);
 		// Remove points from current user, since he has lost
 		Client.getPlayer().removeBullets();
-		System.err.println("Removed present bullets from current player!");
+		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
 	}
 
 	private void manageUglyVisit() {
@@ -402,6 +402,7 @@ public class ClientEventHandler extends EventHandler {
 				"UH OH!", JOptionPane.WARNING_MESSAGE
 		);
 		Client.getPlayer().removeBullets();
+		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
 	}
 
 	/**
