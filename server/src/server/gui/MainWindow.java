@@ -60,4 +60,8 @@ public class MainWindow {
         }
         consoleOutput.append(message);
     }
+
+    public void clear() {
+		consoleOutput.setText("");
+    }
 }

@@ -43,7 +43,7 @@ public class ConnectionHandler implements Runnable {
     private Player connectedPlayer;
 
 	/**
-	 * Creates new server.connection.ConnectionHandler by assigning the internal socket to another initialized socket.
+	 * Creates a new ConnectionHandler by assigning the internal socket to another initialized socket.
 	 * @param connection Socket that will be used for the connection. An active client must be already assigned to this
 	 *                   socket prior run() call.
 	 */
@@ -65,7 +65,7 @@ public class ConnectionHandler implements Runnable {
             e.getCause();
             e.printStackTrace();
         }
-        Server.consolePrintLine("[*] A client has connected to the server");
+        Server.consolePrintLine("A client has connected to the server");
 
         initUserConnection();
 
@@ -104,7 +104,7 @@ public class ConnectionHandler implements Runnable {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "ACCEPTED":
 				connectedPlayer = message.getMessageReceiver();
-				Server.consolePrintLine("[*] New client registered as: " + connectedPlayer.getName());
+				Server.consolePrintLine("New client registered as: " + connectedPlayer.getName());
 				Server.globalThreadPool.submit(new Sender(message, sendStream));
 				return true;
 			case "ALREADY_CONNECTED":

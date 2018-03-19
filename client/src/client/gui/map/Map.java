@@ -47,7 +47,7 @@ public abstract class Map {
 	private JLabel bulletLabel;
 
 	/**
-	 * Button used to send a doClash request.
+	 * Button used to send a clash request.
 	 */
 	private JButton clashButton;
 
@@ -283,8 +283,8 @@ public abstract class Map {
 	}
 
 	/**
-	 * Configures the doClash button.
-	 * @param map Instance of MapWindow where the doClash button should be configured.
+	 * Configures the clash button.
+	 * @param map Instance of MapWindow where the clash button should be configured.
 	 */
 	protected void configureClashButton(MapWindow map) {
 		clashButton = new JButton("CLASH!");
@@ -433,7 +433,7 @@ public abstract class Map {
 	}
 
 	/**
-	 * Update the position of a player in the map.
+	 * Updates the position of a player in the map.
 	 * @param movingPlayer Player to be moved.
 	 * @param origin Current position of the player in the map.
 	 * @param destination New position of the player in the map.

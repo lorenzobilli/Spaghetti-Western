@@ -79,8 +79,7 @@ public class PlayingTimerTask implements Callable<Void> {
 	 * Randomly choose a value for the uglyMovement duration.
 	 */
 	private void selectRandomUglyDuration() {
-		//long randomSeconds = Randomizer.getRandomLong(TURN.getSeconds() * 3);
-		long randomSeconds = Randomizer.getRandomLong(TURN.getSeconds());   //FIXME: To be removed!
+		long randomSeconds = Randomizer.getRandomLong(TURN.getSeconds() * 3);
 		uglyMovement = Duration.ofSeconds(randomSeconds);
 		Server.consolePrintLine("New random waiting value for ugly player selected: " + randomSeconds);
 	}
@@ -156,7 +155,7 @@ public class PlayingTimerTask implements Callable<Void> {
 				MessageManager.createXML(new MessageTable("header", "PLAY_TIMEOUT"))
 		));
 		Server.sessionManager.setSessionState(false);
-		Server.consolePrintLine("[*] Session play waitTimer expired");
+		Server.consolePrintLine("Session play waitTimer expired");
 		Server.sessionManager.declareWinners();
 	}
 
@@ -165,7 +164,7 @@ public class PlayingTimerTask implements Callable<Void> {
 	 * for the turn.
 	 */
 	private void playTimerRoutine() {
-		Server.consolePrintLine("[*] Starting new gaming session...");
+		Server.consolePrintLine("Starting new gaming session...");
 		Server.connectionManager.broadcastMessage(new Message(
 				Message.Type.TIME,
 				new Player("SERVER", Player.Team.SERVER),

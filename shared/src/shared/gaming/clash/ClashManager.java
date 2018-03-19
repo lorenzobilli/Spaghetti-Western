@@ -10,10 +10,13 @@ public class ClashManager {
 	 */
 	private boolean clashEnabled;
 
+	/**
+	 * Internal field used for determining whether clash is running.
+	 */
 	private boolean clashRunning;
 
 	/**
-	 * Internal field used for synchronizing doClash requests.
+	 * Internal field used for synchronizing clash requests.
 	 */
 	private static boolean clashRequestAccepted;
 
@@ -67,21 +70,21 @@ public class ClashManager {
 	}
 
 	/**
-	 * Accepts a new doClash request in a thread-safe manner.
+	 * Accepts a new clash request in a thread-safe manner.
 	 */
 	public synchronized void acceptClashRequests() {
 		clashRequestAccepted = true;
 	}
 
 	/**
-	 * Denies a new doClash request in a thread-safe manner.
+	 * Denies a new clash request in a thread-safe manner.
 	 */
 	public synchronized void denyClashRequests() {
 		clashRequestAccepted = false;
 	}
 
 	/**
-	 * Checks if a doClash request has been already accepted by another player in a thread-safe manner.
+	 * Checks if a clash request has been already accepted by another player in a thread-safe manner.
 	 * @return True if request has been already accepted, false if not.
 	 */
 	public synchronized boolean isClashRequestAccepted() {

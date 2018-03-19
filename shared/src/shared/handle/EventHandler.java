@@ -13,13 +13,13 @@ import java.util.concurrent.Callable;
 public abstract class EventHandler implements Callable<Message> {
 
 	/**
-	 * shared.messaging.Message to be handled.
+	 * Message to be handled.
 	 */
     protected Message message;
 
 	/**
 	 * Creates a new Event Handler object.
-	 * @param message shared.messaging.Message to be handled.
+	 * @param message Message to be handled.
 	 */
 	protected EventHandler(Message message) {
         if (message == null) {
@@ -97,7 +97,7 @@ public abstract class EventHandler implements Callable<Message> {
 	protected abstract Message handleMove() throws HandlerException;
 
 	/**
-	 * Abstract declaration for doClash-related events handler.
+	 * Abstract declaration for clash-related events handler.
 	 * @return A new resulting message with further handling operations. Please note that the resulting message may be
 	 * null if no further operations are required.
 	 */

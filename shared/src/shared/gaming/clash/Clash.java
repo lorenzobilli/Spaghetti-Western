@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * Manages all doClash-related routines, such as doClash creation, deciding winners and losers, and getting doClash results.
+ * Manages all clash-related routines, such as clash creation, deciding winners and losers, and getting clash results.
  */
 public class Clash {
 
@@ -21,12 +21,12 @@ public class Clash {
 	}
 
 	/**
-	 * shared.utils.Dice of type attack used for attacking.
+	 * Dice of type attack used for attacking.
 	 */
 	private Dice attackDice = new Dice(Dice.Type.ATTACK);
 
 	/**
-	 * shared.utils.Dice of type defense used for defending.
+	 * Dice of type defense used for defending.
 	 */
 	private Dice defenseDice = new Dice(Dice.Type.DEFENSE);
 
@@ -41,7 +41,7 @@ public class Clash {
 	private List<Integer> defenseResult = new ArrayList<>();
 
 	/**
-	 * Creates a new doClash and determines the winners by throwing the correct number of dice.
+	 * Creates a new clash and determines the winners by throwing the correct number of dice.
 	 * @param attackers List of attacking players.
 	 * @param defenders List of defending players.
 	 * @return The winners, using a Winners enumeration.
@@ -77,9 +77,9 @@ public class Clash {
 	}
 
 	/**
-	 * Internal method which determines who is the winning team of the doClash.
-	 * Points are given in the same manner as in the Risiko game:
-	 *  - shared.utils.Dice are sorted in descending order.
+	 * Internal method which determines who is the winning team of the clash.
+	 * Points are given in the same manner as in the "Risiko" game:
+	 *  - Dice are sorted in descending order.
 	 *  - Each attack dice is compared in order to the corresponding defense dice, the higher dice gets the point.
 	 *  - Defense has priority over attack, so if an attack dice has the same value of a defense dice, the point is
 	 *    given to the defense.

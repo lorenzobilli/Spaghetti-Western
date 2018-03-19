@@ -120,7 +120,7 @@ public class Place {
 	}
 
 	/**
-	 * Add a player in the current place.
+	 * Adds a player in the current place.
 	 * @param player Player to be added.
 	 * @return True if player has been correctly added, false if not.
 	 */
@@ -158,7 +158,7 @@ public class Place {
     }
 
 	/**
-	 * Remove an existing player from the current place.
+	 * Removes an existing player from the current place.
 	 * @param player Player to be removed
 	 * @return True if player has been correctly remove, false if not.
 	 */
@@ -257,7 +257,7 @@ public class Place {
 	}
 
 	/**
-	 * Check wherever to enable or disable clashes.
+	 * Checks wherever to enable or disable clashes.
 	 */
 	private void checkClash() {
         if (goodPlayers.size() > 0 && badPlayers.size() > 0) {

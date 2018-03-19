@@ -22,12 +22,12 @@ import javax.swing.*;
 import static java.lang.System.exit;
 
 /**
- * client.Client implementation of the Event Handler
+ * Client implementation of the Event Handler
  */
 public class ClientEventHandler extends EventHandler {
 
 	/**
-	 * Creates new client.Client Event Handler.
+	 * Creates a new Client Event Handler.
 	 * @param message shared.messaging.Message to be handled.
 	 */
 	public ClientEventHandler(Message message) {
@@ -174,7 +174,7 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Set corresponding scenery and map based upon the content of the message.
+	 * Sets corresponding scenery and map based upon the content of the message.
 	 */
 	private void setSelectedScenery() throws HandlerException {
 		switch (MessageManager.convertXML("content", message.getMessageContent())) {
@@ -196,7 +196,7 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Insert a player in the scenery and in the map in a specific place.
+	 * Inserts a player in the scenery and in the map in a specific place.
 	 */
 	private void insertPlayer() {
 		Player player = new Player(
@@ -217,7 +217,7 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Move a player in the scenery and in the map from one place to another.
+	 * Moves a player in the scenery and in the map from one place to another.
 	 */
 	private void moveOtherPlayer() {
 		Player player = new Player(
@@ -238,9 +238,9 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Handle all scenery-related messages. In particular, these events are handled:
-	 * - CHOSEN_SCENERY: shared.messaging.Message containing which scenery has been chosen by the server.
-	 * - PLAYER_INSERTED: shared.gaming.Player has been correctly inserted in the active scenery by the server.
+	 * Handles all scenery-related messages. In particular, these events are handled:
+	 * - CHOSEN_SCENERY: Message containing which scenery has been chosen by the server.
+	 * - PLAYER_INSERTED: Player has been correctly inserted in the active scenery by the server.
 	 * - PLAYER_MOVED: Another player has been moved correctly by the server.
 	 *
 	 * @return A null message.
@@ -264,7 +264,7 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Move the current player from one place to another.
+	 * Moves the current player from one place to another.
 	 */
 	private void moveCurrentPlayer() {
 		Place origin = Client.getScenery().getNamePlaces().get(
@@ -304,7 +304,7 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Show a prompt for choosing to accept or reject a doClash to the user.
+	 * Shows a prompt for choosing to accept or reject a clash to the user.
 	 * @return A message configured with the selected result from the player.
 	 */
 	private Message selectClashRequest() {
@@ -312,7 +312,7 @@ public class ClientEventHandler extends EventHandler {
 
 		int selected = JOptionPane.showOptionDialog(Client.mapWindow.getWindow(),
 				"Hey " + Client.getPlayer().getName() + "! " +
-						message.getMessageSender().getName() + " has sent a doClash request! Accept request?",
+						message.getMessageSender().getName() + " has sent a clash request! Accept request?",
 				"Clash request", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				options, options[1]
 		);
@@ -334,13 +334,13 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Manages the case when the user accepts a doClash.
-	 * @return A formed message with the start doClash request.
+	 * Manages the case when the user accepts a clash.
+	 * @return A formed message with the start clash request.
 	 */
 	private Message manageAcceptedClash() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
-				message.getMessageSender().getName() + " has accepted the doClash!",
+				message.getMessageSender().getName() + " has accepted the clash!",
 				"Clash accepted!", JOptionPane.INFORMATION_MESSAGE
 		);
 		return new Message(
@@ -351,18 +351,18 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Manages the case when the user rejects a doClash.
+	 * Manages the case when the user rejects a clash.
 	 */
 	private void manageRejectedClash() {
 		JOptionPane.showMessageDialog(
 				Client.mapWindow.getWindow(),
-				message.getMessageSender().getName() + " has rejected the doClash!",
+				message.getMessageSender().getName() + " has rejected the clash!",
 				"Clash rejected!", JOptionPane.INFORMATION_MESSAGE
 		);
 	}
 
 	/**
-	 * Manages the case when a doClash is won.
+	 * Manages the case when a clash is won.
 	 */
 	private void manageWonClash() {
 		String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
@@ -380,7 +380,7 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Manages the case when a doClash is lost.
+	 * Manages the case when a clash is lost.
 	 */
 	private void manageLostClash() {
 		String attackResult = MessageManager.convertXML("attack", message.getMessageContent());
@@ -407,19 +407,19 @@ public class ClientEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Handle all doClash-related messages. In particular, these events are handled:
-	 * - CLASH_REQUEST: Another client has sent a doClash request to the current client.
-	 * - CLASH_ACCEPTED: Another client has accepted a doClash request sent by the current client.
-	 * - CLASH_REJECTED: Another client has rejected a doClash request sent by the current client.
-	 * - CLASH_WON: Current client has won a doClash.
-	 * - CLASH_LOST: Current client has lost a doClash.
+	 * Handles all clash-related messages. In particular, these events are handled:
+	 * - CLASH_REQUEST: Another client has sent a clash request to the current client.
+	 * - CLASH_ACCEPTED: Another client has accepted a clash request sent by the current client.
+	 * - CLASH_REJECTED: Another client has rejected a clash request sent by the current client.
+	 * - CLASH_WON: Current client has won a clash.
+	 * - CLASH_LOST: Current client has lost a clash.
 	 *
 	 * @return A new message with the request result.
 	 * Possible results for CLASH_REQUEST are:
-	 * - CLASH_ACCEPTED: The client has accepted the doClash request.
-	 * - CLASH_REJECTED: The client has rejected the doClash request.
+	 * - CLASH_ACCEPTED: The client has accepted the clash request.
+	 * - CLASH_REJECTED: The client has rejected the clash request.
 	 * Possible results for CLASH_ACCEPTED are:
-	 * - START_CLASH: Signal for doClash starting.
+	 * - START_CLASH: Signal for clash starting.
 	 * If no other options are recognized, a null message is returned.
 	 */
 	@Override

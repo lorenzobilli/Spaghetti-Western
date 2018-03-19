@@ -25,7 +25,7 @@ public class RoundRobinScheduler implements Scheduler {
 	private ArrayList<Player> goodScheduledPlayers = new ArrayList<>();
 
 	/**
-	 * List of schedulabel players belonging to the bad team.
+	 * List of schedulable players belonging to the bad team.
 	 */
 	private ArrayList<Player> badScheduledPlayers = new ArrayList<>();
 
@@ -175,7 +175,7 @@ public class RoundRobinScheduler implements Scheduler {
 	}
 
 	/**
-	 * Send a message to the new scheduled player that his turn has begun.
+	 * Sends a message to the new scheduled player that his turn has begun.
 	 */
 	private void notifyTurnBegin() {
 		if (currentlyScheduledPlayer == null) {
@@ -189,7 +189,7 @@ public class RoundRobinScheduler implements Scheduler {
 	}
 
 	/**
-	 * Send a message to the previously scheduled player that his turn has ended.
+	 * Sends a message to the previously scheduled player that his turn has ended.
 	 */
 	private void notifyTurnEnd() {
 		if (previouslyScheduledPlayer == null) {

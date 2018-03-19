@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * server.Server implementation of the Event Handler.
+ * Server implementation of the Event Handler.
  */
 public class ServerEventHandler extends EventHandler {
 
 	/**
-	 * Creates new server.Server Event Handler.
+	 * Creates new Server Event Handler.
 	 * @param message shared.messaging.Message to be handled.
 	 */
     public ServerEventHandler(Message message) {
@@ -176,7 +176,11 @@ public class ServerEventHandler extends EventHandler {
 			    } else if (message.getMessageSender().getTeam() == Player.Team.BAD) {
 				    Server.setBadTeamBullets(Server.getBadTeamBullets() + takenBullets);
 			    }
-			    Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().addBullets(takenBullets);
+
+			    Server.connectionManager.getPlayerHandler(
+			    		message.getMessageSender()
+			    ).getConnectedPlayer().addBullets(takenBullets);
+
 			    MessageTable messageTable = new MessageTable();
 			    messageTable.put("header", "PLAYER_MOVED");
 			    messageTable.put("origin", origin.getPlaceName());
@@ -219,13 +223,13 @@ public class ServerEventHandler extends EventHandler {
 
 	/**
 	 * Get the corresponding fighters in a place given the opposite players' team.
-	 * @param player shared.gaming.Player used as reference for retrieving the fighting team.
-	 * @param position shared.scenery.Scenery place where doClash will be made.
+	 * @param player Player used as reference for retrieving the fighting team.
+	 * @param position Scenery place where clash will be made.
 	 * @return List of opponent players.
 	 */
 	private List<Player> getOppositeFighters(Player player, Place position) {
     	if (player == null) {
-    		throw new InvalidParameterException("shared.gaming.Player cannot be null");
+    		throw new InvalidParameterException("Player cannot be null");
 		}
 		if (position == null) {
     		throw new InvalidParameterException("Position cannot be null");
@@ -296,7 +300,7 @@ public class ServerEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Sends a message to the winners of a doClash.
+	 * Sends a message to the winners of a clash.
 	 * @param winners List of winning players.
 	 * @param attack Total attack score.
 	 * @param defense Total defense score.
@@ -332,7 +336,7 @@ public class ServerEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Send a message to the losers of a doClash.
+	 * Sends a message to the losers of a clash.
 	 * @param losers List of losing players.
 	 * @param attack Total attack score.
 	 * @param defense Total defense score.
@@ -464,10 +468,10 @@ public class ServerEventHandler extends EventHandler {
 	}
 
 	/**
-	 * Handle all doClash-related messages. In particular, these events are handled:
-	 *  - CLASH_REQUEST: A client requests a new doClash.
-	 *  - CLASH_ACCEPTED: A doClash request has been accepted by the system.
-	 *  - CLASH_REJECTED: A doClash request has been rejected by the system.
+	 * Handle all clash-related messages. In particular, these events are handled:
+	 *  - CLASH_REQUEST: A client requests a new clash.
+	 *  - CLASH_ACCEPTED: A clash request has been accepted by the system.
+	 *  - CLASH_REJECTED: A clash request has been rejected by the system.
 	 *  - START_CLASH: Clash start request.
 	 * @return A null message only, since all events are handled internally by the method.
 	 */

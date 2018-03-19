@@ -56,11 +56,11 @@ public class ServerConnectionManager implements Runnable {
     }
 
 	/**
-	 * Listen for new connections and accept them. Each new successfully connected client is managed with a dedicated
+	 * Listens for new connections and accept them. Each new successfully connected client is managed with a dedicated
 	 * thread and client handler.
 	 */
 	private void acceptIncomingConnections() {
-            Server.consolePrintLine("[*] server.Server is ready for connection requests");
+            Server.consolePrintLine("Server is ready for connection requests");
         while (true) {
             try {
                 connectionHandlers.add(new ConnectionHandler(socket.accept()));
@@ -76,7 +76,7 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Get corresponding handler for a given player.
-	 * @param player shared.gaming.Player whose handler is wanted.
+	 * @param player Player whose handler is wanted.
 	 * @return Handler associated with the given player.
 	 */
 	public ConnectionHandler getPlayerHandler(Player player) {
@@ -93,8 +93,8 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Send a message to a player.
-	 * @param player shared.communication.Receiver of the message.
-	 * @param message shared.messaging.Message to be sent.
+	 * @param player Receiver of the message.
+	 * @param message Message to be sent.
 	 */
     public void sendMessageToPlayer(Player player, Message message) {
 		if (player == null) {
@@ -112,8 +112,8 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Send a message to all team members of the given player
-	 * @param player shared.gaming.Player who is part of the team where message will be sent.
-	 * @param message shared.messaging.Message to be sent.
+	 * @param player Player who is part of the team where message will be sent.
+	 * @param message Message to be sent.
 	 */
 	public void sendMessageToTeamMembers(Player player, Message message) {
     	if (player == null) {
@@ -134,7 +134,7 @@ public class ServerConnectionManager implements Runnable {
 
 	/**
 	 * Send a message to all connected clients.
-	 * @param message shared.messaging.Message to be sent.
+	 * @param message Message to be sent.
 	 */
 	public void broadcastMessage(Message message) {
 		if (message == null) {
@@ -145,7 +145,11 @@ public class ServerConnectionManager implements Runnable {
         }
     }
 
-    public void resetAllConnections() {
+	/**
+	 * Resets all connections by killing connection threads and making sure that internal structures used to store
+	 * connection threads and connection handlers are empty.
+	 */
+	public void resetAllConnections() {
 
 		for (Thread connectionThread : clientThreads) {
 			connectionThread.interrupt();

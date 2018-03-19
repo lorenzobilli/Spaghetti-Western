@@ -172,14 +172,6 @@ public class Player {
 	}
 
 	/**
-	 * Picks bullets from a certain place.
-	 * @param place Place where the bullets will be picked.
-	 */
-	public void pickBulletsFromPlace(Place place) {
-    	bullets = place.pickBullets();
-	}
-
-	/**
 	 * Checks if two players are equal.
 	 * @param object Player to be compared.
 	 * @return True if the players are the same, false if not.

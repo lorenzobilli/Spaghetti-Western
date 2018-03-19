@@ -16,7 +16,7 @@ import java.util.Set;
  * - Checking if a session is running
  * - Choosing the scenery based on number of connected clients
  * - Randomly putting players inside the scenery
- * - Handling in a thread-safe manner some time critical routines such as doClash/attack requests synchronization
+ * - Handling in a thread-safe manner some time critical routines such as clash/attack requests synchronization
  */
 public class SessionManager {
 
@@ -26,7 +26,7 @@ public class SessionManager {
 	private boolean sessionRunning = false;
 
 	/**
-	 * Get state of the current session.
+	 * Gets state of the current session.
 	 * @return True if session is currently running, false if is not running.
 	 */
 	public boolean getSessionState() {
@@ -34,7 +34,7 @@ public class SessionManager {
 	}
 
 	/**
-	 * Set state of the current session.
+	 * Sets state of the current session.
 	 * @param running State of the current session, true if session is running, false if not.
 	 */
 	public void setSessionState(boolean running) {
@@ -42,7 +42,7 @@ public class SessionManager {
 	}
 
 	/**
-	 * Choose a type of scenery based on connected clients number, then broadcast the results.
+	 * Chooses a type of scenery based on connected clients number, then broadcast the results.
 	 * A scenery is selected with these criteria:
 	 *  - Connected clients less or equal than 10: A small scenery map will be used.
 	 *  - Connected clients between 11 and 20: A medium scenery map will be used.
@@ -51,7 +51,7 @@ public class SessionManager {
 	public void chooseScenery() {
 		if (PlayerManager.getConnectedPlayersNumber() <= 10) {
 			Server.setScenery(new SmallScenery());
-			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.SmallScenery");
+			Server.consolePrintLine("Scenery selected: SmallScenery");
 			MessageTable messageTable = new MessageTable();
 			messageTable.put("header", "CHOSEN_SCENERY");
 			messageTable.put("content", "SmallScenery");
@@ -62,7 +62,7 @@ public class SessionManager {
 			));
 		} else if (PlayerManager.getConnectedPlayersNumber() > 10 && PlayerManager.getConnectedPlayersNumber() <= 20) {
 			Server.setScenery(new MediumScenery());
-			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.MediumScenery");
+			Server.consolePrintLine("Scenery selected: MediumScenery");
 			MessageTable messageTable = new MessageTable();
 			messageTable.put("header", "CHOSEN_SCENERY");
 			messageTable.put("content", "MediumScenery");
@@ -73,7 +73,7 @@ public class SessionManager {
 			));
 		} else if (PlayerManager.getConnectedPlayersNumber() > 20 && PlayerManager.getConnectedPlayersNumber() <= 30) {
 			Server.setScenery(new LargeScenery());
-			Server.consolePrintLine("[*] shared.scenery.Scenery selected: shared.scenery.LargeScenery");
+			Server.consolePrintLine("Scenery selected: LargeScenery");
 			MessageTable messageTable = new MessageTable();
 			messageTable.put("header", "CHOSEN_SCENERY");
 			messageTable.put("content", "LargeScenery");

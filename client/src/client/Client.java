@@ -84,7 +84,7 @@ public class Client {
     public static ExecutorService globalThreadPool;
 
 	/**
-	 * Main method of client.Client.
+	 * Main method of Client.
 	 * Handles all internal objects initialisation, then it starts the client.
 	 * @param args Main method's arguments. Not used here.
 	 */
@@ -151,7 +151,7 @@ public class Client {
 
 	/**
 	 * Set the scenery to be used for the current session.
-	 * @param scenery shared.scenery.Scenery to be used for the current session.
+	 * @param scenery Scenery to be used for the current session.
 	 */
 	public static void setScenery(Scenery scenery) {
     	if (scenery == null) {
@@ -170,7 +170,7 @@ public class Client {
 
 	/**
 	 * Set the current map object to be used.
-	 * @param map client.gui.map.Map to be used for the current session.
+	 * @param map Map to be used for the current session.
 	 */
 	public static void setMap(Map map) {
     	if (map == null) {

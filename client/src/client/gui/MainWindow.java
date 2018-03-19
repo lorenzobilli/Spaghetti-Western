@@ -81,7 +81,7 @@ public class MainWindow {
 	}
 
 	/**
-	 * Update the countdown with a new value.
+	 * Updates the countdown with a new value.
 	 * @param totalSeconds Seconds remaining of the countdown.
 	 */
 	public void updateWaitingCountdown(int totalSeconds) {
@@ -95,7 +95,7 @@ public class MainWindow {
 	}
 
 	/**
-	 * Change the advice label in order to notify the user about the imminent session start.
+	 * Changes the advice label in order to notify the user about the imminent session start.
 	 */
 	public void showSessionReadyAdvice() {
 		window.remove(countdown);
@@ -103,14 +103,14 @@ public class MainWindow {
 	}
 
 	/**
-	 * Make the main window visible.
+	 * Makes the main window visible.
 	 */
 	public void show() {
 		window.setVisible(true);
 	}
 
 	/**
-	 * Make the main window invisible.
+	 * Makes the main window invisible.
 	 */
 	public void hide() {
 		window.setVisible(false);

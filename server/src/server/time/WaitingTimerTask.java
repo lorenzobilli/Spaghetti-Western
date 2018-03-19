@@ -62,7 +62,7 @@ public class WaitingTimerTask implements Callable<Void> {
 	 * scheduler.
 	 */
 	private void waitTimerRoutine() {
-		Server.consolePrintLine("[*] Session wait timer started");
+		Server.consolePrintLine("Session wait timer started");
 		waitCountdown = new TimerTask() {
 			@Override
 			public void run() {
@@ -83,12 +83,12 @@ public class WaitingTimerTask implements Callable<Void> {
 							MessageManager.createXML(new MessageTable("header", "WAIT_TIMEOUT"))
 					));
 					Server.sessionManager.setSessionState(true);
-					Server.consolePrintLine("[*] Session wait waitTimer expired");
-					Server.consolePrintLine("[*] Choosing new scenery based on connected players...");
+					Server.consolePrintLine("Session wait waitTimer expired");
+					Server.consolePrintLine("Choosing new scenery based on connected players...");
 					Server.sessionManager.chooseScenery();
-					Server.consolePrintLine("[*] Spawning players inside scenery graph...");
+					Server.consolePrintLine("Spawning players inside scenery graph...");
 					Server.sessionManager.putPlayers();
-					Server.consolePrintLine("[*] Initiating turn scheduler...");
+					Server.consolePrintLine("Initiating turn scheduler...");
 					Server.turnScheduler.initializeScheduler(
 							Randomizer.getRandomInteger() % 2 == 0 ? Player.Team.GOOD : Player.Team.BAD
 					);

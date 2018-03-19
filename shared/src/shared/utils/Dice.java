@@ -47,7 +47,7 @@ public class Dice {
 	 */
 	public int getValue() throws Exception {
 		if (!thrown) {
-			throw new Exception("shared.utils.Dice has not been thrown yet.");
+			throw new Exception("Dice has not been thrown yet.");
 		}
 		thrown = false;
 		return value;

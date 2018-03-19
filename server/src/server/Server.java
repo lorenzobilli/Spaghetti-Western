@@ -48,8 +48,14 @@ public class Server {
 	 */
     public static ServerConnectionManager connectionManager;
 
-    public static SessionManager sessionManager;
+	/**
+	 * Handles all session-related routines.
+	 */
+	public static SessionManager sessionManager;
 
+	/**
+	 * Global object used to represent the ugly player at server level.
+	 */
     public static Player uglyPlayer;
 
 	/**
@@ -57,6 +63,9 @@ public class Server {
 	 */
 	public static ExecutorService globalThreadPool;
 
+	/**
+	 * Scheduler used to schedule players' turns.
+	 */
     public static Scheduler turnScheduler;
 
 	/**
@@ -83,6 +92,8 @@ public class Server {
         serverWindow = new MainWindow(GAME_NAME);
         globalThreadPool = Executors.newCachedThreadPool();
 
+	    consolePrintLine("Welcome to " + GAME_NAME + "!\n");
+
         configureServerObjects();
         configureConnection();
 
@@ -106,11 +117,12 @@ public class Server {
     }
 
 	private static void configureServerObjects() {
-		consolePrintLine("Configuring server objects...");
+		consolePrint("Configuring server objects...");
 		sessionManager = new SessionManager();
 		turnScheduler = new RoundRobinScheduler();
 		badTeamBullets = 0;
 		goodTeamBullets = 0;
+		consolePrintLine("...Done");
 	}
 
 	private static void configureConnection() {
@@ -125,11 +137,11 @@ public class Server {
 	 */
 	private static void startServer() {
 		consolePrintLine("[!] Server is starting up...");
-		consolePrintLine("\nWelcome to " + GAME_NAME + "!\n");
         connectionThread.start();
     }
 
     public static void resetServer() {
+		serverWindow.clear();
 		consolePrintLine("[!] Initiating server reset...");
 
 		consolePrint("Killing all connections...");
