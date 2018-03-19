@@ -24,6 +24,16 @@ public class Client {
 	public static final String GAME_NAME = "Spaghetti Western";
 
 	/**
+	 * Defines server address on which the client will attempt to connect.
+	 */
+	public static final String SERVER_ADDRESS = "localhost";
+
+	/**
+	 * Defines port number on which the client will attempt to connect.
+	 */
+	public static final int PORT_NUMBER = 10000;
+
+	/**
 	 * Main window used for waiting and login process.
 	 */
 	public static MainWindow clientWindow;
@@ -52,8 +62,6 @@ public class Client {
 	 * Represents the current player.
 	 */
 	private static Player player;
-
-	public static Player uglyPlayer = new Player("UGLY", Player.Team.UGLY);
 
 	/**
 	 * Stores current player position in the scenery.

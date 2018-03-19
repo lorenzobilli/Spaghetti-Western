@@ -21,7 +21,12 @@ public class Server {
 	/**
 	 * Defines the name of the game.
 	 */
-	private static final String GAME_NAME = "Spaghetti Western";
+	public static final String GAME_NAME = "Spaghetti Western";
+
+	/**
+	 * Defines port number on which the server will listen for incoming connections.
+	 */
+	public static final int PORT_NUMBER = 10000;
 
 	/**
 	 * Defines maximum number of concurrently connected players.

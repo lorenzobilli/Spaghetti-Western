@@ -25,16 +25,6 @@ import java.util.concurrent.Future;
 public class ClientConnectionManager implements Runnable {
 
 	/**
-	 * Defines hostname on which the client will attempt to connect.
-	 */
-	private final String HOSTNAME = "localhost";
-
-	/**
-	 * Defines port number on which the client will attempt to connect.
-	 */
-    private final int PORT_NUMBER = 10000;
-
-	/**
 	 * Socket used by the client to establish connection with the server.
 	 */
 	private Socket socket;
@@ -57,7 +47,7 @@ public class ClientConnectionManager implements Runnable {
     @Override
     public void run() {
         try {
-            socket = new Socket(HOSTNAME, PORT_NUMBER);
+            socket = new Socket(Client.SERVER_ADDRESS, Client.PORT_NUMBER);
             sendStream = new PrintWriter(socket.getOutputStream(), true);
             receiveStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {

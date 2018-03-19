@@ -22,11 +22,6 @@ import java.util.NoSuchElementException;
 public class ServerConnectionManager implements Runnable {
 
 	/**
-	 * Defines port number on which the server will listen for incoming connections.
-	 */
-    private static final int PORT_NUMBER = 10000;
-
-	/**
 	 * Socket used by the server to accept incoming connections.
 	 */
 	private static ServerSocket socket;
@@ -44,7 +39,7 @@ public class ServerConnectionManager implements Runnable {
 
 	static {
 		try {
-			socket = new ServerSocket(PORT_NUMBER);
+			socket = new ServerSocket(Server.PORT_NUMBER);
 		} catch (IOException e) {
 			e.getMessage();
 			e.getCause();
