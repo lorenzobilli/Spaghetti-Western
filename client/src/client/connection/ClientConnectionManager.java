@@ -166,6 +166,8 @@ public class ClientConnectionManager implements Runnable {
 				// Retrieve generated message from handler, check if server has accepted the chosen username
 				if (checkConnectionResponse(handle.get())) {
 					break;
+				} else {
+					System.exit(0);
 				}
 			} catch (InterruptedException | ExecutionException e) {
 				e.getMessage();
