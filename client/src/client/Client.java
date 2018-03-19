@@ -71,11 +71,6 @@ public class Client {
     private static Map map;
 
 	/**
-	 * Stores the current number of bullets for this player.
-	 */
-	private static int bullets = 0;
-
-	/**
 	 * Global cached thread pool used by the client for most multithreaded operations.
 	 */
     public static ExecutorService globalThreadPool;
@@ -174,21 +169,5 @@ public class Client {
     		throw new InvalidParameterException("client.gui.map.Map cannot be null");
 		}
 		Client.map = map;
-	}
-
-	/**
-	 * Get current number of bullets of the player.
-	 * @return Total number of bullets.
-	 */
-	public static int getBullets() {
-    	return bullets;
-	}
-
-	/**
-	 * Add to an existing number of bullets a certain amount of new bullets.
-	 * @param bullets Bullets to be added to the total bullets number.
-	 */
-	public static void setBullets(int bullets) {
-    	Client.bullets += bullets;
 	}
 }

@@ -1,12 +1,12 @@
 package server.handle;
 
 import server.Server;
+import server.connection.ConnectionHandler;
 import server.gaming.PlayerManager;
 import server.time.TimeManager;
 import shared.gaming.clash.Clash;
 import shared.gaming.Player;
-import shared.gaming.PointsManager;
-import shared.gaming.clash.ClashManager;
+import server.gaming.PointsManager;
 import shared.handle.EventHandler;
 import shared.handle.HandlerException;
 import shared.messaging.Message;
@@ -16,6 +16,7 @@ import shared.scenery.Place;
 import shared.scenery.Scenery;
 
 import java.security.InvalidParameterException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -171,9 +172,9 @@ public class ServerEventHandler extends EventHandler {
 			    ));
 			    int takenBullets = destination.pickBullets();
 			    if (message.getMessageSender().getTeam() == Player.Team.GOOD) {
-				    Server.setGoodTeamBullets(takenBullets);
+				    Server.setGoodTeamBullets(Server.getGoodTeamBullets() + takenBullets);
 			    } else if (message.getMessageSender().getTeam() == Player.Team.BAD) {
-				    Server.setBadTeamBullets(takenBullets);
+				    Server.setBadTeamBullets(Server.getBadTeamBullets() + takenBullets);
 			    }
 			    Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().addBullets(takenBullets);
 			    MessageTable messageTable = new MessageTable();
@@ -371,21 +372,27 @@ public class ServerEventHandler extends EventHandler {
 			clashLocation.getClashManager().denyAttackRequests();
 
 			Clash clash = new Clash();
-			List<Player> attackers = null;
-			List<Player> defenders = null;
+			List<Player> attackingPlayers = null;
+			List<Player> defendingPlayers = null;
+			List<ConnectionHandler> attackingReferences = new LinkedList<>();
+			List<ConnectionHandler> defendingReferences = new LinkedList<>();
 
 			if (message.getMessageSender().getTeam().equals(Player.Team.GOOD)) {
-				attackers = clashLocation.getGoodPlayers();
-				defenders = clashLocation.getBadPlayers();
+				attackingPlayers = clashLocation.getGoodPlayers();
+				defendingPlayers = clashLocation.getBadPlayers();
 			} else if (message.getMessageSender().getTeam().equals(Player.Team.BAD)) {
-				attackers = clashLocation.getBadPlayers();
-				defenders = clashLocation.getGoodPlayers();
+				attackingPlayers = clashLocation.getBadPlayers();
+				defendingPlayers = clashLocation.getGoodPlayers();
 			}
 
-			assert attackers != null;
-			assert defenders != null;
+			for (Player attacker : attackingPlayers) {
+				attackingReferences.add(Server.connectionManager.getPlayerHandler(attacker));
+			}
+			for (Player defender : defendingPlayers) {
+				defendingReferences.add(Server.connectionManager.getPlayerHandler(defender));
+			}
 
-			Clash.Winners winners = clash.doClash(attackers, defenders);
+			Clash.Winners winners = clash.doClash(attackingPlayers, defendingPlayers);
 
 			StringBuilder attackResults = new StringBuilder();
 			for (Integer result : clash.getAttackResult()) {
@@ -396,22 +403,59 @@ public class ServerEventHandler extends EventHandler {
 				defenseResult.append(String.valueOf(result));
 			}
 
+			int pointsToBeRemoved = 0;
+			int pointsToBeAdded = 0;
+			int singlePlayerPrize;
+
 			if (winners.equals(Clash.Winners.ATTACK)) {
+
+				for (Player loser : defendingPlayers) {
+					pointsToBeRemoved += loser.getBullets();
+				}
+
+				singlePlayerPrize = PointsManager.distributePrize(attackingReferences, defendingReferences);
+				pointsToBeAdded = singlePlayerPrize * attackingPlayers.size();
+
 				sendWinningMessage(
-						attackers, attackResults.toString(), defenseResult.toString(),
-						String.valueOf(PointsManager.getPrize(defenders))
+						attackingPlayers, attackResults.toString(), defenseResult.toString(),
+						String.valueOf(singlePlayerPrize)
 				);
 				sendLoosingMessage(
-						defenders, attackResults.toString(), defenseResult.toString()
+						defendingPlayers, attackResults.toString(), defenseResult.toString()
 				);
+
+				if (attackingPlayers.get(0).getTeam().equals(Player.Team.GOOD)) {
+					Server.setGoodTeamBullets(pointsToBeAdded);
+					Server.setBadTeamBullets(Server.getBadTeamBullets() - pointsToBeRemoved);
+				} else {
+					Server.setBadTeamBullets(pointsToBeAdded);
+					Server.setGoodTeamBullets(Server.getGoodTeamBullets() - pointsToBeRemoved);
+				}
+
 			} else if (winners.equals(Clash.Winners.DEFENSE)) {
+
+				for (Player loser : attackingPlayers) {
+					pointsToBeRemoved += loser.getBullets();
+				}
+
+				singlePlayerPrize = PointsManager.distributePrize(defendingReferences, attackingReferences);
+				pointsToBeAdded = singlePlayerPrize * defendingPlayers.size();
+
 				sendWinningMessage(
-						defenders, attackResults.toString(), defenseResult.toString(),
-						String.valueOf(PointsManager.getPrize(attackers))
+						defendingPlayers, attackResults.toString(), defenseResult.toString(),
+						String.valueOf(singlePlayerPrize)
 				);
 				sendLoosingMessage(
-						attackers, attackResults.toString(), defenseResult.toString()
+						attackingPlayers, attackResults.toString(), defenseResult.toString()
 				);
+
+				if (defendingPlayers.get(0).getTeam().equals(Player.Team.BAD)) {
+					Server.setBadTeamBullets(pointsToBeAdded);
+					Server.setGoodTeamBullets(Server.getGoodTeamBullets() - pointsToBeRemoved);
+				} else {
+					Server.setGoodTeamBullets(pointsToBeAdded);
+					Server.setBadTeamBullets(Server.getBadTeamBullets() - pointsToBeRemoved);
+				}
 			}
 		}
 	}

@@ -169,11 +169,11 @@ public class Server {
 	}
 
 	/**
-	 * Add to an existing number of bullets for the "good" team a certain amount of new bullets.
-	 * @param bullets bullets to be added to the total "good" team bullets number.
+	 * Sets a new amount of bullets for the "good" team.
+	 * @param bullets New amount of bullets to be set.
 	 */
 	public static void setGoodTeamBullets(int bullets) {
-    	goodTeamBullets += bullets;
+    	goodTeamBullets = bullets;
 	}
 
 	/**
@@ -185,10 +185,10 @@ public class Server {
 	}
 
 	/**
-	 * Add to an existing number of bullets for the "bad" team a certain amount of new bullets.
-	 * @param bullets bullets to be added to the total "bad" team bullets number.
+	 * Sets a new amount of bullets for the "bad" team.
+	 * @param bullets New amount of bullets to be set.
 	 */
 	public static void setBadTeamBullets(int bullets) {
-    	badTeamBullets += bullets;
+    	badTeamBullets = bullets;
 	}
 }

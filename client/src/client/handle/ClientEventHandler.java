@@ -275,8 +275,8 @@ public class ClientEventHandler extends EventHandler {
 		Client.setPosition(destination);
 		Client.getScenery().movePlayer(Client.getPlayer(), origin, destination);
 		Client.getMap().updateMap(Client.getPlayer(), origin, destination);
-		Client.setBullets(destination.pickBullets());
-		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
+		Client.getPlayer().addBullets(destination.pickBullets());
+		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getPlayer().getBullets());
 		if (Client.getPosition().getClashManager().isClashEnabled()) {
 			Client.getMap().enableClashButton();
 		}
@@ -375,7 +375,7 @@ public class ClientEventHandler extends EventHandler {
 		// Get prize and add corresponding points to the current user, since he has won
 		int prize = Integer.parseInt(MessageManager.convertXML("prize", message.getMessageContent()));
 		Client.getPlayer().addBullets(prize);
-		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
+		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getPlayer().getBullets());
 	}
 
 	/**
@@ -392,7 +392,7 @@ public class ClientEventHandler extends EventHandler {
 		);
 		// Remove points from current user, since he has lost
 		Client.getPlayer().removeBullets();
-		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
+		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getPlayer().getBullets());
 	}
 
 	private void manageUglyVisit() {
@@ -402,7 +402,7 @@ public class ClientEventHandler extends EventHandler {
 				"UH OH!", JOptionPane.WARNING_MESSAGE
 		);
 		Client.getPlayer().removeBullets();
-		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getBullets());
+		Client.getMap().updateBulletLabel(Client.mapWindow, Client.getPlayer().getBullets());
 	}
 
 	/**
@@ -447,6 +447,7 @@ public class ClientEventHandler extends EventHandler {
 				break;
 			case "UGLY_VISIT":
 				manageUglyVisit();
+				break;
 			default:
 				throw new HandlerException("Invalid message type encountered");
 		}
