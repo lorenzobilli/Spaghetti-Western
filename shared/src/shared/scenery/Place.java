@@ -1,3 +1,26 @@
+/*
+ *  Project: "Spaghetti Western"
+ *
+ *
+ *  The MIT License (MIT)
+ *
+ *  Copyright (c) 2017-2018 Lorenzo Billi
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *	documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ *	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ *	permit persons to whom the Software is	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ *	the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ *	WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ *	OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ *	OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package shared.scenery;
 
 import shared.gaming.Player;
@@ -21,7 +44,7 @@ public class Place {
 	/**
 	 * Maximum number of bad-team players that can be present in the current place at the same time.
 	 */
-    private final int MAX_BAD_PLAYERS = 3;
+	private final int MAX_BAD_PLAYERS = 3;
 
 	/**
 	 * Maximum number of bullets that can be present at the initialization time of an instance of a place.
@@ -31,7 +54,7 @@ public class Place {
 	/**
 	 * Name of the place.
 	 */
-    private String placeName;
+	private String placeName;
 
 	/**
 	 * Unique ID of the place.
@@ -41,7 +64,7 @@ public class Place {
 	/**
 	 * List of currently present good-team players in the place.
 	 */
-    private List<Player> goodPlayers;
+	private List<Player> goodPlayers;
 
 	/**
 	 * List of currently present bad-team players in the place.
@@ -68,38 +91,38 @@ public class Place {
 	 * @param placeName Name of the place.
 	 * @param placeId ID of the place
 	 */
-    public Place(String placeName, int placeId) {
-        if (placeName == null) {
-            throw new InvalidParameterException("shared.scenery.Place name cannot be null");
-        }
-        if (placeId <= 0) {
-        	throw new InvalidParameterException("shared.scenery.Place id cannot be zero or negative");
+	public Place(String placeName, int placeId) {
+		if (placeName == null) {
+			throw new InvalidParameterException("shared.scenery.Place name cannot be null");
 		}
-        if (placeName.equals("")) {
-            throw new InvalidParameterException("shared.scenery.Place name cannot be empty");
-        }
-        this.placeName = placeName;
-        this.placeId = placeId;
-        goodPlayers = new ArrayList<>();
-        badPlayers = new ArrayList<>();
-        clashManager = new ClashManager();
-        bullets = Randomizer.getRandomInteger(MAX_BULLETS);
-    }
+		if (placeId <= 0) {
+			throw new InvalidParameterException("shared.scenery.Place id cannot be zero or negative");
+		}
+		if (placeName.equals("")) {
+			throw new InvalidParameterException("shared.scenery.Place name cannot be empty");
+		}
+		this.placeName = placeName;
+		this.placeId = placeId;
+		goodPlayers = new ArrayList<>();
+		badPlayers = new ArrayList<>();
+		clashManager = new ClashManager();
+		bullets = Randomizer.getRandomInteger(MAX_BULLETS);
+	}
 
 	/**
 	 * Gets name of the place.
 	 * @return Name of the place.
 	 */
 	public String getPlaceName() {
-        return placeName;
-    }
+		return placeName;
+	}
 
 	/**
 	 * Gets ID of the place.
 	 * @return ID of the place.
 	 */
 	public int getPlaceId() {
-    	return placeId;
+		return placeId;
 	}
 
 	/**
@@ -108,15 +131,15 @@ public class Place {
 	 * @return Number of picked bullets.
 	 */
 	public int pickBullets() {
-    	if (bullets == 0) {
-    		return 0;
+		if (bullets == 0) {
+			return 0;
 		}
-    	if (bullets % 2 != 0) {
-    		bullets--;
+		if (bullets % 2 != 0) {
+			bullets--;
 		}
 		int takenBullets = bullets / 2;
-    	bullets /= 2;
-    	return takenBullets;
+		bullets /= 2;
+		return takenBullets;
 	}
 
 	/**
@@ -124,38 +147,38 @@ public class Place {
 	 * @param player Player to be added.
 	 * @return True if player has been correctly added, false if not.
 	 */
-    public boolean addPlayer(Player player) {
-        if (player == null) {
-            throw new InvalidParameterException("shared.gaming.Player to be added cannot be null");
-        }
+	public boolean addPlayer(Player player) {
+		if (player == null) {
+			throw new InvalidParameterException("shared.gaming.Player to be added cannot be null");
+		}
 
-        if (clashManager.isClashRunning()) {
-        	return false;
-        }
+		if (clashManager.isClashRunning()) {
+			return false;
+		}
 
-        boolean playerAdded = false;
-        switch (player.getTeam()) {
-            case GOOD:
-                if (goodPlayers.size() < MAX_GOOD_PLAYERS) {
-                    goodPlayers.add(player);
-                    checkClash();
-                    playerAdded = true;
-                }
-                break;
-            case BAD:
-                if (badPlayers.size() < MAX_BAD_PLAYERS) {
-                    badPlayers.add(player);
-                    checkClash();
-                    playerAdded = true;
-                }
-                break;
-	        case UGLY:
-	        	isUglyPresent = true;
-	        	playerAdded = true;
-	        	break;
-        }
-        return playerAdded;
-    }
+		boolean playerAdded = false;
+		switch (player.getTeam()) {
+			case GOOD:
+				if (goodPlayers.size() < MAX_GOOD_PLAYERS) {
+					goodPlayers.add(player);
+					checkClash();
+					playerAdded = true;
+				}
+				break;
+			case BAD:
+				if (badPlayers.size() < MAX_BAD_PLAYERS) {
+					badPlayers.add(player);
+					checkClash();
+					playerAdded = true;
+				}
+				break;
+			case UGLY:
+				isUglyPresent = true;
+				playerAdded = true;
+				break;
+		}
+		return playerAdded;
+	}
 
 	/**
 	 * Removes an existing player from the current place.
@@ -163,35 +186,35 @@ public class Place {
 	 * @return True if player has been correctly remove, false if not.
 	 */
 	public boolean removePlayer(Player player) {
-        if (player == null) {
-            throw new InvalidParameterException("shared.gaming.Player to be removed cannot be null");
-        }
+		if (player == null) {
+			throw new InvalidParameterException("shared.gaming.Player to be removed cannot be null");
+		}
 
-        if (clashManager.isClashRunning()) {
-        	return false;
-        }
+		if (clashManager.isClashRunning()) {
+			return false;
+		}
 
-        boolean playerRemoved = false;
-        switch (player.getTeam()) {
-            case GOOD:
-                if (goodPlayers.remove(player)) {
-                    checkClash();
-                    playerRemoved = true;
-                }
-                break;
-            case BAD:
-                if (badPlayers.remove(player)) {
-                    checkClash();
-                    playerRemoved = true;
-                }
-                break;
-	        case UGLY:
-	        	isUglyPresent = false;
-	        	playerRemoved = true;
-	        	break;
-        }
-        return playerRemoved;
-    }
+		boolean playerRemoved = false;
+		switch (player.getTeam()) {
+			case GOOD:
+				if (goodPlayers.remove(player)) {
+					checkClash();
+					playerRemoved = true;
+				}
+				break;
+			case BAD:
+				if (badPlayers.remove(player)) {
+					checkClash();
+					playerRemoved = true;
+				}
+				break;
+			case UGLY:
+				isUglyPresent = false;
+				playerRemoved = true;
+				break;
+		}
+		return playerRemoved;
+	}
 
 	/**
 	 * Checks if a player is present in the current place.
@@ -199,34 +222,34 @@ public class Place {
 	 * @return True if the player is present, false if not.
 	 */
 	public boolean isPlayerPresent(Player player) {
-        if (player == null) {
-            throw new InvalidParameterException("shared.gaming.Player to be checked cannot be null");
-        }
+		if (player == null) {
+			throw new InvalidParameterException("shared.gaming.Player to be checked cannot be null");
+		}
 
-        boolean playerFound = false;
-        switch (player.getTeam()) {
-            case GOOD:
-                if (goodPlayers.contains(player)) {
-                    playerFound = true;
-                }
-                break;
-            case BAD:
-                if (badPlayers.contains(player)) {
-                    playerFound = true;
-                }
-                break;
-	        case UGLY:
-	        	return isUglyPresent;
-        }
-        return playerFound;
-    }
+		boolean playerFound = false;
+		switch (player.getTeam()) {
+			case GOOD:
+				if (goodPlayers.contains(player)) {
+					playerFound = true;
+				}
+				break;
+			case BAD:
+				if (badPlayers.contains(player)) {
+					playerFound = true;
+				}
+				break;
+			case UGLY:
+				return isUglyPresent;
+		}
+		return playerFound;
+	}
 
 	/**
 	 * Gets all good-team players present in the current place.
 	 * @return List of present good-team players
 	 */
 	public List<Player> getGoodPlayers() {
-    	return goodPlayers;
+		return goodPlayers;
 	}
 
 	/**
@@ -234,7 +257,7 @@ public class Place {
 	 * @return List of present bad-team players.
 	 */
 	public List<Player> getBadPlayers() {
-    	return badPlayers;
+		return badPlayers;
 	}
 
 	/**
@@ -260,12 +283,12 @@ public class Place {
 	 * Checks wherever to enable or disable clashes.
 	 */
 	private void checkClash() {
-        if (goodPlayers.size() > 0 && badPlayers.size() > 0) {
-        	clashManager.enableClash();
-        } else {
-        	clashManager.disableClash();
-        }
-    }
+		if (goodPlayers.size() > 0 && badPlayers.size() > 0) {
+			clashManager.enableClash();
+		} else {
+			clashManager.disableClash();
+		}
+	}
 
 	/**
 	 * Checks if two places are equal.
@@ -281,5 +304,5 @@ public class Place {
 			return false;
 		}
 		return (placeName.equals(((Place) object).placeName) && placeId == ((Place) object).placeId);
-    }
+	}
 }

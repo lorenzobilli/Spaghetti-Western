@@ -1,3 +1,26 @@
+/*
+ *  Project: "Spaghetti Western"
+ *
+ *
+ *  The MIT License (MIT)
+ *
+ *  Copyright (c) 2017-2018 Lorenzo Billi
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *	documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ *	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ *	permit persons to whom the Software is	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ *	the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ *	WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ *	OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ *	OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package shared.gaming;
 
 import shared.scenery.Place;
@@ -12,7 +35,7 @@ public class Player {
 	/**
 	 * Name of the player.
 	 */
-    private String name;
+	private String name;
 
 	/**
 	 * Team of the player.
@@ -22,7 +45,7 @@ public class Player {
 	/**
 	 * Current player position in the scenery.
 	 */
-    private Place position;
+	private Place position;
 
 	/**
 	 * Total number of bullets owned by the player.
@@ -36,12 +59,12 @@ public class Player {
 	 * - BAD: Player belongs to the "Bad" team.
 	 * - UGLY: Only used internally for implementing "the ugly" player.
 	 */
-    public enum Team {
-        SERVER,
-        GOOD,
-        BAD,
-        UGLY,
-    }
+	public enum Team {
+		SERVER,
+		GOOD,
+		BAD,
+		UGLY,
+	}
 
 	/**
 	 * Creates a new player.
@@ -49,16 +72,16 @@ public class Player {
 	 * @param team Team of the player.
 	 */
 	public Player(String name, Team team) {
-        if (name == null) {
-            throw new InvalidParameterException("shared.gaming.Player name cannot be null");
-        }
-        if (team == null) {
-            throw new InvalidParameterException("shared.gaming.Player team cannot be null");
-        }
-        this.name = name;
-        this.team = team;
-        bullets = 0;
-    }
+		if (name == null) {
+			throw new InvalidParameterException("shared.gaming.Player name cannot be null");
+		}
+		if (team == null) {
+			throw new InvalidParameterException("shared.gaming.Player team cannot be null");
+		}
+		this.name = name;
+		this.team = team;
+		bullets = 0;
+	}
 
 	/**
 	 * Creates a new player.
@@ -67,30 +90,30 @@ public class Player {
 	 *             team value.
 	 */
 	public Player(String name, String team) {
-    	if (name == null) {
-    		throw new InvalidParameterException("shared.gaming.Player name cannot be null");
+		if (name == null) {
+			throw new InvalidParameterException("shared.gaming.Player name cannot be null");
 		}
 		if (team == null) {
-    		throw new InvalidParameterException("shared.gaming.Player team cannot be null");
+			throw new InvalidParameterException("shared.gaming.Player team cannot be null");
 		}
 		if (team.equals("SERVER")) {
-    		this.name = name;
-    		this.team = Team.SERVER;
-    		bullets = 0;
+			this.name = name;
+			this.team = Team.SERVER;
+			bullets = 0;
 		} else if (team.equals("GOOD")) {
-    		this.name = name;
-    		this.team = Team.GOOD;
-    		bullets = 0;
+			this.name = name;
+			this.team = Team.GOOD;
+			bullets = 0;
 		} else if (team.equals("BAD")) {
-    		this.name = name;
-    		this.team = Team.BAD;
-    		bullets = 0;
+			this.name = name;
+			this.team = Team.BAD;
+			bullets = 0;
 		} else if (team.equals("UGLY")) {
-    		this.name = name;
-    		this.team = Team.UGLY;
-    		bullets = 0;
+			this.name = name;
+			this.team = Team.UGLY;
+			bullets = 0;
 		} else {
-    		throw new InvalidParameterException("Unrecognized team string");
+			throw new InvalidParameterException("Unrecognized team string");
 		}
 	}
 
@@ -98,44 +121,44 @@ public class Player {
 	 * Gets name of the player.
 	 * @return Name of the player.
 	 */
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
 	/**
 	 * Gets team of the player.
 	 * @return Team of the player.
 	 */
 	public Team getTeam() {
-        return team;
-    }
+		return team;
+	}
 
 	/**
 	 * Gets current position of the player.
 	 * @return Position of the player.
 	 */
 	public Place getPosition()
-    {
-    	return position;
-    }
+	{
+		return position;
+	}
 
 	/**
 	 * Sets current position of the player.
 	 * @param position Position of the player.
 	 */
 	public void setPosition(Place position) {
-    	if (position == null) {
-    		throw new InvalidParameterException("shared.gaming.Player position cannot be null");
-	    }
-	    this.position = position;
-    }
+		if (position == null) {
+			throw new InvalidParameterException("shared.gaming.Player position cannot be null");
+		}
+		this.position = position;
+	}
 
 	/**
 	 * Gets total number of bullets that player has.
 	 * @return Number of bullets.
 	 */
 	public int getBullets() {
-    	return bullets;
+		return bullets;
 	}
 
 	/**
@@ -143,14 +166,14 @@ public class Player {
 	 * @param bullets Bullets to be added to the player.
 	 */
 	public void addBullets(int bullets) {
-    	this.bullets += bullets;
+		this.bullets += bullets;
 	}
 
 	/**
 	 * Remove all bullets from the player.
 	 */
 	public void removeBullets() {
-    	bullets = 0;
+		bullets = 0;
 	}
 
 	/**
@@ -166,8 +189,8 @@ public class Player {
 	 * Translates the current team as its string representation.
 	 * @return Current team expressed as an uppercase string.
 	 */
-    public String getTeamAsString() {
-    	switch (team) {
+	public String getTeamAsString() {
+		switch (team) {
 			case SERVER:
 				return "SERVER";
 			case GOOD:

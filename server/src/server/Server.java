@@ -1,3 +1,26 @@
+/*
+ *  Project: "Spaghetti Western"
+ *
+ *
+ *  The MIT License (MIT)
+ *
+ *  Copyright (c) 2017-2018 Lorenzo Billi
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *	documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ *	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ *	permit persons to whom the Software is	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ *	the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ *	WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ *	OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ *	OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package server;
 
 import server.connection.ServerConnectionManager;
@@ -31,7 +54,7 @@ public class Server {
 	/**
 	 * Defines maximum number of concurrently connected players.
 	 */
-    public static final int MAX_PLAYERS = 30;
+	public static final int MAX_PLAYERS = 30;
 
 	/**
 	 * Defines duration of waiting before starting a new play session during normal use.
@@ -48,7 +71,7 @@ public class Server {
 	/**
 	 * Defines duration of each play session. This value is intended to be used as minutes.
 	 */
-    public static final int PLAY_TIME = 1;
+	public static final int PLAY_TIME = 1;
 
 	/**
 	 * Defines duration of each turn. This value is intended to be used as seconds.
@@ -69,7 +92,7 @@ public class Server {
 	/**
 	 * Handles all connection-related routines.
 	 */
-    public static ServerConnectionManager connectionManager;
+	public static ServerConnectionManager connectionManager;
 
 	/**
 	 * Handles all session-related routines.
@@ -79,7 +102,7 @@ public class Server {
 	/**
 	 * Global object used to represent the ugly player at server level.
 	 */
-    public static Player uglyPlayer;
+	public static Player uglyPlayer;
 
 	/**
 	 * Global cached thread pool used by the server for most multithreaded operations.
@@ -89,7 +112,7 @@ public class Server {
 	/**
 	 * Scheduler used to schedule players' turns.
 	 */
-    public static Scheduler turnScheduler;
+	public static Scheduler turnScheduler;
 
 	/**
 	 * Stores the corresponding loaded scenery
@@ -99,7 +122,7 @@ public class Server {
 	/**
 	 * Stores the current number of bullets for the "good" team.
 	 */
-    private static int goodTeamBullets;
+	private static int goodTeamBullets;
 
 	/**
 	 * Stores the current number of bullets for the "bad" team.
@@ -111,33 +134,33 @@ public class Server {
 	 * Handles all internal objects initialization.
 	 * @param args Main method's arguments. Not used here.
 	 */
-    public static void main(String[] args) {
-        serverWindow = new MainWindow(GAME_NAME);
-        globalThreadPool = Executors.newCachedThreadPool();
+	public static void main(String[] args) {
+		serverWindow = new MainWindow(GAME_NAME);
+		globalThreadPool = Executors.newCachedThreadPool();
 
-	    consolePrintLine("Welcome to " + GAME_NAME + "!\n");
+		consolePrintLine("Welcome to " + GAME_NAME + "!\n");
 
-        configureServerObjects();
-        configureConnection();
+		configureServerObjects();
+		configureConnection();
 
-        startServer();
-    }
+		startServer();
+	}
 
 	/**
 	 * Prints a message on the server's console.
 	 * @param message message to be written in the console.
 	 */
 	public static void consolePrint(String message) {
-        serverWindow.appendText(message);
-    }
+		serverWindow.appendText(message);
+	}
 
 	/**
 	 * Prints a message on the server's console, then adds a newline.
 	 * @param message message to be written in the console.
 	 */
 	public static void consolePrintLine(String message) {
-        serverWindow.appendText(message + "\n");
-    }
+		serverWindow.appendText(message + "\n");
+	}
 
 	private static void configureServerObjects() {
 		consolePrint("Configuring server objects...");
@@ -160,10 +183,10 @@ public class Server {
 	 */
 	private static void startServer() {
 		consolePrintLine("[!] Server is starting up...");
-        connectionThread.start();
-    }
+		connectionThread.start();
+	}
 
-    public static void resetServer() {
+	public static void resetServer() {
 		serverWindow.clear();
 		consolePrintLine("[!] Initiating server reset...");
 
@@ -176,10 +199,10 @@ public class Server {
 
 		configureServerObjects();
 		configureConnection();
-	    PlayerManager.removeAllPlayers();
+		PlayerManager.removeAllPlayers();
 
-	    startServer();
-    }
+		startServer();
+	}
 
 	/**
 	 * Get the scenery used in the current session.
@@ -194,8 +217,8 @@ public class Server {
 	 * @param scenery scenery to be used for the current session.
 	 */
 	public static void setScenery(Scenery scenery) {
-    	if (scenery == null) {
-    		throw new InvalidParameterException("shared.scenery.Scenery cannot be null");
+		if (scenery == null) {
+			throw new InvalidParameterException("shared.scenery.Scenery cannot be null");
 		}
 		Server.scenery = scenery;
 	}
@@ -205,7 +228,7 @@ public class Server {
 	 * @return total number of bullets of the "good" team.
 	 */
 	public static int getGoodTeamBullets() {
-    	return goodTeamBullets;
+		return goodTeamBullets;
 	}
 
 	/**
@@ -213,7 +236,7 @@ public class Server {
 	 * @param bullets New amount of bullets to be set.
 	 */
 	public static void setGoodTeamBullets(int bullets) {
-    	goodTeamBullets = bullets;
+		goodTeamBullets = bullets;
 	}
 
 	/**
@@ -221,7 +244,7 @@ public class Server {
 	 * @return total number of bullets of the "bad" team.
 	 */
 	public static int getBadTeamBullets() {
-    	return badTeamBullets;
+		return badTeamBullets;
 	}
 
 	/**
@@ -229,6 +252,6 @@ public class Server {
 	 * @param bullets New amount of bullets to be set.
 	 */
 	public static void setBadTeamBullets(int bullets) {
-    	badTeamBullets = bullets;
+		badTeamBullets = bullets;
 	}
 }

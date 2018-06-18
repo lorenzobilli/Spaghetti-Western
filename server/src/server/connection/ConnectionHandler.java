@@ -1,3 +1,26 @@
+/*
+ *  Project: "Spaghetti Western"
+ *
+ *
+ *  The MIT License (MIT)
+ *
+ *  Copyright (c) 2017-2018 Lorenzo Billi
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *	documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ *	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ *	permit persons to whom the Software is	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ *	the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ *	WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ *	OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ *	OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package server.connection;
 
 import server.Server;
@@ -30,7 +53,7 @@ public class ConnectionHandler implements Runnable {
 	/**
 	 * Stream used by the server to send messages.
 	 */
-    private PrintWriter sendStream;
+	private PrintWriter sendStream;
 
 	/**
 	 * Stream used by the server to receive messages.
@@ -40,63 +63,63 @@ public class ConnectionHandler implements Runnable {
 	/**
 	 * Stores a copy of the connected player.
 	 */
-    private Player connectedPlayer;
+	private Player connectedPlayer;
 
 	/**
 	 * Creates a new ConnectionHandler by assigning the internal socket to another initialized socket.
 	 * @param connection Socket that will be used for the connection. An active client must be already assigned to this
 	 *                   socket prior run() call.
 	 */
-    public ConnectionHandler(Socket connection) {
-        this.connection = connection;
-    }
+	public ConnectionHandler(Socket connection) {
+		this.connection = connection;
+	}
 
 	/**
 	 * Initializes the internal sending/receiving streams, then passes control to methods for actual connection
 	 * initialization and enters in the "big loop" (listens for messages and sends responses accordingly).
 	 */
 	@Override
-    public void run() {
-        try {
-            sendStream = new PrintWriter(connection.getOutputStream(), true);
-            receiveStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
-        Server.consolePrintLine("A client has connected to the server");
+	public void run() {
+		try {
+			sendStream = new PrintWriter(connection.getOutputStream(), true);
+			receiveStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		} catch (IOException e) {
+			e.getMessage();
+			e.getCause();
+			e.printStackTrace();
+		}
+		Server.consolePrintLine("A client has connected to the server");
 
-        initUserConnection();
+		initUserConnection();
 
-        talkWithClient();
-    }
+		talkWithClient();
+	}
 
 	/**
 	 * Gets the current connected player in thread-safe manner.
 	 * @return Reference to the connected player.
 	 */
 	public synchronized Player getConnectedPlayer() {
-        return connectedPlayer;
-    }
+		return connectedPlayer;
+	}
 
 	/**
 	 * Gets the sending stream in a thread-safe manner.
 	 * @return Reference to the send stream.
 	 */
 	public synchronized PrintWriter getSendStream() {
-        return sendStream;
-    }
+		return sendStream;
+	}
 
 	/**
 	 * Gets the receiving stream in a thread-safe manner.
 	 * @return Reference to the receive stream.
 	 */
 	public synchronized BufferedReader getReceiveStream() {
-        return receiveStream;
-    }
+		return receiveStream;
+	}
 
-    private boolean checkConnectionResponse(Message message) {
+	private boolean checkConnectionResponse(Message message) {
 		if (message == null) {
 			throw new InvalidParameterException("Response message cannot be null");
 		}
@@ -124,7 +147,7 @@ public class ConnectionHandler implements Runnable {
 			default:
 				throw new InvalidParameterException("Unknown message given");
 		}
-    }
+	}
 
 	/**
 	 * Initiate server connection with the user. An attempt is done until a valid username is inserted by the client.
@@ -133,22 +156,22 @@ public class ConnectionHandler implements Runnable {
 	 * If the client is the first to connect to this server, it will also cause the login timer to start.
 	 */
 	private void initUserConnection() {
-        while (true) {
-            try {
-                // Wait for first message from client and pass it to the handler
-                Future<Message> receive = Server.globalThreadPool.submit(new Receiver(getReceiveStream()));
-                Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
-                // Retrieve generated message from handle, check if username has been accepted and send it back
-	            if (checkConnectionResponse(handle.get())) {
-	            	break;
-	            }
-            } catch (InterruptedException | ExecutionException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-        }
-    }
+		while (true) {
+			try {
+				// Wait for first message from client and pass it to the handler
+				Future<Message> receive = Server.globalThreadPool.submit(new Receiver(getReceiveStream()));
+				Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
+				// Retrieve generated message from handle, check if username has been accepted and send it back
+				if (checkConnectionResponse(handle.get())) {
+					break;
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.getMessage();
+				e.getCause();
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * Listens for messages coming from the client synchronously. When a message comes from the client, it passes it
@@ -156,21 +179,21 @@ public class ConnectionHandler implements Runnable {
 	 * asynchronously to the client. Finally, the server enters the listening state again, and the loop repeats.
 	 */
 	private void talkWithClient() {
-        while (true) {
-            try {
-                // Wait for a message and pass it to the handler
-                Future<Message> receive = Server.globalThreadPool.submit(new Receiver(getReceiveStream()));
-                Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
-                // Retrieve generated message from handle, print it on the server console and send it back
-                Message message = handle.get();
-                if (message != null) {
-                    Server.globalThreadPool.submit(new Sender(message, getSendStream()));
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-        }
-    }
+		while (true) {
+			try {
+				// Wait for a message and pass it to the handler
+				Future<Message> receive = Server.globalThreadPool.submit(new Receiver(getReceiveStream()));
+				Future<Message> handle = Server.globalThreadPool.submit(new ServerEventHandler(receive.get()));
+				// Retrieve generated message from handle, print it on the server console and send it back
+				Message message = handle.get();
+				if (message != null) {
+					Server.globalThreadPool.submit(new Sender(message, getSendStream()));
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.getMessage();
+				e.getCause();
+				e.printStackTrace();
+			}
+		}
+	}
 }

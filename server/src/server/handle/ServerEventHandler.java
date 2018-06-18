@@ -1,3 +1,26 @@
+/*
+ *  Project: "Spaghetti Western"
+ *
+ *
+ *  The MIT License (MIT)
+ *
+ *  Copyright (c) 2017-2018 Lorenzo Billi
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *	documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ *	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ *	permit persons to whom the Software is	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ *	the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ *	WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ *	OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ *	OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package server.handle;
 
 import server.Server;
@@ -29,55 +52,55 @@ public class ServerEventHandler extends EventHandler {
 	 * Creates new Server Event Handler.
 	 * @param message shared.messaging.Message to be handled.
 	 */
-    public ServerEventHandler(Message message) {
-        super(message);
-    }
+	public ServerEventHandler(Message message) {
+		super(message);
+	}
 
 	/**
 	 * Manages session start conditions.
 	 * @return A message with all the correct result.
 	 */
 	private Message manageSessionStart() throws HandlerException {
-	    PlayerManager.Status userManagerStatus = PlayerManager.addPlayer(message.getMessageSender());
-	    MessageTable result;
-	    switch (userManagerStatus) {
-		    case SUCCESS:
-			    result = new MessageTable("header", "ACCEPTED");
-			    break;
-		    case ALREADY_REGISTERED:
-			    result = new MessageTable("header", "ALREADY_CONNECTED");
-			    break;
-		    case MAX_NUM_REACHED:
-			    result = new MessageTable("header", "MAX_NUM_REACHED");
-			    break;
-		    case SESSION_RUNNING:
-			    result = new MessageTable("header", "SESSION_RUNNING");
-			    break;
-		    default:
-			    throw new HandlerException("Invalid message state encountered");
-	    }
-	    return new Message(Message.Type.SESSION,
-			    new Player("SERVER", Player.Team.SERVER),
-			    message.getMessageSender(),
-			    MessageManager.createXML(result)
-	    );
-    }
+		PlayerManager.Status userManagerStatus = PlayerManager.addPlayer(message.getMessageSender());
+		MessageTable result;
+		switch (userManagerStatus) {
+			case SUCCESS:
+				result = new MessageTable("header", "ACCEPTED");
+				break;
+			case ALREADY_REGISTERED:
+				result = new MessageTable("header", "ALREADY_CONNECTED");
+				break;
+			case MAX_NUM_REACHED:
+				result = new MessageTable("header", "MAX_NUM_REACHED");
+				break;
+			case SESSION_RUNNING:
+				result = new MessageTable("header", "SESSION_RUNNING");
+				break;
+			default:
+				throw new HandlerException("Invalid message state encountered");
+		}
+		return new Message(Message.Type.SESSION,
+				new Player("SERVER", Player.Team.SERVER),
+				message.getMessageSender(),
+				MessageManager.createXML(result)
+		);
+	}
 
 	/**
 	 * Manages session stop condition.
 	 * @return A message with the configured shutdown request.
 	 */
 	private Message manageSessionStop() {
-	    if (!PlayerManager.removePlayer(message.getMessageSender())) {
-		    throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");
-	    }
-	    return new Message(
-			    Message.Type.SESSION,
-			    new Player("SERVER", Player.Team.SERVER),
-			    message.getMessageSender(),
-			    MessageManager.createXML(new MessageTable("header", "SHUTDOWN"))
-	    );
-    }
+		if (!PlayerManager.removePlayer(message.getMessageSender())) {
+			throw new RuntimeException("Error while trying to remove user: selected user doesn't exist");
+		}
+		return new Message(
+				Message.Type.SESSION,
+				new Player("SERVER", Player.Team.SERVER),
+				message.getMessageSender(),
+				MessageManager.createXML(new MessageTable("header", "SHUTDOWN"))
+		);
+	}
 
 	/**
 	 * Handle all session-related messages. In particular, these events are handled:
@@ -93,7 +116,7 @@ public class ServerEventHandler extends EventHandler {
 	 *  - SHUTDOWN: Stop request accepted, client disconnected from the server.
 	 */
 	@Override
-    protected Message handleSession() throws HandlerException {
+	protected Message handleSession() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "SESSION_START_REQUEST":
 				return manageSessionStart();
@@ -102,7 +125,7 @@ public class ServerEventHandler extends EventHandler {
 			default:
 				throw new HandlerException("Invalid message type encountered");
 		}
-    }
+	}
 
 	/**
 	 * Handle all time-related messages. In particular, these events are handled:
@@ -110,7 +133,7 @@ public class ServerEventHandler extends EventHandler {
 	 * @return A null message, since all operations are handled directly by the time manager.
 	 */
 	@Override
-    protected Message handleTime() throws HandlerException {
+	protected Message handleTime() throws HandlerException {
 		switch (MessageManager.convertXML("header", message.getMessageContent())) {
 			case "WAIT_START_REQUEST":
 				if (PlayerManager.getConnectedPlayersNumber() == 1) {     // First client connected to the server
@@ -120,8 +143,8 @@ public class ServerEventHandler extends EventHandler {
 			default:
 				throw new HandlerException("Invalid message state encountered");
 		}
-        return null;
-    }
+		return null;
+	}
 
 	/**
 	 * Handle all chat-related messages.
@@ -129,10 +152,10 @@ public class ServerEventHandler extends EventHandler {
 	 * @return A null message.
 	 */
 	@Override
-    protected Message handleChat() {
-        Server.connectionManager.sendMessageToTeamMembers(message.getMessageSender(), message);
-        return null;
-    }
+	protected Message handleChat() {
+		Server.connectionManager.sendMessageToTeamMembers(message.getMessageSender(), message);
+		return null;
+	}
 
 	/**
 	 * Handle all scenery-related messages.
@@ -140,66 +163,66 @@ public class ServerEventHandler extends EventHandler {
 	 * @return A null message.
 	 */
 	@Override
-    protected Message handleScenery() {
-        return null;
-    }
+	protected Message handleScenery() {
+		return null;
+	}
 
 	/**
 	 * Manages all possible player moves.
 	 * @return A configured message with the result of the operation.
 	 */
 	private Message managePlayerMovement() throws HandlerException {
-	    Place origin = Server.connectionManager.getPlayerHandler(
-	    		message.getMessageSender()).getConnectedPlayer().getPosition();
-	    Place destination = Server.getScenery().getNamePlaces().get(
-			    MessageManager.convertXML("content", message.getMessageContent()));
-	    Scenery.SceneryEvent result = Server.getScenery().movePlayer(message.getMessageSender(), origin, destination);
+		Place origin = Server.connectionManager.getPlayerHandler(
+				message.getMessageSender()).getConnectedPlayer().getPosition();
+		Place destination = Server.getScenery().getNamePlaces().get(
+				MessageManager.convertXML("content", message.getMessageContent()));
+		Scenery.SceneryEvent result = Server.getScenery().movePlayer(message.getMessageSender(), origin, destination);
 
-	    switch (result) {
-		    case PLAYER_MOVED:
-			    Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().setPosition(destination);
-			    MessageTable broadcastMessageTable = new MessageTable();
-			    broadcastMessageTable.put("header", "PLAYER_MOVED");
-			    broadcastMessageTable.put("player_name", message.getMessageSender().getName());
-			    broadcastMessageTable.put("player_team", message.getMessageSender().getTeamAsString());
-			    broadcastMessageTable.put("origin", origin.getPlaceName());
-			    broadcastMessageTable.put("destination", destination.getPlaceName());
-			    Server.connectionManager.broadcastMessage(new Message(
-					    Message.Type.SCENERY,
-					    new Player("SERVER", Player.Team.SERVER),
-					    MessageManager.createXML(broadcastMessageTable)
-			    ));
-			    int takenBullets = destination.pickBullets();
-			    if (message.getMessageSender().getTeam() == Player.Team.GOOD) {
-				    Server.setGoodTeamBullets(Server.getGoodTeamBullets() + takenBullets);
-			    } else if (message.getMessageSender().getTeam() == Player.Team.BAD) {
-				    Server.setBadTeamBullets(Server.getBadTeamBullets() + takenBullets);
-			    }
+		switch (result) {
+			case PLAYER_MOVED:
+				Server.connectionManager.getPlayerHandler(message.getMessageSender()).getConnectedPlayer().setPosition(destination);
+				MessageTable broadcastMessageTable = new MessageTable();
+				broadcastMessageTable.put("header", "PLAYER_MOVED");
+				broadcastMessageTable.put("player_name", message.getMessageSender().getName());
+				broadcastMessageTable.put("player_team", message.getMessageSender().getTeamAsString());
+				broadcastMessageTable.put("origin", origin.getPlaceName());
+				broadcastMessageTable.put("destination", destination.getPlaceName());
+				Server.connectionManager.broadcastMessage(new Message(
+						Message.Type.SCENERY,
+						new Player("SERVER", Player.Team.SERVER),
+						MessageManager.createXML(broadcastMessageTable)
+				));
+				int takenBullets = destination.pickBullets();
+				if (message.getMessageSender().getTeam() == Player.Team.GOOD) {
+					Server.setGoodTeamBullets(Server.getGoodTeamBullets() + takenBullets);
+				} else if (message.getMessageSender().getTeam() == Player.Team.BAD) {
+					Server.setBadTeamBullets(Server.getBadTeamBullets() + takenBullets);
+				}
 
-			    Server.connectionManager.getPlayerHandler(
-			    		message.getMessageSender()
-			    ).getConnectedPlayer().addBullets(takenBullets);
+				Server.connectionManager.getPlayerHandler(
+						message.getMessageSender()
+				).getConnectedPlayer().addBullets(takenBullets);
 
-			    MessageTable messageTable = new MessageTable();
-			    messageTable.put("header", "PLAYER_MOVED");
-			    messageTable.put("origin", origin.getPlaceName());
-			    messageTable.put("destination", destination.getPlaceName());
-			    return new Message(
-					    Message.Type.MOVE,
-					    new Player("SERVER", Player.Team.SERVER),
-					    MessageManager.createXML(messageTable)
-			    );
-		    case DESTINATION_BUSY:
-		    case DESTINATION_UNREACHABLE:
-			    return new Message(
-					    Message.Type.MOVE,
-					    new Player("SERVER", Player.Team.SERVER),
-					    MessageManager.createXML(new MessageTable("header", "PLAYER_NOT_MOVED"))
-			    );
+				MessageTable messageTable = new MessageTable();
+				messageTable.put("header", "PLAYER_MOVED");
+				messageTable.put("origin", origin.getPlaceName());
+				messageTable.put("destination", destination.getPlaceName());
+				return new Message(
+						Message.Type.MOVE,
+						new Player("SERVER", Player.Team.SERVER),
+						MessageManager.createXML(messageTable)
+				);
+			case DESTINATION_BUSY:
+			case DESTINATION_UNREACHABLE:
+				return new Message(
+						Message.Type.MOVE,
+						new Player("SERVER", Player.Team.SERVER),
+						MessageManager.createXML(new MessageTable("header", "PLAYER_NOT_MOVED"))
+				);
 			default:
 				throw new HandlerException("Invalid message found");
-	    }
-    }
+		}
+	}
 
 	/**
 	 * Handle all move-related messages. In particular, these events are handled:
@@ -227,11 +250,11 @@ public class ServerEventHandler extends EventHandler {
 	 * @return List of opponent players.
 	 */
 	private List<Player> getOppositeFighters(Player player, Place position) {
-    	if (player == null) {
-    		throw new InvalidParameterException("Player cannot be null");
+		if (player == null) {
+			throw new InvalidParameterException("Player cannot be null");
 		}
 		if (position == null) {
-    		throw new InvalidParameterException("Position cannot be null");
+			throw new InvalidParameterException("Position cannot be null");
 		}
 		switch (player.getTeam()) {
 			case GOOD:

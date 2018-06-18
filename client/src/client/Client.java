@@ -1,3 +1,26 @@
+/*
+ *  Project: "Spaghetti Western"
+ *
+ *
+ *  The MIT License (MIT)
+ *
+ *  Copyright (c) 2017-2018 Lorenzo Billi
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *	documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ *	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ *	permit persons to whom the Software is	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ *	the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ *	WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ *	OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ *	OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package client;
 
 import client.connection.ClientConnectionManager;
@@ -41,7 +64,7 @@ public class Client {
 	/**
 	 * Chat window for the current player.
 	 */
-    public static ChatWindow chatWindow;
+	public static ChatWindow chatWindow;
 
 	/**
 	 * Main window used for the map exploration.
@@ -56,7 +79,7 @@ public class Client {
 	/**
 	 * Handles all connection-related routines.
 	 */
-    public static ClientConnectionManager connectionManager;
+	public static ClientConnectionManager connectionManager;
 
 	/**
 	 * Represents the current player.
@@ -66,7 +89,7 @@ public class Client {
 	/**
 	 * Stores current player position in the scenery.
 	 */
-    private static Place position;
+	private static Place position;
 
 	/**
 	 * Stores the corresponding loaded scenery.
@@ -76,12 +99,12 @@ public class Client {
 	/**
 	 * Stores the corresponding loaded map.
 	 */
-    private static Map map;
+	private static Map map;
 
 	/**
 	 * Global cached thread pool used by the client for most multithreaded operations.
 	 */
-    public static ExecutorService globalThreadPool;
+	public static ExecutorService globalThreadPool;
 
 	/**
 	 * Main method of Client.
@@ -89,45 +112,45 @@ public class Client {
 	 * @param args Main method's arguments. Not used here.
 	 */
 	public static void main(String[] args) {
-        clientWindow = new MainWindow();
-        connectionManager = new ClientConnectionManager();
-        connectionThread = new Thread(connectionManager);
-        globalThreadPool = Executors.newCachedThreadPool();
-        startClient();
-    }
+		clientWindow = new MainWindow();
+		connectionManager = new ClientConnectionManager();
+		connectionThread = new Thread(connectionManager);
+		globalThreadPool = Executors.newCachedThreadPool();
+		startClient();
+	}
 
 	/**
 	 * Starts up the client by executing the internal connection thread.
 	 */
 	private static void startClient() {
-        connectionThread.start();
-    }
+		connectionThread.start();
+	}
 
 	/**
 	 * Get the current player.
 	 * @return Current player.
 	 */
 	public static Player getPlayer() {
-        return player;
-    }
+		return player;
+	}
 
 	/**
 	 * Set the current player.
 	 * @param player Current player to be set.
 	 */
 	public static void setPlayer(Player player) {
-        if (player == null) {
-            throw new InvalidParameterException("client.Client player cannot be null");
-        }
-        Client.player = player;
-    }
+		if (player == null) {
+			throw new InvalidParameterException("client.Client player cannot be null");
+		}
+		Client.player = player;
+	}
 
 	/**
 	 * Get the current player position in the scenery.
 	 * @return Current player position.
 	 */
 	public static Place getPosition() {
-    	return position;
+		return position;
 	}
 
 	/**
@@ -135,8 +158,8 @@ public class Client {
 	 * @param position Position to be set.
 	 */
 	public static void setPosition(Place position) {
-    	if (position == null) {
-    		throw new InvalidParameterException("Current position cannot be null");
+		if (position == null) {
+			throw new InvalidParameterException("Current position cannot be null");
 		}
 		Client.position = position;
 	}
@@ -146,7 +169,7 @@ public class Client {
 	 * @return Used scenery.
 	 */
 	public static Scenery getScenery() {
-    	return scenery;
+		return scenery;
 	}
 
 	/**
@@ -154,8 +177,8 @@ public class Client {
 	 * @param scenery Scenery to be used for the current session.
 	 */
 	public static void setScenery(Scenery scenery) {
-    	if (scenery == null) {
-    		throw new InvalidParameterException("shared.scenery.Scenery cannot be null");
+		if (scenery == null) {
+			throw new InvalidParameterException("shared.scenery.Scenery cannot be null");
 		}
 		Client.scenery = scenery;
 	}
@@ -165,7 +188,7 @@ public class Client {
 	 * @return Current map used.
 	 */
 	public static Map getMap() {
-    	return map;
+		return map;
 	}
 
 	/**
@@ -173,8 +196,8 @@ public class Client {
 	 * @param map Map to be used for the current session.
 	 */
 	public static void setMap(Map map) {
-    	if (map == null) {
-    		throw new InvalidParameterException("client.gui.map.Map cannot be null");
+		if (map == null) {
+			throw new InvalidParameterException("client.gui.map.Map cannot be null");
 		}
 		Client.map = map;
 	}

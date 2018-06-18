@@ -1,3 +1,26 @@
+/*
+ *  Project: "Spaghetti Western"
+ *
+ *
+ *  The MIT License (MIT)
+ *
+ *  Copyright (c) 2017-2018 Lorenzo Billi
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *	documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
+ *	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ *	permit persons to whom the Software is	furnished to do so, subject to the following conditions:
+ *
+ *	The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ *	the Software.
+ *
+ *	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ *	WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+ *	OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ *	OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ */
+
 package client.connection;
 
 import client.Client;
@@ -32,7 +55,7 @@ public class ClientConnectionManager implements Runnable {
 	/**
 	 * Stream used by the client to send messages.
 	 */
-    private PrintWriter sendStream;
+	private PrintWriter sendStream;
 
 	/**
 	 * Stream used by the client to receive messages.
@@ -44,58 +67,58 @@ public class ClientConnectionManager implements Runnable {
 	 * connection initialization and enters in the "big loop" (listens for messages and sends responses accordingly).
 	 * When the client exists from the loop, this method will initiate the shutdown routine.
 	 */
-    @Override
-    public void run() {
-        try {
-            socket = new Socket(Client.SERVER_ADDRESS, Client.PORT_NUMBER);
-            sendStream = new PrintWriter(socket.getOutputStream(), true);
-            receiveStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException e) {
-            e.getMessage();
-            e.getCause();
-            e.printStackTrace();
-        }
+	@Override
+	public void run() {
+		try {
+			socket = new Socket(Client.SERVER_ADDRESS, Client.PORT_NUMBER);
+			sendStream = new PrintWriter(socket.getOutputStream(), true);
+			receiveStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e) {
+			e.getMessage();
+			e.getCause();
+			e.printStackTrace();
+		}
 
-        initUserConnection();
+		initUserConnection();
 
-        // Send message for start the timer and create the waiting countdown
-	    Client.globalThreadPool.submit(new Sender(new Message(
-			    Message.Type.TIME,
-			    Client.getPlayer(),
-			    MessageManager.createXML(new MessageTable("header", "WAIT_START_REQUEST"))
-	    ), getSendStream()));
-	    Client.clientWindow.createWaitingCountdown();
+		// Send message for start the timer and create the waiting countdown
+		Client.globalThreadPool.submit(new Sender(new Message(
+				Message.Type.TIME,
+				Client.getPlayer(),
+				MessageManager.createXML(new MessageTable("header", "WAIT_START_REQUEST"))
+		), getSendStream()));
+		Client.clientWindow.createWaitingCountdown();
 
-        talkWithServer();
-    }
+		talkWithServer();
+	}
 
 	/**
 	 * Gets the sending stream in a thread-safe manner.
 	 * @return Reference to the send stream.
 	 */
 	public synchronized PrintWriter getSendStream() {
-        return sendStream;
-    }
+		return sendStream;
+	}
 
 	/**
 	 * Gets the receiving stream in a thread-safe manner.
 	 * @return Reference to the receiving stream.
 	 */
 	public synchronized BufferedReader getReceiveStream() {
-        return receiveStream;
-    }
-
-    private void invokeLoginDialog() {
-	    try {
-		    SwingUtilities.invokeAndWait(() -> Client.clientWindow.createLoginDialog());
-	    } catch (InterruptedException | InvocationTargetException e) {
-		    e.getMessage();
-		    e.getCause();
-		    e.printStackTrace();
-	    }
+		return receiveStream;
 	}
 
-    private boolean checkConnectionResponse(Message message) {
+	private void invokeLoginDialog() {
+		try {
+			SwingUtilities.invokeAndWait(() -> Client.clientWindow.createLoginDialog());
+		} catch (InterruptedException | InvocationTargetException e) {
+			e.getMessage();
+			e.getCause();
+			e.printStackTrace();
+		}
+	}
+
+	private boolean checkConnectionResponse(Message message) {
 		if (message == null) {
 			throw new InvalidParameterException("Response message cannot be null");
 		}
@@ -135,7 +158,7 @@ public class ClientConnectionManager implements Runnable {
 			default:
 				throw new InvalidParameterException("Unknown message given");
 		}
-    }
+	}
 
 	/**
 	 * Initiate user connection with the server. An attempt is done until a username is accepted by the server.
@@ -183,21 +206,21 @@ public class ClientConnectionManager implements Runnable {
 	 * asynchronously to the server. Finally, the client enters the listening state again, and the loop repeats.
 	 */
 	private void talkWithServer() {
-        while (true) {
-            try {
-                // Wait for a message and pass it to the handler
-                Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
-                Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
-                // Retrieve generated message from handler and send it back
-                Message message = handle.get();
-                if (message != null) {
-                    Client.globalThreadPool.submit(new Sender(message, getSendStream()));
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                e.getMessage();
-                e.getCause();
-                e.printStackTrace();
-            }
-        }
-    }
+		while (true) {
+			try {
+				// Wait for a message and pass it to the handler
+				Future<Message> receive = Client.globalThreadPool.submit(new Receiver(getReceiveStream()));
+				Future<Message> handle = Client.globalThreadPool.submit(new ClientEventHandler(receive.get()));
+				// Retrieve generated message from handler and send it back
+				Message message = handle.get();
+				if (message != null) {
+					Client.globalThreadPool.submit(new Sender(message, getSendStream()));
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.getMessage();
+				e.getCause();
+				e.printStackTrace();
+			}
+		}
+	}
 }
